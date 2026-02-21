@@ -117,6 +117,31 @@ Browse for inspiration:
 - Markdown editor
 - Regex tester
 
+## Vercel Deployment Notes
+
+⚠️ **Vercel Limitation:** Vercel does NOT support running FastAPI/Python servers directly. For AI Trendings projects:
+
+**Recommended Approach: Frontend-First**
+- Call APIs directly from JavaScript (no backend needed)
+- Use client-side libraries (Canvas API, Web Speech API, etc.)
+- Works on any static host (Vercel, Netlify, GitHub Pages)
+- Faster and cheaper (no serverless function execution)
+
+**When to Use Backend:**
+- Only if:
+  1. API requires secret keys that shouldn't be exposed
+  2. Complex processing that can't be done in browser
+  3. Need to cache results server-side
+
+If backend is required on Vercel:
+- Use Vercel Serverless Functions (api/ directory)
+- Or use Render/Railway/Netlify Functions (better Python support)
+
+**Example:** AI Meme Generator (2026-02-21) was refactored to frontend-only:
+- Pollinations.AI called directly from browser
+- Canvas API adds captions client-side
+- No Python backend needed
+
 ## Notes for Agent
 
 1. **Always check topics-used.txt** before choosing a new topic
