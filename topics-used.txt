@@ -1,6 +1,13 @@
 # AI Trendings - Topics Used
 # This file tracks topics already covered to avoid repetition
-# Format: YYYY-MM-DD - Topic Name
+# Format: YYYY-MM-DD - Topic Name (Category)
+#
+# INSTRUCTIONS FOR AGENT:
+# 1. ALWAYS check this file before choosing a new topic
+# 2. Browse FREE_APIS.md for API options and project ideas
+# 3. Choose UNIQUE topics - avoid repeating themes
+# 4. Rotate categories (NLP, CV, GenAI, Games, Tools, etc.)
+# 5. Remove outdated entries if a project was deleted
 
-2026-02-21 - AI Story Illustrator
-2026-02-21 - AI Meme Generator
+# Topics used:
+2026-02-21 - AI Meme Generator (Generative AI / Image)

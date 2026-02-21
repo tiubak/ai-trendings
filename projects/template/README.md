@@ -26,11 +26,17 @@ Or open `index.html` in your browser.
 
 - **Backend:** Python (FastAPI)
 - **Frontend:** HTML/JavaScript
-- **API:** {API USED}
+- **API:** {API USED} (Free - see [FREE_APIS.md](../../FREE_APIS.md))
 
 ## API
 
 Uses {API NAME} — {API DETAILS, LIMITS, ETC}
+
+## Free API Resources
+
+This project uses a free API. Browse more free APIs for future projects:
+- [FREE_APIS.md](../../FREE_APIS.md) - Curated list of free APIs for this portfolio
+- [free-apis.github.io](https://free-apis.github.io) - Community-maintained free API directory
 
 ---
 

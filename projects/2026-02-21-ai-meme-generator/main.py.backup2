@@ -24,8 +24,8 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageDraw, ImageFont
 
 # Configuration
-POLLINATIONS_BASE_URL = "https://gen.pollinations.ai"
-POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
+POLLINATIONS_IMAGE_URL = "https://image.pollinations.ai/prompt/{prompt}"
+POLLINATIONS_TEXT_URL = "https://text.pollinations.ai/prompt/{prompt}"
 DEFAULT_IMAGE_SIZE = (512, 512)
 DEFAULT_MODEL = "flux"
 CACHE_DIR = Path("./cache")
@@ -59,35 +59,25 @@ def get_hash_key(prompt: str, **kwargs) -> str:
 
 async def fetch_pollinations_image(prompt: str, width: int = 512, height: int = 512, model: str = DEFAULT_MODEL) -> bytes:
     """Fetch an image from Pollinations.AI."""
-    url = f"{POLLINATIONS_BASE_URL}/image/{prompt}"
+    url = POLLINATIONS_IMAGE_URL.format(prompt=prompt)
     params = {
         "width": width,
         "height": height,
         "model": model,
     }
-    headers = {}
-    if POLLINATIONS_API_KEY:
-        headers["Authorization"] = f"Bearer {POLLINATIONS_API_KEY}"
-    
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params, headers=headers, timeout=30) as response:
+        async with session.get(url, params=params, timeout=30) as response:
             if response.status != 200:
-                error_text = await response.text()
-                raise HTTPException(status_code=502, detail=f"Failed to generate image: {error_text}")
+                raise HTTPException(status_code=502, detail="Failed to generate image")
             return await response.read()
 
 async def fetch_pollinations_text(prompt: str) -> str:
     """Fetch generated text from Pollinations.AI."""
-    url = f"{POLLINATIONS_BASE_URL}/text/{prompt}"
-    headers = {}
-    if POLLINATIONS_API_KEY:
-        headers["Authorization"] = f"Bearer {POLLINATIONS_API_KEY}"
-    
+    url = POLLINATIONS_TEXT_URL.format(prompt=prompt)
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers, timeout=30) as response:
+        async with session.get(url, timeout=30) as response:
             if response.status != 200:
-                error_text = await response.text()
-                raise HTTPException(status_code=502, detail=f"Failed to generate text: {error_text}")
+                raise HTTPException(status_code=502, detail="Failed to generate text")
             return await response.text()
 
 def add_caption_to_image(image_bytes: bytes, top_text: str = "", bottom_text: str = "") -> bytes:
