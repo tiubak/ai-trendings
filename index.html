@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trendings — Daily AI Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00f260;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .day {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .day:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 242, 96, 0.2);
+        }
+
+        .day.has-project {
+            border-color: #00f260;
+            background: rgba(0, 242, 96, 0.05);
+        }
+
+        .day-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .day-project {
+            font-size: 0.75rem;
+            color: #00f260;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        .day.empty {
+            color: #444;
+            cursor: default;
+        }
+
+        .day.empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .month-label {
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 40px 0 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #00f260;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .calendar {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 10px;
+            }
+
+            .day {
+                min-height: 80px;
+                padding: 10px;
+            }
+
+            .day-number {
+                font-size: 1.2rem;
+            }
+
+            .day-project {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Trendings</h1>
+            <p class="subtitle">One AI project, every single day</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="total-projects">0</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streak-days">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="latest-project">—</div>
+                    <div class="stat-label">Latest</div>
+                </div>
+            </div>
+        </header>
+
+        <div id="calendar">
+            <!-- Calendar will be populated by JavaScript -->
+        </div>
+
+        <div class="footer">
+            <p>Built by <a href="https://github.com/tiubak">tiubak</a> • Automated by Atlas 🌍</p>
+        </div>
+    </div>
+
+    <script>
+        // Project data - will be updated by the automated agent
+        const projects = {
+            // Format: "YYYY-MM-DD": { name: "Project Name", path: "projects/2026-02-21-project-name" }
+        };
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            const today = new Date();
+            const startMonth = new Date(2026, 1, 21); // Start date: Feb 21, 2026
+            const endMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            let currentMonth = new Date(startMonth);
+            let totalProjects = 0;
+            let latestProject = null;
+            let streakDays = 0;
+
+            while (currentMonth <= endMonth) {
+                const monthLabel = document.createElement('h2');
+                monthLabel.className = 'month-label';
+                monthLabel.textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                calendar.appendChild(monthLabel);
+
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'calendar';
+
+                const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+                const startDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'day';
+
+                    if (projects[dateStr]) {
+                        dayDiv.classList.add('has-project');
+                        dayDiv.innerHTML = `
+                            <div class="day-number">${day}</div>
+                            <div class="day-project">${projects[dateStr].name}</div>
+                        `;
+                        dayDiv.onclick = () => {
+                            window.location.href = projects[dateStr].path + '/';
+                        };
+                        totalProjects++;
+                        latestProject = projects[dateStr].name;
+                        streakDays++;
+                    } else {
+                        dayDiv.classList.add('empty');
+                        dayDiv.innerHTML = `<div class="day-number">${day}</div>`;
+                    }
+
+                    monthDiv.appendChild(dayDiv);
+                }
+
+                calendar.appendChild(monthDiv);
+                currentMonth.setMonth(currentMonth.getMonth() + 1);
+            }
+
+            // Update stats
+            document.getElementById('total-projects').textContent = totalProjects;
+            document.getElementById('streak-days').textContent = streakDays;
+            document.getElementById('latest-project').textContent = latestProject || '—';
+        }
+
+        generateCalendar();
+    </script>
+</body>
+</html>

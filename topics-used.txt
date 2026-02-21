@@ -1,0 +1,5 @@
+# AI Trendings - Topics Used
+# This file tracks topics already covered to avoid repetition
+# Format: YYYY-MM-DD - Topic Name
+
+# Initial project will be added here
