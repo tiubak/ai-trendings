@@ -5,53 +5,77 @@ Usage: python scripts/update_calendar.py <date> <name> <path>
 """
 
 import sys
-import json
-from datetime import datetime
+import re
 
 def update_calendar(date: str, name: str, path: str):
     """Add a project to the calendar in index.html"""
 
     with open("index.html", "r") as f:
-        content = f.read()
+        lines = f.readlines()
 
-    # Find the projects object and add the new entry
-    projects_pattern = r"const projects = \{([^}]+)\};"
-    match = __import__('re').search(projects_pattern, content, __import__('re').DOTALL)
+    # Find the projects section and rebuild it
+    in_projects = False
+    projects = {}
+    brace_level = 0
+    projects_start = -1
+    projects_end = -1
 
-    if match:
-        projects_dict_str = match.group(1).strip()
-        # Parse existing projects
-        try:
-            projects = eval("{" + projects_dict_str + "}")
-        except:
-            projects = {}
-    else:
-        projects = {}
+    for i, line in enumerate(lines):
+        if "const projects = {" in line:
+            in_projects = True
+            projects_start = i
+            brace_level = 1
+            continue
+
+        if in_projects:
+            # Count braces to find the end of the object
+            brace_level += line.count('{') - line.count('}')
+
+            if brace_level == 0:
+                projects_end = i
+                break
+
+            # Parse project entries (skip comments)
+            stripped = line.strip()
+            if stripped.startswith('"') and ':' in stripped:
+                # Extract key and value
+                try:
+                    # Format: "2026-02-21": { name: "...", path: "..." },
+                    match = re.match(r'"(\d{4}-\d{2}-\d{2})":\s*\{\s*name:\s*"([^"]*)",\s*path:\s*"([^"]*)"\s*\}', stripped)
+                    if match:
+                        p_date = match.group(1)
+                        p_name = match.group(2)
+                        p_path = match.group(3)
+                        projects[p_date] = {"name": p_name, "path": p_path}
+                except:
+                    pass
 
     # Add new project
-    projects[date] = {
-        "name": name,
-        "path": path
-    }
+    projects[date] = {"name": name, "path": path}
 
-    # Convert back to string
-    new_projects_str = "const projects = {\n"
-    for d, info in sorted(projects.items()):
-        new_projects_str += f'            "{d}": {{ "name": "{info["name"]}", "path": "{info["path"]}" }},\n'
-    new_projects_str = new_projects_str.rstrip(",\n") + "\n        };"
+    # Rebuild the projects section
+    new_projects_lines = []
+    new_projects_lines.append(lines[projects_start])  # Keep the opening line
+    new_projects_lines.append("            // Format: \"YYYY-MM-DD\": { name: \"Project Name\", path: \"projects/2026-02-21-project-name\" }\n")
 
-    # Replace in content
-    new_content = __import__('re').sub(
-        r"const projects = \{[^}]+\};",
-        new_projects_str,
-        content,
-        flags=__import__('re').DOTALL
-    )
+    # Add all projects sorted by date
+    for d in sorted(projects.keys()):
+        info = projects[d]
+        # Escape any quotes in the name
+        safe_name = info["name"].replace('"', '\\"')
+        new_projects_lines.append(f'            "{d}": {{ "name": "{safe_name}", "path": "{info["path"]}" }},\n')
+
+    # Add closing brace
+    new_projects_lines.append("        };")
+
+    # Replace old section with new one
+    new_lines = lines[:projects_start] + new_projects_lines + lines[projects_end + 1:]
 
     with open("index.html", "w") as f:
-        f.write(new_content)
+        f.writelines(new_lines)
 
     print(f"✓ Calendar updated: {date} - {name}")
+    print(f"  Total projects: {len(projects)}")
 
 
 if __name__ == "__main__":
