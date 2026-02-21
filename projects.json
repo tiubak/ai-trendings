@@ -1,8 +1,8 @@
 {
   "2026-02-21": {
-    "name": "Ai Story Illustrator",
-    "path": "projects/2026-02-21-ai-story-illustrator",
-    "description": "Transform your short stories into beautiful illustrated narratives using AI. This project extracts key scenes from your story and generates unique artwork for each one.",
+    "name": "Ai Meme Generator",
+    "path": "projects/2026-02-21-ai-meme-generator",
+    "description": "Generate hilarious memes using AI-generated images and witty captions \u2014 all for free!",
     "created_at": "2026-02-21"
   }
 }
