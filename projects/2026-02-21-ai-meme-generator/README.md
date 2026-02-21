@@ -47,11 +47,14 @@ Or simply open the `index.html` file in your browser when the server is running.
 
 ## API Details
 
-Uses Pollinations.AI's completely free APIs:
-- **Image Generation:** `https://image.pollinations.ai/prompt/{prompt}`
-- **Text Generation:** `https://text.pollinations.ai/prompt/{prompt}`
-- **No API keys required** — truly free tier for everyone
-- **Models:** Flux (default), OpenAI, and others available
+This project uses Pollinations.AI's free tier APIs, which require an API key for reliable usage. You can get a free API key at [enter.pollinations.ai](https://enter.pollinations.ai).
+
+**Image Generation:** `https://gen.pollinations.ai/image/{prompt}`  
+**Text Generation:** `https://gen.pollinations.ai/text/{prompt}`
+
+Set your API key as an environment variable `POLLINATIONS_API_KEY` before running the server.
+
+**Models:** Flux (default), OpenAI, and others available via the `model` parameter.
 
 ## Features
 
@@ -91,6 +94,17 @@ To modify or extend this project:
 - Free APIs have rate limits (Pollinations.AI has generous free tier)
 - Text generation may occasionally produce unexpected results
 - Requires internet connection for API calls
+
+## Deployment on Vercel
+
+1. Clone this repository.
+2. Navigate to the project directory: `projects/2026-02-21-ai-meme-generator/`.
+3. Install dependencies: `pip install -r requirements.txt`.
+4. Set the environment variable `POLLINATIONS_API_KEY` with your Pollinations.AI API key.
+5. Deploy using Vercel CLI: `vercel --prod`.
+6. Alternatively, connect your GitHub repository to Vercel and deploy automatically.
+
+The frontend will be served statically, and the backend will run as serverless functions (requires Vercel's Python runtime).
 
 ## Credits
 

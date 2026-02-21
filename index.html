@@ -239,7 +239,8 @@
 
             const today = new Date();
             const startMonth = new Date(2026, 1, 21); // Start date: Feb 21, 2026
-            const endMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            // Fix: Use last day of today's month as end date, not the 1st
+            const endMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
             let currentMonth = new Date(startMonth);
             let totalProjects = 0;
