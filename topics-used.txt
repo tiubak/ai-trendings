@@ -1,6 +1,6 @@
 # AI Trendings - Topics Used
 # This file tracks topics already covered to avoid repetition
-# Format: YYYY-MM-DD - Topic Name (Category)
+# Format: YYYY-MM-DD - Topic Name (Architecture)
 #
 # INSTRUCTIONS FOR AGENT:
 # 1. ALWAYS check this file before choosing a new topic
@@ -10,4 +10,10 @@
 # 5. Remove outdated entries if a project was deleted
 
 # Topics used:
-2026-02-21 - AI Meme Generator (Generative AI / Image)
+2026-02-21 - AI Meme Generator (Frontend-only)
+
+# LESSONS LEARNED:
+# - Frontend-only architecture works best on Vercel static hosting
+# - Pollinations.AI can be called directly from browser (no backend needed)
+# - Python backends on Vercel require Serverless Functions (complex setup)
+# - ALWAYS TEST LOCALLY before committing
