@@ -5,6 +5,18 @@ This file catalogs free APIs the agent can use for daily projects. All APIs list
 - ✅ No API key (or free signup only)
 - ✅ Legal to use in public projects
 
+## Environment Variables (Set on Vercel)
+
+| Variable | Purpose | Required? | Where to Get |
+|----------|-----------|------------|--------------|
+| `POLLINATIONS_API_KEY` | Pollinations.AI | Optional | https://enter.pollinations.ai |
+| `HUGGINGFACE_API_KEY` | Hugging Face Inference | Yes for HF API | https://huggingface.co/settings/tokens |
+| `OPENROUTER_API_KEY` | OpenRouter models | Yes for OpenRouter | https://openrouter.ai/keys |
+
+**Note:** These are set on Vercel → Project Settings → Environment Variables.
+
+**Local Development:** Copy `.env.example` to `.env` and fill in values.
+
 ## AI/ML APIs
 
 ### Text Generation
