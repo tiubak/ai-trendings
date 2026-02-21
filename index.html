@@ -143,6 +143,18 @@
             text-decoration: none;
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ff6b6b;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -175,22 +187,22 @@
             <p class="subtitle">One AI project, every single day</p>
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-value" id="total-projects">0</div>
+                    <div class="stat-value" id="total-projects">-</div>
                     <div class="stat-label">Projects</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="streak-days">0</div>
+                    <div class="stat-value" id="streak-days">-</div>
                     <div class="stat-label">Day Streak</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="latest-project">—</div>
+                    <div class="stat-value" id="latest-project">-</div>
                     <div class="stat-label">Latest</div>
                 </div>
             </div>
         </header>
 
         <div id="calendar">
-            <!-- Calendar will be populated by JavaScript -->
+            <div class="loading">Loading projects...</div>
         </div>
 
         <div class="footer">
@@ -199,11 +211,29 @@
     </div>
 
     <script>
-        // Project data - will be updated by the automated agent
-        const projects = {
-            // Format: "YYYY-MM-DD": { name: "Project Name", path: "projects/2026-02-21-project-name" }
-            "2026-02-21": { "name": "AI Story Illustrator", "path": "projects/2026-02-21-ai-story-illustrator" },
-        };        function generateCalendar() {
+        // Load projects dynamically from projects.json
+        let projects = {};
+
+        async function loadProjects() {
+            try {
+                const response = await fetch('projects.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                projects = await response.json();
+                generateCalendar();
+            } catch (error) {
+                console.error('Failed to load projects:', error);
+                document.getElementById('calendar').innerHTML = `
+                    <div class="error">
+                        Failed to load projects.<br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+            }
+        }
+
+        function generateCalendar() {
             const calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
 
@@ -226,7 +256,6 @@
                 monthDiv.className = 'calendar';
 
                 const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-                const startDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -263,7 +292,8 @@
             document.getElementById('latest-project').textContent = latestProject || '—';
         }
 
-        generateCalendar();
+        // Load projects on page load
+        loadProjects();
     </script>
 </body>
 </html>
