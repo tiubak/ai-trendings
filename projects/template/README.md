@@ -24,7 +24,7 @@ Or open `index.html` in your browser.
 
 ## Tech Stack
 
-- **Backend:** Python
+- **Backend:** Python (FastAPI)
 - **Frontend:** HTML/JavaScript
 - **API:** {API USED}
 
