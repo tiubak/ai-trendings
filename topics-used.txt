@@ -8,12 +8,20 @@
 # 3. Choose UNIQUE topics - avoid repeating themes
 # 4. Rotate categories (NLP, CV, GenAI, Games, Tools, etc.)
 # 5. Remove outdated entries if a project was deleted
+#
+# CRITICAL REQUIREMENT: EVERY PROJECT MUST HAVE PYTHON BACKEND
+# - Frontend-only projects are NOT ALLOWED
+# - Must use FastAPI or similar Python framework
+# - Backend must be fully functional and testable
+# - Frontend must connect to backend API endpoints
+# - MUST TEST LOCALLY BEFORE COMMITTING
 
 # Topics used:
-2026-02-21 - AI Meme Generator (Frontend-only)
+2026-02-21 - AI Meme Generator (Frontend-only - Vercel limitation, later refactored)
 
 # LESSONS LEARNED:
 # - Frontend-only architecture works best on Vercel static hosting
 # - Pollinations.AI can be called directly from browser (no backend needed)
 # - Python backends on Vercel require Serverless Functions (complex setup)
+# - AI Trendings REQUIRES Python backend for every project
 # - ALWAYS TEST LOCALLY before committing

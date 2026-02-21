@@ -18,103 +18,131 @@ This guide explains how Vercel works for this project and how to build projects 
 
 ---
 
-## 🎯 Two Architectures for Projects
+## ⚠️ CRITICAL REQUIREMENT: Python Backend Mandatory
 
-### 1. Frontend-Only (✅ PREFERRED for Vercel)
+**For AI Trendings Projects:**
+- ✅ **EVERY project MUST have a Python backend**
+- ❌ Frontend-only is NOT allowed
+- ✅ Backend must use FastAPI (or similar framework)
+- ✅ Backend must be fully functional and testable
+- ✅ Frontend must connect to backend API endpoints
 
-**What it is:**
-- HTML + CSS + JavaScript only
-- No Python/Node backend needed
-- APIs called directly from browser
-
-**When to use:**
-- ✅ APIs work from browser (Pollinations.AI, free-apis.github.io)
-- ✅ Simple processing (Canvas API, Web Speech API, etc.)
-- ✅ No secrets needed in code
-- ✅ Want project to work anywhere (Vercel, Netlify, GitHub Pages)
-
-**Example:** AI Meme Generator
-- Pollinations.AI called via `fetch()` from JavaScript
-- Canvas API adds captions to images
-- Downloads PNG files directly
-
-**Pros:**
-- ✅ Works perfectly on Vercel (just static files)
-- ✅ No server costs
-- ✅ Fast (no server round-trips)
-- ✅ Simple deployment (just push to GitHub)
-- ✅ Debuggable in browser console
-
-**Cons:**
-- ⚠️ API keys exposed in frontend code (use only for free/public APIs)
-- ⚠️ Limited browser capabilities vs. Python
+**Why?** AI Trendings is about demonstrating Python + AI development skills. Frontend-only projects don't showcase backend capabilities.
 
 ---
 
-### 2. Python Backend (⚠️ Complex on Vercel)
+## 🎯 Required Architecture for AI Trendings
 
-**What it is:**
-- FastAPI/Express server running Python/Node
-- Requires Vercel Serverless Functions setup
-- API endpoints served as `api/` routes
-
-**When to use:**
-- ⚠️ API needs secret keys (Hugging Face, OpenRouter)
-- ⚠️ Complex processing (ML inference, large file handling)
-- ⚠️ Server-side caching needed
-- ⚠️ Database/storage requirements
-
-**How it works on Vercel:**
 ```
-1. Create `api/` directory in project
-2. Each `.py` file becomes an API endpoint
-3. Vercel compiles to serverless functions
-4. Endpoints accessible at `/api/filename`
+┌────────────────────────────────────┐
+│  Browser (User)              │
+│  • Opens index.html             │
+│  • Enters prompts/data           │
+│  • Fetches from backend API     │
+│  • Displays results              │
+│                                │
+└────────────────────────────────────┘
+              ↓
+         Python Backend (FastAPI)
+              ↓
+    API Endpoints:
+    - POST /api/process
+    - GET /api/status
+    - etc.
+              ↓
+    External APIs (Pollinations.AI,
+    Hugging Face, OpenRouter)
 ```
 
-**Example Structure:**
+**Every AI Trendings project must follow this architecture.**
+
+---
+
+## 🚀 Deployment Steps (Python Backend Required)
+
+### Step 1: Create Project Structure
+
 ```
 projects/2026-02-22-project/
-├── api/
-│   ├── generate.py        → /api/generate
-│   ├── health.py          → /api/health
-│   └── requirements.txt
-├── index.html              (frontend)
-└── README.md
+├── main.py              # Python backend (REQUIRED)
+├── index.html           # Frontend (connects to backend)
+├── requirements.txt     # Python dependencies
+├── README.md           # Documentation
+└── .gitignore          # Python cache, venv, etc.
 ```
 
-**Pros:**
-- ✅ API keys secure (server-side)
-- ✅ Full Python/Node capabilities
-- ✅ Server-side processing
+### Step 2: Write Python Backend (FastAPI)
 
-**Cons:**
-- ❌ Complex setup (serverless functions)
-- ❌ Slower (cold starts on each request)
-- ❌ Costs money for high usage
-- ❌ Harder to debug
+```python
+# main.py - Minimum structure required
+from fastapi import FastAPI
+import os
 
----
+app = FastAPI(title="Project Name")
 
-## 🚀 Deployment Steps
+# Environment variables
+API_KEY = os.getenv("API_KEY", "")
 
-### Option 1: Frontend-Only Project
+@app.get("/")
+async def root():
+    """Serve the frontend"""
+    with open("index.html", "r") as f:
+        return f.read()
 
-1. Write HTML/CSS/JS code
-2. Open `index.html` in browser to test
-3. Git commit and push to GitHub
-4. ✅ Vercel auto-deploys (30-60 seconds)
-5. Done!
+@app.post("/api/generate")
+async def generate(data: dict):
+    """Main AI processing endpoint"""
+    # Your AI logic here
+    return {"result": "success", "data": ...}
 
-### Option 2: Python Backend Project
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
 
-1. Create `api/` directory
-2. Write Python FastAPI code
-3. Create `requirements.txt` for serverless
-4. Test with `vercel dev` locally
-5. Git commit and push to GitHub
-6. ✅ Vercel compiles and deploys
-7. Test live endpoints at `https://ai-trendings.vercel.app/api/*`
+### Step 3: Write Frontend (Connects to Backend)
+
+```javascript
+// index.html - Must connect to backend
+async function generate() {
+    const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt: input.value})
+    });
+    const result = await response.json();
+    // Display result from backend
+}
+```
+
+### Step 4: Test Locally
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Start Python backend
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+# 3. Open in browser
+open http://localhost:8000
+
+# 4. Test all features
+# - Verify frontend connects to backend
+# - Test API endpoints
+# - Check error handling
+# - Verify AI API calls work
+```
+
+### Step 5: Commit and Deploy
+
+```bash
+# Only commit after testing!
+git add .
+git commit -m "Add project: Project Name (Python backend + frontend)"
+git push origin master
+# Vercel auto-deploys in 30-60 seconds
+```
 
 ---
 
@@ -122,81 +150,164 @@ projects/2026-02-22-project/
 
 **Set on Vercel:** https://vercel.com/tiubak/ai-trendings/settings/environment-variables
 
-| Variable | Purpose | When Needed |
-|----------|-----------|--------------|
-| `POLLINATIONS_API_KEY` | Pollinations.AI | Optional (free APIs work without it) |
-| `HUGGINGFACE_API_KEY` | Hugging Face | Yes for backend projects |
-| `OPENROUTER_API_KEY` | OpenRouter models | Yes for backend projects |
+| Variable | Purpose | Required? | When to Use |
+|----------|-----------|------------|--------------|
+| `POLLINATIONS_API_KEY` | Pollinations.AI | Optional | Text/image APIs |
+| `HUGGINGFACE_API_KEY` | Hugging Face | Yes | HF Inference API |
+| `OPENROUTER_API_KEY` | OpenRouter | Yes | OpenRouter models |
 
-**Access in code:**
+**Access in Python:**
 ```python
 import os
-api_key = os.getenv("HUGGINGFACE_API_KEY")  # Backend only
+api_key = os.getenv("HUGGINGFACE_API_KEY")  # Backend
 ```
 
-```javascript
-// Frontend-only: call APIs directly, no key needed
-const response = await fetch('https://gen.pollinations.ai/prompt/...');
-```
+---
+
+## ⚠️ Vercel Limitation: No Python Server
+
+**Important:** Vercel does NOT support running Python FastAPI servers as-is. Two options:
+
+### Option 1: Serverless Functions (Complex)
+- Convert backend to Vercel `api/` functions
+- Each endpoint becomes a serverless function
+- Slower (cold starts on each request)
+- Costs money for high usage
+- Complex setup
+
+### Option 2: Alternative Hosting (Recommended for Python Backends)
+- **Render** (render.com) - Free tier, better Python support
+- **Railway** (railway.app) - Good Python support
+- **Netlify Functions** - Better than Vercel for Python
+- Use for backend-first projects
+
+### Option 3: Keep Python for Demo, Document Vercel Limitation
+- Document that backend requires Vercel Serverless
+- Provide instructions for deployment on other platforms
+- README.md explains both Vercel and alternative options
 
 ---
 
 ## 🐛 Common Issues & Solutions
 
-### Issue: "NOT_FOUND" (CLE1) on Vercel
+### Issue: Frontend can't connect to backend
 
-**Cause:** Project tries to call `/api/` endpoint that doesn't exist
+**Cause:** Backend not running or CORS issues
 
-**Solution:** Use frontend-only architecture or implement proper serverless functions
+**Solution:**
+```python
+# Add CORS to FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-### Issue: API calls failing on Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
 
-**Cause:** Calling API that requires key, but key not accessible
+### Issue: Environment variables not available
 
-**Solution:** Use frontend APIs (Pollinations.AI) or set env vars properly
+**Cause:** Not set on Vercel or wrong variable name
 
-### Issue: CORS errors
+**Solution:**
+```bash
+# Check Vercel env vars
+vercel env ls
 
-**Cause:** Backend API blocking frontend requests
-
-**Solution:** Add CORS middleware (FastAPI example in template)
+# Or test locally
+export API_KEY="test_key"
+python main.py
+```
 
 ### Issue: Build fails on Vercel
 
-**Cause:** `requirements.txt` has incompatible packages or missing
+**Cause:** `requirements.txt` has incompatible packages or missing dependencies
 
-**Solution:** Test locally with `vercel dev` before pushing
+**Solution:**
+```bash
+# Test locally first
+pip install -r requirements.txt
+python main.py
 
----
-
-## 📋 Agent Decision Tree
-
-The AI agent follows this process when creating projects:
-
-1. **Does project need API key?**
-   - YES → Backend consideration
-   - NO → Frontend-first preferred
-
-2. **Too complex for JavaScript?**
-   - YES → Python backend (serverless)
-   - NO → Frontend-only recommended
-
-3. **Can be done frontend-only?**
-   - YES → DO THIS (Vercel loves it)
-   - NO → Backend only if needed
-
-**Result:** Frontend-first is used 80% of the time
+# If works locally but not on Vercel, check Python version
+vercel logs  # Check deployment logs
+```
 
 ---
 
 ## ✅ Checklist Before Committing
 
-- [ ] Project works locally (open index.html in browser)
-- [ ] All features tested and working
+### Backend Requirements (Mandatory)
+- [ ] `main.py` exists and is functional
+- [ ] Uses FastAPI (or similar Python framework)
+- [ ] Has at least 2 API endpoints (health + main feature)
+- [ ] Environment variables use `os.getenv()`
+- [ ] Error handling for all API calls
+- [ ] Code is commented and readable
+
+### Frontend Requirements
+- [ ] `index.html` connects to backend API
+- [ ] Displays results from backend (no hardcoded results)
+- [ ] Handles loading states and errors
+- [ ] Responsive design
+
+### Testing Requirements (CRITICAL)
+- [ ] Backend tested locally: `uvicorn main:app`
+- [ ] Frontend tested in browser
+- [ ] API endpoints tested with curl or browser
+- [ ] All features verified working
 - [ ] No console errors
-- [ ] API calls successful
-- [ ] Downloads/exports work
-- [ ] README.md updated
+- [ ] Environment variables work (if used)
+
+### Documentation
+- [ ] README.md explains architecture
+- [ ] requirements.txt lists all dependencies
 - [ ] Calendar updated (`python scripts/generate_projects.py`)
-- [ ] topics-used.txt updated
-- [ ] Only frontend files (or properly structured backend)
+- [ ] topics-used.txt updated with topic name
+
+---
+
+## 📊 Examples of Good vs Bad Projects
+
+### ✅ GOOD: Python Backend + Frontend
+
+**Project:** AI Text Classifier
+- `main.py`: FastAPI with `/api/classify` endpoint
+- `index.html`: Fetches from `/api/classify`, displays results
+- **Works on:** Vercel (static) + any host with Python
+- **AI Trendings compliant:** Has Python backend
+
+### ❌ BAD: Frontend-Only
+
+**Project:** AI Meme Generator (First Attempt)
+- `main.py`: Deleted (no backend needed)
+- `index.html`: Direct API calls to Pollinations.AI
+- **Vercel issue:** Works, but doesn't meet AI Trendings requirement
+- **AI Trendings compliant:** NO - missing Python backend
+
+### ✅ GOOD: Python Backend with Vercel Notes
+
+**Project:** AI Image Generator
+- `main.py`: Full FastAPI backend with image processing
+- `README.md`: Explains Vercel limitation + alternatives (Render, Railway)
+- **Works on:** Vercel (for static) + Render (for backend)
+- **AI Trendings compliant:** Has Python backend + documented deployment options
+
+---
+
+## 🎯 Summary
+
+| Requirement | Status |
+|------------|--------|
+| Python Backend | ✅ MANDATORY for all projects |
+| Frontend | ✅ Required (connects to backend) |
+| Local Testing | ✅ CRITICAL - must work before commit |
+| Environment Variables | ✅ Use `os.getenv()` |
+| Documentation | ✅ Explain architecture clearly |
+| Vercel Limitation | ✅ Document alternatives when needed |
+
+---
+
+**Remember:** AI Trendings is about Python + AI development. Every project must demonstrate Python backend skills!

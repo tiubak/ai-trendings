@@ -12,27 +12,42 @@
 
 ## Usage
 
-**Option 1: Backend (if needed)**
+**CRITICAL: Python Backend Required**
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Run
+# Run backend
 python main.py
-```
 
-**Option 2: Frontend-only (recommended for Vercel)**
-Just open `index.html` in your browser.
+# Or with uvicorn
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+# Open frontend in browser
+open http://localhost:8000
+```
 
 ## Deployment Notes
 
-⚠️ **Vercel Limitation:** Vercel does NOT support running Python servers directly. Choose your approach:
+⚠️ **CRITICAL: AI Trendings requires Python backend**
+
+Every AI Trendings project MUST include:
+- ✅ `main.py` - Functional Python backend (FastAPI recommended)
+- ✅ `index.html` - Frontend that connects to backend API
+- ✅ `requirements.txt` - Python dependencies
+- ❌ NO frontend-only projects allowed
+
+### Vercel Deployment
+
+**Vercel Limitation:** Vercel does NOT support running Python servers directly as-is.
 
 | Approach | When to Use | Notes |
 |----------|--------------|-------|
-| **Frontend-only** | ✅ Recommended | Call APIs from browser, no backend needed |
-| **Serverless** | If backend required | Use Vercel `api/` directory (complex) |
-| **Alternative Host** | For Python backends | Render, Railway, Netlify (better Python support) |
+| **Serverless Functions** | If deploying to Vercel | Complex setup, not recommended |
+| **Alternative Host** | Recommended for Python backends | Render, Railway, Netlify (better support) |
+| **Vercel + Backend** | Document limitation clearly | README explains Vercel issues + alternatives |
+
+See [VERCEL_GUIDE.md](../../VERCEL_GUIDE.md) for detailed deployment instructions.
 
 ## Tech Stack
 
