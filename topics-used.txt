@@ -26,3 +26,4 @@
 # - Python backends on Vercel require Serverless Functions (complex setup)
 # - AI Trendings REQUIRES Python backend for every project
 # - ALWAYS TEST LOCALLY before committing
+2026-02-21 - AI Dungeon Master (Python backend - FastAPI, Pollinations.AI text+images)
