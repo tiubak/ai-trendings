@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AI Dungeon Master - Start Game Endpoint
-POST /api/dungeon-master/start
+POST /api/2026-02-21-ai-dungeon-master/start
 
 Creates a new game and returns initial game state.
 
@@ -13,23 +13,17 @@ import json
 import uuid
 import logging
 from http.server import BaseHTTPRequestHandler
+from urllib.request import Request, urlopen
+from urllib.parse import quote
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Environment variables
 POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
-HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
-
-# Game state storage (in-memory for demo)
-games = {}
 
 def generate_text_pollinations(prompt: str) -> str:
     """Generate text using Pollinations.AI"""
     try:
-        from urllib.request import Request, urlopen
-        from urllib.parse import quote
-        
         url = f"https://text.pollinations.ai/{quote(prompt)}"
         headers = {}
         if POLLINATIONS_API_KEY:
@@ -42,7 +36,13 @@ def generate_text_pollinations(prompt: str) -> str:
         raise Exception("Text generation failed")
     except Exception as e:
         logger.exception(f"Text generation error: {e}")
-        raise
+        # Return fallback text if API fails
+        return """You stand at the entrance of a mysterious dungeon. Torchlight flickers on ancient stone walls.
+
+Choices:
+1. Enter the dark corridor ahead
+2. Examine the strange symbols on the door
+3. Light another torch and prepare yourself"""
 
 def parse_scene_and_choices(text: str):
     """Parse generated text into scene and choices"""
@@ -58,12 +58,14 @@ def parse_scene_and_choices(text: str):
         if in_choices:
             if line and line[0].isdigit() and ". " in line:
                 choices.append(line.split(". ", 1)[-1])
+            elif line and len(line) > 2 and not line[0].isdigit():
+                choices.append(line)
         else:
             scene_lines.append(line)
     
     scene = "\n".join(scene_lines)
     if not choices:
-        choices = ["Explore the path", "Investigate the object", "Rest and recover"]
+        choices = ["Explore the path ahead", "Investigate nearby", "Rest and recover"]
     
     return scene[:500], choices[:3]
 
@@ -91,9 +93,9 @@ Scene:"""
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
-            content_length = self.headers.get('Content-Length')
-            body = self.rfile.read(int(content_length)).decode('utf-8')
-            data = json.loads(body)
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length).decode('utf-8')
+            data = json.loads(body) if body else {}
             
             theme = data.get("theme", "fantasy")
             player_name = data.get("player_name", "Adventurer")
@@ -103,28 +105,25 @@ class Handler(BaseHTTPRequestHandler):
             generated_text = generate_text_pollinations(prompt)
             scene, choices = parse_scene_and_choices(generated_text)
             
-            games[game_id] = {
-                "game_id": game_id,
-                "theme": theme,
-                "player_name": player_name,
-                "scene": scene,
-                "choices": choices
-            }
-            
+            # Return game state to client (client will pass it back)
             response = {
                 "game_id": game_id,
                 "scene": scene,
                 "choices": choices,
                 "theme": theme,
                 "player_name": player_name,
+                "history": [{"scene": scene, "choices": choices}],
                 "message": "Game started!"
             }
             
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
             self.end_headers()
             self.wfile.write(json.dumps(response).encode('utf-8'))
+            logger.info(f"Game started: {game_id}")
             
         except Exception as e:
             logger.exception(f"Start game error: {e}")
@@ -142,4 +141,5 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
 def handler(event):
+    """Vercel serverless entry point"""
     return Handler(event).handler(event)

@@ -81,7 +81,7 @@
     </div>
 
     <script>
-        let gameId = null;
+        let gameState = null;
         const API_BASE = '/api/2026-02-21-ai-dungeon-master';
 
         async function apiCall(endpoint, method = 'POST', body = null) {
@@ -107,7 +107,7 @@
                 document.getElementById('error').classList.add('hidden');
                 const data = await apiCall('start', 'POST', { theme, player_name: playerName });
                 
-                gameId = data.game_id;
+                gameState = data;
                 document.getElementById('start-screen').classList.add('hidden');
                 document.getElementById('game-screen').classList.remove('hidden');
                 
@@ -118,13 +118,20 @@
         }
 
         async function makeChoice(index) {
-            if (!gameId) return;
+            if (!gameState) return;
             
             try {
                 const data = await apiCall('choice', 'POST', { 
-                    game_id: gameId, 
-                    choice_index: index 
+                    scene: gameState.scene,
+                    choices: gameState.choices,
+                    choice_index: index,
+                    history: gameState.history || []
                 });
+                
+                gameState.scene = data.scene;
+                gameState.choices = data.choices;
+                gameState.history = data.history;
+                
                 updateScene(data.scene, data.choices);
             } catch (error) {
                 showError(error.message);
