@@ -90,7 +90,7 @@ Choices:
 
 Scene:"""
 
-class Handler(BaseHTTPRequestHandler):
+class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             content_length = int(self.headers.get('Content-Length', 0))
@@ -140,6 +140,4 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
-def handler(event):
-    """Vercel serverless entry point"""
-    return Handler(event).handler(event)
+# Vercel uses the 'handler' class directly - no separate entry point needed
