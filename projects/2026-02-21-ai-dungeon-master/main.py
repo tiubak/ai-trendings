@@ -4,6 +4,8 @@ AI Dungeon Master - Interactive Text Adventure Game
 An AI-powered dungeon master that generates immersive storylines, characters, and choices in real-time.
 
 Built for AI Trendings — https://github.com/tiubak/ai-trendings
+
+REFACTORED: Now uses Pollinations.AI for BOTH text and images (no API keys needed)
 """
 
 import os
@@ -27,13 +29,9 @@ POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 
-# Hugging Face Inference API settings
-HF_API_URL = "https://api-inference.huggingface.co/models/gpt2"
-HF_HEADERS = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"} if HUGGINGFACE_API_KEY else {}
-
-# Pollinations.AI settings
-POLLINATIONS_API_URL = "https://image.pollinations.ai/prompt/"
-POLLINATIONS_TEXT_API_URL = "https://text.pollinations.ai/"
+# Pollinations.AI settings (NO API KEY REQUIRED!)
+POLLINATIONS_API_URL = "https://gen.pollinations.ai"
+POLLINATIONS_TEXT_API_URL = "https://text.pollinations.ai"
 
 # Game state storage (in-memory, for demo purposes)
 games: Dict[str, Dict[str, Any]] = {}
@@ -67,64 +65,80 @@ app.add_middleware(
 )
 
 # Helper functions
-async def generate_text(prompt: str, max_length: int = 300) -> str:
-    """Generate text using Hugging Face Inference API"""
-    if not HUGGINGFACE_API_KEY:
-        logger.warning("HUGGINGFACE_API_KEY not set, using fallback text")
-        return "The dungeon master ponders your journey... (Hugging Face API key not configured)"
-    
+async def generate_text_pollinations(prompt: str, max_length: int = 300) -> str:
+    """Generate text using Pollinations.AI text API (NO API KEY NEEDED!)"""
     try:
+        # Build URL for Pollinations.AI text API
+        prompt_encoded = prompt.replace(" ", "%20")
+        url = f"{POLLINATIONS_TEXT_API_URL}/{prompt_encoded}"
+        
+        # Add API key if available (optional for Pollinations.AI)
+        headers = {}
+        if POLLINATIONS_API_KEY:
+            headers["Authorization"] = f"Bearer {POLLINATIONS_API_KEY}"
+        
+        logger.info(f"Generating text with Pollinations.AI: {prompt[:50]}...")
+        
         async with httpx.AsyncClient() as client:
-            payload = {
-                "inputs": prompt,
-                "parameters": {
-                    "max_length": max_length,
-                    "temperature": 0.85,
-                    "top_p": 0.95,
-                    "do_sample": True,
-                    "return_full_text": False
-                }
-            }
-            response = await client.post(
-                HF_API_URL,
-                headers=HF_HEADERS,
-                json=payload,
-                timeout=30.0
-            )
+            response = await client.get(url, headers=headers, timeout=30.0, follow_redirects=True)
             
             if response.status_code == 200:
-                result = response.json()
-                if isinstance(result, list) and len(result) > 0:
-                    generated_text = result[0].get("generated_text", "")
-                    return generated_text.strip()
-                elif isinstance(result, dict) and "generated_text" in result:
-                    return result["generated_text"].strip()
-                else:
-                    logger.error(f"Unexpected HF response format: {result}")
-                    return "The mystical energies are unstable... (AI generation failed)"
+                # Pollinations.AI returns plain text
+                generated_text = response.text.strip()
+                logger.info("Text generated successfully via Pollinations.AI")
+                return generated_text
             else:
-                logger.error(f"HF API error {response.status_code}: {response.text}")
-                return f"The oracle is silent... (API error: {response.status_code})"
+                error_text = response.text
+                logger.error(f"Pollinations.AI text API error {response.status_code}: {error_text}")
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"The oracle whispers riddles... (Text generation failed)"
+                )
     
     except Exception as e:
         logger.exception(f"Text generation failed: {e}")
-        return f"A mysterious fog obscures the path... (Error: {str(e)})"
+        raise HTTPException(status_code=500, detail=f"Mysterious fog obscures path... (Error: {str(e)})")
 
-async def generate_image(prompt: str) -> Optional[str]:
-    """Generate image using Pollinations.AI"""
+async def generate_image_pollinations(prompt: str, width: int = 512, height: int = 512) -> str:
+    """Generate image using Pollinations.AI image API (NO API KEY NEEDED!)"""
     try:
         # Build URL with parameters
         prompt_encoded = prompt.replace(" ", "%20")
-        url = f"{POLLINATIONS_API_URL}{prompt_encoded}?width=512&height=512&model=flux&seed={uuid.uuid4().int % 10000}"
+        url = f"{POLLINATIONS_API_URL}/prompt/{prompt_encoded}"
+        params = {
+            "width": width,
+            "height": height,
+            "model": "flux",  # Using Flux model
+            "nologo": "true",  # Optional: don't add watermark
+        }
         
+        # Add API key if available
+        headers = {}
         if POLLINATIONS_API_KEY:
-            url += f"&key={POLLINATIONS_API_KEY}"
+            params["key"] = POLLINATIONS_API_KEY
         
-        # Return the URL (Pollinations serves image directly)
-        return url
+        logger.info(f"Generating image with Pollinations.AI: {prompt[:50]}...")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, params=params, headers=headers, timeout=30.0, follow_redirects=True)
+            
+            if response.status_code == 200:
+                # Pollinations.AI returns the image directly
+                # We return the URL (Vercel/clients will fetch it)
+                image_url = str(response.url)
+                logger.info(f"Image generated: {image_url[:60]}...")
+                return image_url
+            else:
+                error_text = response.text
+                logger.error(f"Pollinations.AI image API error {response.status_code}: {error_text}")
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"The ancient magic fails... (Image generation failed)"
+                )
+    
     except Exception as e:
         logger.exception(f"Image generation failed: {e}")
-        return None
+        raise HTTPException(status_code=500, detail=f"Darkness consumes all... (Error: {str(e)})")
 
 def parse_scene_and_choices(text: str) -> tuple[str, List[str]]:
     """Parse generated text into scene description and choices"""
@@ -143,7 +157,7 @@ def parse_scene_and_choices(text: str) -> tuple[str, List[str]]:
         
         if in_choices:
             # Extract numbered choices (1., 2., etc.)
-            if line and line[0].isdigit() and (". " in line or ") " in line):
+            if line and line[0].isdigit() and (". " in line or ")" in line):
                 choice_text = line.split(". ", 1)[-1] if ". " in line else line.split(") ", 1)[-1]
                 choices.append(choice_text)
             elif line and line.startswith("- "):
@@ -154,7 +168,7 @@ def parse_scene_and_choices(text: str) -> tuple[str, List[str]]:
         else:
             scene_lines.append(line)
     
-    scene = " ".join(scene_lines)
+    scene = "\n".join(scene_lines)
     
     # If no choices parsed, create some default ones
     if not choices:
@@ -166,7 +180,7 @@ def parse_scene_and_choices(text: str) -> tuple[str, List[str]]:
     
     # Ensure we have exactly 3 choices
     while len(choices) < 3:
-        choices.append(f"Option {len(choices)+1}: Continue the journey")
+        choices.append(f"Option {len(choices)+1}: Continue journey")
     
     return scene[:500], choices[:3]
 
@@ -198,7 +212,7 @@ Scene:"""
 # API Endpoints
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Serve the frontend"""
+    """Serve frontend"""
     with open("index.html", "r") as f:
         return f.read()
 
@@ -213,7 +227,10 @@ async def health():
             "huggingface": bool(HUGGINGFACE_API_KEY),
             "openrouter": bool(OPENROUTER_API_KEY)
         },
-        "games_active": len(games)
+        "apis_available": {
+            "text_generation": "Pollinations.AI (no key needed)",
+            "image_generation": "Pollinations.AI (no key needed)"
+        }
     }
 
 @app.post("/api/game/start")
@@ -223,41 +240,49 @@ async def start_game(request: GameStartRequest, background_tasks: BackgroundTask
     
     # Generate initial scene
     prompt = create_initial_prompt(request.theme, request.player_name)
-    generated_text = await generate_text(prompt)
-    scene, choices = parse_scene_and_choices(generated_text)
     
-    # Create game state
-    game_state = {
-        "game_id": game_id,
-        "theme": request.theme,
-        "player_name": request.player_name,
-        "current_scene": scene,
-        "choices": choices,
-        "history": [{"scene": scene, "choices": choices, "selected_choice": None}],
-        "image_url": None,
-        "created_at": asyncio.get_event_loop().time(),
-        "last_updated": asyncio.get_event_loop().time()
-    }
+    try:
+        generated_text = await generate_text_pollinations(prompt)
+        scene, choices = parse_scene_and_choices(generated_text)
+        
+        # Create game state
+        game_state = {
+            "game_id": game_id,
+            "theme": request.theme,
+            "player_name": request.player_name,
+            "current_scene": scene,
+            "choices": choices,
+            "history": [{"scene": scene, "choices": choices, "selected_choice": None}],
+            "image_url": None,
+            "created_at": asyncio.get_event_loop().time(),
+            "last_updated": asyncio.get_event_loop().time()
+        }
+        
+        games[game_id] = game_state
+        
+        # Generate image in background
+        async def generate_initial_image():
+            image_prompt = f"{scene[:100]}, {request.theme} adventure, digital art, dramatic lighting"
+            image_url = await generate_image_pollinations(image_prompt)
+            if image_url:
+                games[game_id]["image_url"] = image_url
+        
+        background_tasks.add_task(generate_initial_image)
+        
+        return {
+            "game_id": game_id,
+            "scene": scene,
+            "choices": choices,
+            "theme": request.theme,
+            "player_name": request.player_name,
+            "message": "Game started! Your adventure begins..."
+        }
     
-    games[game_id] = game_state
-    
-    # Generate image in background
-    async def generate_initial_image():
-        image_prompt = f"{scene}, {request.theme} adventure, digital art, dramatic lighting"
-        image_url = await generate_image(image_prompt)
-        if image_url:
-            games[game_id]["image_url"] = image_url
-    
-    background_tasks.add_task(generate_initial_image)
-    
-    return {
-        "game_id": game_id,
-        "scene": scene,
-        "choices": choices,
-        "theme": request.theme,
-        "player_name": request.player_name,
-        "message": "Game started! Your adventure begins..."
-    }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"Failed to start game: {e}")
+        raise HTTPException(status_code=500, detail=f"An ancient force awakens... (Error: {str(e)})")
 
 @app.get("/api/game/{game_id}")
 async def get_game_state(game_id: str):
@@ -293,12 +318,12 @@ async def make_choice(game_id: str, choice: ChoiceRequest, background_tasks: Bac
     game["history"][-1]["selected_choice"] = selected_choice
     
     # Generate next scene based on choice
-    prompt = f"""As a dungeon master, continue the story based on this context:
+    prompt = f"""As a dungeon master, continue to story based on this context:
 
 Previous scene: {game['current_scene']}
 Player's choice: {selected_choice}
 
-Generate the next scene (2-3 paragraphs) showing the consequences of this choice. Then provide exactly 3 new choices for the player.
+Generate a next scene (2-3 paragraphs) showing the consequences of this choice. Then provide exactly 3 new choices for the player.
 
 Format:
 [Scene description here]
@@ -310,35 +335,42 @@ Choices:
 
 Scene:"""
     
-    generated_text = await generate_text(prompt)
-    new_scene, new_choices = parse_scene_and_choices(generated_text)
+    try:
+        generated_text = await generate_text_pollinations(prompt)
+        new_scene, new_choices = parse_scene_and_choices(generated_text)
+        
+        # Update game state
+        game["current_scene"] = new_scene
+        game["choices"] = new_choices
+        game["history"].append({
+            "scene": new_scene,
+            "choices": new_choices,
+            "selected_choice": None
+        })
+        game["last_updated"] = asyncio.get_event_loop().time()
+        
+        # Generate new image in background
+        async def generate_next_image():
+            image_prompt = f"{new_scene[:100]}, {game['theme']} adventure, digital art, dramatic lighting"
+            image_url = await generate_image_pollinations(image_prompt)
+            if image_url:
+                game["image_url"] = image_url
+        
+        background_tasks.add_task(generate_next_image)
+        
+        return {
+            "game_id": game_id,
+            "scene": new_scene,
+            "choices": new_choices,
+            "selected_choice": selected_choice,
+            "message": "The story continues..."
+        }
     
-    # Update game state
-    game["current_scene"] = new_scene
-    game["choices"] = new_choices
-    game["history"].append({
-        "scene": new_scene,
-        "choices": new_choices,
-        "selected_choice": None
-    })
-    game["last_updated"] = asyncio.get_event_loop().time()
-    
-    # Generate new image in background
-    async def generate_next_image():
-        image_prompt = f"{new_scene}, {game['theme']} adventure, digital art, dramatic lighting"
-        image_url = await generate_image(image_prompt)
-        if image_url:
-            game["image_url"] = image_url
-    
-    background_tasks.add_task(generate_next_image)
-    
-    return {
-        "game_id": game_id,
-        "scene": new_scene,
-        "choices": new_choices,
-        "selected_choice": selected_choice,
-        "message": "The story continues..."
-    }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"Failed to make choice: {e}")
+        raise HTTPException(status_code=500, detail=f"The dungeon master's power wanes... (Error: {str(e)})")
 
 @app.post("/api/game/{game_id}/image")
 async def generate_scene_image(game_id: str, request: ImageGenRequest = None):
@@ -348,8 +380,8 @@ async def generate_scene_image(game_id: str, request: ImageGenRequest = None):
     
     game = games[game_id]
     
-    prompt = request.prompt if request and request.prompt else f"{game['current_scene']}, {game['theme']} adventure, digital art"
-    image_url = await generate_image(prompt)
+    prompt = request.prompt if request.prompt else f"{game['current_scene'][:100]}, {game['theme']} adventure, digital art, dramatic lighting"
+    image_url = await generate_image_pollinations(prompt)
     
     if image_url:
         game["image_url"] = image_url
@@ -422,10 +454,14 @@ async def cleanup_old_games():
 async def startup_event():
     """Initialize on startup"""
     logger.info("Starting AI Dungeon Master...")
-    logger.info(f"Environment variables configured:")
+    logger.info("Environment variables configured:")
     logger.info(f"  - POLLINATIONS_API_KEY: {bool(POLLINATIONS_API_KEY)}")
     logger.info(f"  - HUGGINGFACE_API_KEY: {bool(HUGGINGFACE_API_KEY)}")
     logger.info(f"  - OPENROUTER_API_KEY: {bool(OPENROUTER_API_KEY)}")
+    
+    logger.info("✓ REFACTORED: Now using Pollinations.AI for BOTH text and images (no API keys needed)")
+    logger.info("  Text API: Pollinations.AI text.pollinations.ai (no key)")
+    logger.info("  Image API: Pollinations.AI gen.pollinations.ai (no key)")
     
     # Schedule periodic cleanup
     asyncio.create_task(periodic_cleanup())
@@ -438,4 +474,6 @@ async def periodic_cleanup():
 
 if __name__ == "__main__":
     import uvicorn
+    import sys
+    
     uvicorn.run(app, host="0.0.0.0", port=8000)
