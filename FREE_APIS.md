@@ -9,7 +9,7 @@ This file catalogs free APIs the agent can use for daily projects. All APIs list
 
 | Variable | Purpose | Required? | Where to Get |
 |----------|-----------|------------|--------------|
-| `POLLINATIONS_API_KEY` | Pollinations.AI | Optional | https://enter.pollinations.ai |
+| `POLLINATIONS_API_KEY` | Pollinations.AI | **YES - REQUIRED** | https://enter.pollinations.ai |
 | `HUGGINGFACE_API_KEY` | Hugging Face Inference | Yes for HF API | https://huggingface.co/settings/tokens |
 | `OPENROUTER_API_KEY` | OpenRouter models | Yes for OpenRouter | https://openrouter.ai/keys |
 
@@ -20,10 +20,11 @@ This file catalogs free APIs the agent can use for daily projects. All APIs list
 ## AI/ML APIs
 
 ### Text Generation
-- **Pollinations.AI Text** - https://pollinations.ai
+- **Pollinations.AI Text** - https://pollinations.ai  
   - Text generation, prompts, creative writing
-  - No API key required
-  - Unlimited free use
+  - **API key now REQUIRED** (changed 2026-02-21)
+  - Free tier: Unlimited with valid key
+  - Get key at: https://enter.pollinations.ai
 
 - **Hugging Face Inference** - https://huggingface.co/docs/api-inference
   - Thousands of free models (text, image, audio)
@@ -31,6 +32,11 @@ This file catalogs free APIs the agent can use for daily projects. All APIs list
   - Requires: Free account (API key)
 
 ### Image Generation
+- **Pollinations.AI Images** - https://pollinations.ai
+  - Flux model, DALL-E alternatives
+  - **API key now REQUIRED** (changed 2026-02-21)
+  - Free tier: Unlimited with valid key
+  - Get key at: https://enter.pollinations.ai
 - **Pollinations.AI Images** - https://pollinations.ai
   - Flux model, DALL-E alternatives
   - No API key required
