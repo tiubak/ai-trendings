@@ -18,6 +18,7 @@
 
 # Topics used:
 2026-02-21 - AI Meme Generator (Frontend-only - Vercel limitation, later refactored)
+2026-02-21 - AI Dungeon Master (Python backend - FastAPI, Hugging Face + Pollinations.AI)
 
 # LESSONS LEARNED:
 # - Frontend-only architecture works best on Vercel static hosting
