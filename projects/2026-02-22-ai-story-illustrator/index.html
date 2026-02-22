@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Story Illustrator | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h1 { text-align: center; margin-bottom: 5px; font-size: 2.5rem; }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 30px; }
+        .back-link { color: rgba(255,255,255,0.7); text-decoration: none; display: inline-block; margin-bottom: 20px; }
+        .back-link:hover { color: #fff; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        textarea {
+            width: 100%; min-height: 120px; padding: 14px; border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px; background: rgba(0,0,0,0.2); color: #fff; font-size: 1rem;
+            resize: vertical; font-family: inherit;
+        }
+        textarea:focus { outline: none; border-color: #00d4ff; }
+        select {
+            width: 100%; padding: 12px; border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px; background: rgba(0,0,0,0.2); color: #fff; font-size: 1rem;
+        }
+        
+        button {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, #00d4aa, #00d4ff);
+            border: none; border-radius: 10px; color: #fff; font-size: 1.1rem; font-weight: 600;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,212,255,0.3); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        button.secondary { background: rgba(255,255,255,0.2); margin-top: 10px; }
+        button.secondary:hover { background: rgba(255,255,255,0.3); }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .story-panel, .image-panel {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .story-text {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            white-space: pre-wrap;
+        }
+        
+        .story-text, .image-container { min-height: 200px; }
+        
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            min-height: 300px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden { display: none; }
+        .error {
+            background: rgba(255,82,82,0.2);
+            border: 1px solid rgba(255,82,82,0.4);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .metadata {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .result-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../" class="back-link">← Back to AI Trendings</a>
+        <h1>🎨 AI Story Illustrator</h1>
+        <p class="subtitle">Transform your ideas into illustrated stories</p>
+
+        <div id="input-screen">
+            <div class="form-group">
+                <label>Your Story Idea</label>
+                <textarea id="storyIdea" placeholder="A brave explorer discovers an ancient temple hidden in the Amazon rainforest..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Story Style</label>
+                <select id="storyStyle">
+                    <option value="engaging">Engaging</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="sci-fi">Sci-Fi</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="humorous">Humorous</option>
+                    <option value="dramatic">Dramatic</option>
+                </select>
+            </div>
+            
+            <button onclick="enhanceStory()">✨ Enhance Story</button>
+        </div>
+
+        <div id="enhance-loading" class="loading hidden">
+            Enhancing your story...
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <div class="result-grid">
+                <div class="story-panel">
+                    <h3>📖 Enhanced Story</h3>
+                    <div id="enhancedStory" class="story-text"></div>
+                    <div id="storyMetadata" class="metadata"></div>
+                </div>
+                
+                <div class="image-panel">
+                    <h3>🎨 Illustration</h3>
+                    <div id="imageContainer" class="image-container">
+                        <div class="loading">Generating illustration...</div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Art Style</label>
+                        <select id="artStyle" onchange="regenerateImage()">
+                            <option value="digital art">Digital Art</option>
+                            <option value="watercolor">Watercolor</option>
+                            <option value="anime">Anime</option>
+                            <option value="realistic">Realistic</option>
+                            <option value="pixel art">Pixel Art</option>
+                            <option value="oil painting">Oil Painting</option>
+                        </select>
+                    </div>
+                    <button class="secondary" onclick="regenerateImage()">🔄 Regenerate Illustration</button>
+                    <div id="imageMetadata" class="metadata"></div>
+                </div>
+            </div>
+            
+            <button class="secondary" onclick="resetForm()" style="margin-top: 20px;">✨ Create New Story</button>
+        </div>
+
+        <div id="error" class="error hidden"></div>
+    </div>
+
+    <script>
+        // Client-side state storage
+        let state = {
+            originalIdea: '',
+            enhancedStory: '',
+            storyStyle: '',
+            artStyle: 'digital art',
+            imageUrl: '',
+            seed: null
+        };
+        
+        const API_BASE = '/api/2026-02-22-ai-story-illustrator';
+
+        async function apiCall(endpoint, method = 'POST', body = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            if (body) options.body = JSON.stringify(body);
+            
+            const response = await fetch(`${API_BASE}/${endpoint}`, options);
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.error || `HTTP ${response.status}`);
+            }
+            return await response.json();
+        }
+
+        async function enhanceStory() {
+            const storyIdea = document.getElementById('storyIdea').value.trim();
+            const storyStyle = document.getElementById('storyStyle').value;
+            
+            if (!storyIdea) {
+                showError('Please enter a story idea');
+                return;
+            }
+            
+            try {
+                document.getElementById('error').classList.add('hidden');
+                document.getElementById('input-screen').classList.add('hidden');
+                document.getElementById('enhance-loading').classList.remove('hidden');
+                
+                // Call API with story idea and style
+                const data = await apiCall('enhance', 'POST', { 
+                    story_idea: storyIdea,
+                    style: storyStyle
+                });
+                
+                // Update state (client-side storage)
+                state.originalIdea = data.original_idea;
+                state.enhancedStory = data.enhanced_story;
+                state.storyStyle = data.style;
+                state.artStyle = document.getElementById('artStyle').value;
+                
+                // Update UI
+                document.getElementById('enhancedStory').textContent = data.enhanced_story;
+                document.getElementById('storyMetadata').innerHTML = 
+                    `<strong>Word count:</strong> ${data.word_count} | <strong>Style:</strong> ${data.style}`;
+                
+                document.getElementById('enhance-loading').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+                
+                // Auto-generate first illustration
+                generateIllustration();
+                
+            } catch (error) {
+                showError(error.message);
+                document.getElementById('enhance-loading').classList.add('hidden');
+                document.getElementById('input-screen').classList.remove('hidden');
+            }
+        }
+
+        async function generateIllustration() {
+            try {
+                document.getElementById('imageContainer').innerHTML = '<div class="loading">Generating illustration...</div>';
+                
+                // Call API with enhanced story and art style (state passed back)
+                const data = await apiCall('illustrate', 'POST', {
+                    story_text: state.enhancedStory,
+                    art_style: state.artStyle,
+                    seed: state.seed
+                });
+                
+                // Update state
+                state.imageUrl = data.image_url;
+                state.seed = data.seed;
+                
+                // Update UI
+                const img = document.createElement('img');
+                img.src = data.image_url;
+                img.alt = 'AI-generated illustration';
+                img.onload = () => {
+                    document.getElementById('imageContainer').innerHTML = '';
+                    document.getElementById('imageContainer').appendChild(img);
+                };
+                img.onerror = () => {
+                    document.getElementById('imageContainer').innerHTML = 
+                        '<div style="padding:20px;text-align:center;">Failed to load image<br><small>Click "Regenerate" to try again</small></div>';
+                };
+                
+                document.getElementById('imageMetadata').innerHTML = 
+                    `<strong>Style:</strong> ${data.art_style} | <strong>Seed:</strong> ${data.seed}`;
+                
+            } catch (error) {
+                showError(error.message);
+                document.getElementById('imageContainer').innerHTML = 
+                    '<div style="padding:20px;text-align:center;color:#ff5252;">Failed to generate illustration</div>';
+            }
+        }
+
+        function regenerateImage() {
+            // Generate new random seed for variety
+            state.seed = null; // API will generate random seed
+            state.artStyle = document.getElementById('artStyle').value;
+            generateIllustration();
+        }
+
+        function resetForm() {
+            state = {
+                originalIdea: '',
+                enhancedStory: '',
+                storyStyle: '',
+                artStyle: 'digital art',
+                imageUrl: '',
+                seed: null
+            };
+            
+            document.getElementById('storyIdea').value = '';
+            document.getElementById('storyStyle').value = 'engaging';
+            document.getElementById('artStyle').value = 'digital art';
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('input-screen').classList.remove('hidden');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = `Error: ${message}`;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+        }
+    </script>
+</body>
+</html>
