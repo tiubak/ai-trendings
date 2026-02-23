@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Story Starter - 2026-02-15</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 2.6rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .mode-tab.active {
+            background: rgba(255,255,255,0.3);
+            border-color: #ffd700;
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4ca1af;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row .section {
+            flex: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(44, 62, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            margin-top: 10px;
+        }
+
+        .results {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .opening-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #2c3e50;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #4ca1af;
+            margin-bottom: 24px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .meta-item {
+            background: #ecf0f1;
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .conflict-list, .starter-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .conflict-list li, .starter-list li {
+            padding: 10px 16px;
+            background: #ecf0f1;
+            margin: 6px 0;
+            border-radius: 8px;
+            border-left: 3px solid #4ca1af;
+        }
+
+        .prompt-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .prompt-label {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .prompt-text {
+            font-style: italic;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .character-intro {
+            background: #e8f4f8;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 16px 0;
+            border: 1px solid #bee5eb;
+        }
+
+        .character-name {
+            font-size: 1.8rem;
+            color: #138496;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .suggestion {
+            margin-top: 16px;
+            padding: 12px;
+            background: #d1ecf1;
+            border-radius: 8px;
+            color: #0c5460;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 40px;
+            color: #fff;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 600px) {
+            .mode-tabs {
+                flex-direction: column;
+            }
+            .row {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .opening-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 AI Story Starter</h1>
+        <p class="subtitle">Begin your next great story with AI-powered inspiration</p>
+
+        <div class="mode-tabs">
+            <div class="mode-tab active" onclick="setMode('opening')" id="tabOpening">Opening</div>
+            <div class="mode-tab" onclick="setMode('prompt')" id="tabPrompt">Writing Prompt</div>
+            <div class="mode-tab" onclick="setMode('character')" id="tabCharacter">Character Intro</div>
+        </div>
+
+        <div class="control-panel">
+            <!-- Opening Mode -->
+            <div id="openingMode">
+                <div class="row">
+                    <div class="section">
+                        <label for="genre">Genre</label>
+                        <select id="genre">
+                            <option value="fantasy">Fantasy</option>
+                            <option value="sci-fi">Science Fiction</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="thriller">Thriller</option>
+                            <option value="romance">Romance</option>
+                            <option value="horror">Horror</option>
+                            <option value="historical">Historical</option>
+                            <option value="contemporary">Contemporary</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="mood">Mood</label>
+                        <select id="mood">
+                            <option value="mysterious">Mysterious</option>
+                            <option value="tense">Tense</option>
+                            <option value="whimsical">Whimsical</option>
+                            <option value="hopeful">Hopeful</option>
+                            <option value="dark">Dark</option>
+                            <option value="romantic">Romantic</option>
+                            <option value="exciting">Exciting</option>
+                            <option value="melancholy">Melancholy</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="section">
+                        <label for="protagonist">Protagonist Type</label>
+                        <select id="protagonist">
+                            <option value="any">Any</option>
+                            <option value="heroic">Heroic</option>
+                            <option value="reluctant">Reluctant</option>
+                            <option value="antihero">Antihero</option>
+                            <option value="mysterious">Mysterious</option>
+                            <option value="ordinary">Ordinary person</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="hook">Hook Type</label>
+                        <select id="hook">
+                            <option value="action">Action</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="dialogue">Dialogue</option>
+                            <option value="question">Question</option>
+                            <option value="statement">Provocative statement</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt Mode -->
+            <div id="promptMode" class="hidden">
+                <div class="section">
+                    <label for="theme">Theme (optional)</label>
+                    <input type="text" id="theme" placeholder="e.g., betrayal, redemption, survival">
+                </div>
+                <div class="section">
+                    <label for="genreMashup">Genre Mashup (optional)</label>
+                    <input type="text" id="genreMashup" placeholder="e.g., sci-fi western, fantasy noir, romance thriller">
+                </div>
+                <div class="section">
+                    <label for="customPrompt">Or Enter Your Own Prompt</label>
+                    <textarea id="customPrompt" style="min-height: 100px;" placeholder="Write a writing prompt here and we'll generate story starters from it..."></textarea>
+                </div>
+            </div>
+
+            <!-- Character Mode -->
+            <div id="characterMode" class="hidden">
+                <div class="row">
+                    <div class="section">
+                        <label for="charType">Character Type</label>
+                        <input type="text" id="charType" placeholder="e.g., detective, witch, astronaut, student">
+                    </div>
+                    <div class="section">
+                        <label for="archetype">Archetype</label>
+                        <select id="archetype">
+                            <option value="any">Any</option>
+                            <option value="hero">Hero</option>
+                            <option value="mentor">Mentor</option>
+                            <option value="villain">Villain</option>
+                            <option value="femme_fatale">Femme Fatale</option>
+                            <option value="everyman">Everyman</option>
+                            <option value="trickster">Trickster</option>
+                            <option value="outlaw">Outlaw</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section">
+                    <label for="situation">Situation</label>
+                    <input type="text" id="situation" placeholder="e.g., first day of work, running from something, meeting an old friend...">
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateStory()">✨ Generate</button>
+            <button class="btn btn-secondary" onclick="startOver()">Reset</button>
+        </div>
+
+        <div id="loading" class="hidden message">
+            <p>Consulting the muses...</p>
+        </div>
+
+        <div id="results" class="results hidden">
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/2026-02-15-ai-story-starter';
+        let currentMode = 'opening';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('openingMode').classList.add('hidden');
+            document.getElementById('promptMode').classList.add('hidden');
+            document.getElementById('characterMode').classList.add('hidden');
+
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+
+            if (mode === 'opening') {
+                document.getElementById('openingMode').classList.remove('hidden');
+            } else if (mode === 'prompt') {
+                document.getElementById('promptMode').classList.remove('hidden');
+            } else if (mode === 'character') {
+                document.getElementById('characterMode').classList.remove('hidden');
+            }
+        }
+
+        async function generateStory() {
+            let request;
+
+            if (currentMode === 'opening') {
+                request = {
+                    action: 'opening',
+                    genre: document.getElementById('genre').value,
+                    mood: document.getElementById('mood').value,
+                    protagonist_type: document.getElementById('protagonist').value,
+                    hook_type: document.getElementById('hook').value
+                };
+            } else if (currentMode === 'prompt') {
+                const theme = document.getElementById('theme').value.trim();
+                const mashup = document.getElementById('genreMashup').value.trim();
+                const custom = document.getElementById('customPrompt').value.trim();
+
+                if (custom) {
+                    request = {
+                        action: 'prompt_writing',
+                        writing_prompt: custom
+                    };
+                } else if (theme || mashup) {
+                    request = {
+                        action: 'prompt_writing',
+                        theme: theme,
+                        genre_mashup: mashup
+                    };
+                } else {
+                    alert('Please enter a theme, genre mashup, or custom prompt.');
+                    return;
+                }
+            } else if (currentMode === 'character') {
+                const charType = document.getElementById('charType').value.trim();
+                const situation = document.getElementById('situation').value.trim();
+                if (!charType) {
+                    alert('Please enter a character type.');
+                    return;
+                }
+                request = {
+                    action: 'character_intro',
+                    character_type: charType,
+                    archetype: document.getElementById('archetype').value,
+                    situation: situation
+                };
+            }
+
+            document.querySelector('.control-panel').style.opacity = '0.6';
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+                const result = await response.json();
+
+                displayResults(result, currentMode);
+            } catch (error) {
+                console.error(error);
+                alert('Network error. Please try again.');
+            }
+
+            document.getElementById('loading').classList.add('hidden');
+            document.querySelector('.control-panel').style.opacity = '1';
+        }
+
+        function displayResults(result, mode) {
+            document.getElementById('results').classList.remove('hidden');
+            const content = document.getElementById('resultsContent');
+            content.innerHTML = '';
+
+            if (mode === 'opening') {
+                const op = result.opening;
+                content.innerHTML = `
+                    <div class="meta-grid">
+                        <div class="meta-item">
+                            <div class="meta-label">Genre</div>
+                            <div class="meta-value">${op.genre}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Hook Used</div>
+                            <div class="meta-value">${op.hook_used}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Mood</div>
+                            <div class="meta-value">${op.mood}</div>
+                        </div>
+                    </div>
+                    <div class="opening-text">"${op.opening}"</div>
+                    <div class="meta-grid">
+                        <div class="meta-item">
+                            <div class="meta-label">Setting Established</div>
+                            <div class="meta-value">${op.setting_established}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Protagonist Hint</div>
+                            <div class="meta-value">${op.protagonist_hint}</div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="meta-label">Conflict Seeds (possibilities)</div>
+                        <ul class="conflict-list">
+                            ${op.conflict_seeds.map(c => `<li>${c}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="prompt-box">
+                        <div class="prompt-label">💡 Continue Writing With...</div>
+                        <div class="prompt-text">${op.continue_prompt}</div>
+                    </div>
+                `;
+
+            } else if (mode === 'prompt') {
+                const promptData = result.prompt_data;
+                content.innerHTML = `
+                    <div class="meta-grid">
+                        <div class="meta-item">
+                            <div class="meta-label">${promptData.prompt ? 'Writing Prompt' : 'Refined Prompt'}</div>
+                        </div>
+                    </div>
+                    <div class="opening-text" style="font-size:1.3rem; border-color:#ffc107;">
+                        ${promptData.prompt || promptData.refined_prompt}
+                    </div>
+                    ${promptData.story_starters ? `
+                        <div class="section">
+                            <div class="meta-label">✨ Three Story Starter Openings</div>
+                            <ul class="starter-list">
+                                ${promptData.story_starters.map((starter, i) => `<li><strong>Option ${i+1}:</strong> "${starter}"</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    <div class="meta-grid">
+                        ${promptData.genre_blend ? `<div class="meta-item"><div class="meta-label">Genre Blend</div><div class="meta-value">${promptData.genre_blend}</div></div>` : ''}
+                        ${promptData.category ? `<div class="meta-item"><div class="meta-label">Category</div><div class="meta-value">${promptData.category}</div></div>` : ''}
+                        ${promptData.difficulty ? `<div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-value">${promptData.difficulty}</div></div>` : ''}
+                        ${promptData.time_estimate ? `<div class="meta-item"><div class="meta-label">Time Estimate</div><div class="meta-value">${promptData.time_estimate}</div></div>` : ''}
+                    </div>
+                    ${promptData.key_elements ? `
+                        <div class="section">
+                            <div class="meta-label">Key Elements to Include</div>
+                            <ul class="conflict-list">
+                                ${promptData.key_elements.map(e => `<li>${e}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+
+            } else if (mode === 'character') {
+                const char = result.character_intro;
+                content.innerHTML = `
+                    <div class="character-intro">
+                        <div class="character-name">${char.character_name}</div>
+                        <div class="opening-text" style="font-size:1.3rem; border:none; background:transparent; padding:0; margin:0;">
+                            ${char.introduction}
+                        </div>
+                        <div class="meta-grid" style="margin-top:20px;">
+                            <div class="meta-item">
+                                <div class="meta-label">Archetype</div>
+                                <div class="meta-value">${archetype || 'N/A'}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Situation</div>
+                                <div class="meta-value">${char.situation_context}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Narrator POV</div>
+                                <div class="meta-value">${char.narrator_pov}</div>
+                            </div>
+                        </div>
+                        <div class="section" style="margin-top:20px;">
+                            <div class="meta-label">Traits Revealed (shown, not told)</div>
+                            <ul class="conflict-list">
+                                ${char.traits_revealed.map(t => `<li>${t}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="section">
+                            <div class="meta-label">Hook Question (what makes reader curious?)</div>
+                            <div class="prompt-box" style="background:#d1ecf1; border-color:#138496;">
+                                <div class="prompt-text">${char.hook_question}</div>
+                            </div>
+                        </div>
+                        <div class="suggestion">
+                            <strong>✨ Casting Suggestion:</strong> ${char.casting_suggestion}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function startOver() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('theme').value = '';
+            document.getElementById('genreMashup').value = '';
+            document.getElementById('customPrompt').value = '';
+            document.getElementById('charType').value = '';
+            document.getElementById('situation').value = '';
+        }
+    </script>
+</body>
+</html>

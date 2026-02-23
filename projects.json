@@ -83,6 +83,12 @@
     "description": "Generate romantic, flirty, and anniversary messages for your loved one.",
     "created_at": "2026-02-14"
   },
+  "2026-02-15": {
+    "name": "AI Story Starter",
+    "path": "projects/2026-02-15-ai-story-starter",
+    "description": "Kickstart your writing with AI-generated story openings, prompts, and character introductions.",
+    "created_at": "2026-02-15"
+  },
   "2026-02-20": {
     "name": "AI Cosmic Whisperer",
     "path": "projects/2026-02-20-ai-cosmic-whisperer",
