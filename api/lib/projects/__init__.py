@@ -2,7 +2,10 @@
 
 # Import project handlers here
 from . import _2026_02_01  # New naming: YYYY_MM_DD (underscore prefix for valid Python identifier)
-# from . import 2026_02_02
+from . import _2026_02_02  # AI Attention Mechanism Explorer
+from . import _2026_02_03  # AI Ethics Simulator - Feb 3, 2026
+from . import _2026_02_04  # AI Safety & Alignment Explorer - Feb 4, 2026
+# from . import 2026_02_03
 # ...
 
 # Map date string -> (handler, metadata)
@@ -10,7 +13,9 @@ from . import _2026_02_01  # New naming: YYYY_MM_DD (underscore prefix for valid
 # Value: (handler_function, META_dict)
 PROJECTS = {
     "2026-02-01": (lambda a, d: _2026_02_01.handle(a, d), _2026_02_01.META),
-    # "2026-02-02": (lambda a, d: _2026_02_02.handle(a, d), _2026_02_02.META),
+    "2026-02-02": (lambda a, d: _2026_02_02.handle(a, d), _2026_02_02.META),
+    "2026-02-03": (lambda a, d: _2026_02_03.handle(a, d), _2026_02_03.META),
+    "2026-02-04": (lambda a, d: _2026_02_04.handle(a, d), _2026_02_04.META),
 }
 
 def get_handler(date_str: str):
