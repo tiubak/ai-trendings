@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+"""
+AI Dungeon Master - Start Game Endpoint
+POST /api/2026-02-21-ai-dungeon-master/start
+
+Creates a new game and returns initial game state.
+
+Built for AI Trendings — https://github.com/tiubak/ai-trendings
+"""
+
+import os
+import json
+import uuid
+import logging
+from http.server import BaseHTTPRequestHandler
+import subprocess
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
+
+def generate_text_pollinations(prompt: str) -> str:
+    """Generate text using Pollinations.AI via curl subprocess
+
+    CRITICAL: Python urllib is BLOCKED by Cloudflare (403 Forbidden)!
+    Must use curl subprocess to bypass Cloudflare.
+    """
+    try:
+        # URL encode the prompt
+        from urllib.parse import quote
+        url = f"https://text.pollinations.ai/{quote(prompt)}"
+
+        headers = []
+        if POLLINATIONS_API_KEY:
+            headers.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
+
+        # Use curl subprocess instead of urllib
+        result = subprocess.run(
+            ["curl", "-s"] + headers + [url],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+
+        if result.returncode == 0:
+            return result.stdout.strip()
+        raise Exception(f"curl failed with status {result.returncode}: {result.stderr}")
+
+    except Exception as e:
+        logging.error(f"Text generation error: {e}")
+        # Return fallback
+        return "The story continues... A new challenge awaits.
+
+Choices:
+1. Press forward
+2. Take a different path
+3. Rest and reconsider"
+def parse_scene_and_choices(text: str):
+    """Parse generated text into scene and choices"""
+    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    scene_lines = []
+    choices = []
+    in_choices = False
+    
+    for line in lines:
+        if line.lower().startswith(("choices:", "options:")):
+            in_choices = True
+            continue
+        if in_choices:
+            if line and line[0].isdigit() and ". " in line:
+                choices.append(line.split(". ", 1)[-1])
+            elif line and len(line) > 2 and not line[0].isdigit():
+                choices.append(line)
+        else:
+            scene_lines.append(line)
+    
+    scene = "\n".join(scene_lines)
+    if not choices:
+        choices = ["Explore the path ahead", "Investigate nearby", "Rest and recover"]
+    
+    return scene[:500], choices[:3]
+
+def create_initial_prompt(theme: str, player_name: str) -> str:
+    themes = {
+        "fantasy": "a high fantasy dungeon with magical creatures",
+        "sci-fi": "a futuristic spaceship or alien planet",
+        "horror": "a haunted mansion or cursed forest",
+        "mystery": "a mysterious crime scene"
+    }
+    setting = themes.get(theme, themes["fantasy"])
+    return f"""You are a dungeon master. Player '{player_name}' starts a new adventure in {setting}.
+Generate an opening scene (2-3 paragraphs). Then provide exactly 3 choices.
+
+Format:
+[Scene description]
+
+Choices:
+1. [First choice]
+2. [Second choice]
+3. [Third choice]
+
+Scene:"""
+
+class handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        try:
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length).decode('utf-8')
+            data = json.loads(body) if body else {}
+            
+            theme = data.get("theme", "fantasy")
+            player_name = data.get("player_name", "Adventurer")
+            game_id = str(uuid.uuid4())
+            
+            prompt = create_initial_prompt(theme, player_name)
+            generated_text = generate_text_pollinations(prompt)
+            scene, choices = parse_scene_and_choices(generated_text)
+            
+            # Return game state to client (client will pass it back)
+            response = {
+                "game_id": game_id,
+                "scene": scene,
+                "choices": choices,
+                "theme": theme,
+                "player_name": player_name,
+                "history": [{"scene": scene, "choices": choices}],
+                "message": "Game started!"
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode('utf-8'))
+            logger.info(f"Game started: {game_id}")
+            
+        except Exception as e:
+            logger.exception(f"Start game error: {e}")
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+    
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+# Vercel uses the 'handler' class directly - no separate entry point needed
