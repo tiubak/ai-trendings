@@ -39,6 +39,7 @@ def call_pollinations(prompt: str) -> str:
     
     Official API: https://gen.pollinations.ai
     Endpoint: /text/{prompt}
+    Requires Authorization header with API key.
     """
     url = f"https://gen.pollinations.ai/text/{quote(prompt)}"
     
@@ -56,8 +57,31 @@ def generate_image_url(prompt: str, width: int = 512, height: int = 512) -> str:
     Endpoint: /image/{prompt}
     
     Returns a URL that can be used directly in <img> tags.
+    The API key is included in URL for authentication (401 fix).
     """
-    return f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
+    base_url = f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
+    if POLLINATIONS_API_KEY:
+        base_url += f"&key={POLLINATIONS_API_KEY}"
+    return base_url
+
+def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
+    """Fetch image as base64 from Pollinations.AI.
+    
+    Includes Authorization header for 401 Unauthorized fix.
+    Returns base64-encoded image data.
+    """
+    url = generate_image_url(prompt, width, height)
+    
+    cmd = ["curl", "-s", url]
+    if POLLINATIONS_API_KEY:
+        cmd.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
+    
+    result = subprocess.run(cmd, capture_output=True, timeout=60)
+    
+    if result.returncode == 0 and result.stdout:
+        import base64
+        return base64.b64encode(result.stdout).decode('utf-8')
+    return None
 
 def call_huggingface(prompt: str, model: str) -> str:
     """Call HuggingFace Inference API for specialized tasks (TTS, embeddings, audio)."""
