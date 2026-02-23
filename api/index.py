@@ -37,15 +37,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_error("Missing 'date' parameter")
                 return
             
-            # Parse day from date (2026-02-01 -> 1)
-            try:
-                day = int(date_str.split('-')[2])
-            except:
-                self._send_error(f"Invalid date format: {date_str}")
-                return
-            
-            # Get project handler
-            handler = get_handler(day)
+            # Get project handler by date string (YYYY-MM-DD)
+            handler = get_handler(date_str)
             
             if handler:
                 # Call project-specific handler
@@ -61,7 +54,7 @@ class Handler(BaseHTTPRequestHandler):
             logger.error(f"Error: {e}")
             self._send_error(str(e), 500)
     
-    def _fallback_handler(self, action: str, data: dict, day: int):
+    def _fallback_handler(self, action: str, data: dict, date_str: str):
         """Fallback handler for unregistered projects."""
         topic = data.get('topic', 'artificial intelligence')
         prompt = f"Explain {topic} in simple terms for a general audience."
@@ -69,7 +62,7 @@ class Handler(BaseHTTPRequestHandler):
         return {
             "explanation": result,
             "topic": topic,
-            "day": day,
+            "date": date_str,
             "note": "Project not yet implemented"
         }
     
