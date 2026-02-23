@@ -5,7 +5,7 @@ Understand how researchers work to ensure AI systems remain beneficial and align
 with human values as they become more capable.
 """
 
-from lib.base import call_openrouter, generate_image_url, extract_json
+from ..base import call_openrouter, generate_image_url, extract_json
 
 
 def handle(action: str, data: dict) -> dict:

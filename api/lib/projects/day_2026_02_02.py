@@ -6,7 +6,7 @@ the self-attention computation, and explore how queries, keys, and values intera
 to produce contextual representations.
 """
 
-from lib.base import call_openrouter, generate_image_url, extract_json
+from ..base import call_openrouter, generate_image_url, extract_json
 
 
 def handle(action: str, data: dict) -> dict:

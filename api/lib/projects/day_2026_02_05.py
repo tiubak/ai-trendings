@@ -5,7 +5,7 @@ and understand the complex trade-offs in AI ethics including bias, safety, priva
 and accountability.
 """
 
-from lib.base import call_openrouter, generate_image_url, extract_json
+from ..base import call_openrouter, generate_image_url, extract_json
 
 
 def handle(action: str, data: dict) -> dict:

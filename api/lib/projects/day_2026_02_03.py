@@ -6,7 +6,7 @@ Users can analyze ethical tensions, consider multiple stakeholder perspectives,
 and develop principled approaches to AI ethics challenges.
 """
 
-from lib.base import call_openrouter, extract_json
+from ..base import call_openrouter, extract_json
 
 
 def handle(action: str, data: dict) -> dict:
