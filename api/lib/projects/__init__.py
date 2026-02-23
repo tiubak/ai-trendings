@@ -6,6 +6,7 @@ from . import _2026_02_02  # AI Attention Mechanism Explorer
 from . import _2026_02_03  # AI Ethics Simulator - Feb 3, 2026
 from . import _2026_02_05  # AI Ethics Dilemma Simulator
 from . import _2026_02_06  # AI Ethics Dilemma Simulator
+from . import _2026_02_07  # AI Token Cost Calculator & Optimizer - Feb 7, 2026
 # from . import 2026_02_03
 # ...
 
@@ -19,6 +20,7 @@ PROJECTS = {
     "2026-02-04": (lambda a, d: _2026_02_04.handle(a, d), _2026_02_04.META),
     "2026-02-05": (lambda a, d: _2026_02_05.handle(a, d), _2026_02_05.META),
     "2026-02-06": (lambda a, d: _2026_02_06.handle(a, d), _2026_02_06.META),
+    "2026-02-07": (lambda a, d: _2026_02_07.handle(a, d), _2026_02_07.META),
 }
 
 def get_handler(date_str: str):

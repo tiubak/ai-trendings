@@ -4,7 +4,13 @@
     "path": "projects/2026-02-01-ai-model-comparator",
     "description": "Compare major AI language models, explore their evolution, and understand key differences in capabilities and architecture.",
     "category": "AI Education",
-    "tags": ["comparison", "models", "benchmark", "timeline", "educational"],
+    "tags": [
+      "comparison",
+      "models",
+      "benchmark",
+      "timeline",
+      "educational"
+    ],
     "created_at": "2026-02-01"
   },
   "2026-02-02": {
@@ -12,7 +18,13 @@
     "path": "projects/2026-02-02-attention-explorer",
     "description": "An interactive educational tool that explains how attention mechanisms work in transformer architectures. Visualize attention weights, understand self-attention computation, and explore Q/K/V dynamics.",
     "category": "AI Education",
-    "tags": ["transformers", "attention", "neural-networks", "educational", "visualization"],
+    "tags": [
+      "transformers",
+      "attention",
+      "neural-networks",
+      "educational",
+      "visualization"
+    ],
     "difficulty": "intermediate",
     "created_at": "2026-02-02"
   },
@@ -21,7 +33,14 @@
     "path": "projects/2026-02-03-ai-ethics-simulator",
     "description": "Explore ethical dilemmas in AI development. Apply philosophical frameworks (utilitarian, deontological, virtue ethics, justice) to real-world scenarios including bias, autonomous vehicles, predictive policing, and medical triage. Engage with stakeholder perspectives and access ethical guidelines.",
     "category": "AI Education",
-    "tags": ["ethics", "dilemmas", "fairness", "bias", "responsible-ai", "decision-making"],
+    "tags": [
+      "ethics",
+      "dilemmas",
+      "fairness",
+      "bias",
+      "responsible-ai",
+      "decision-making"
+    ],
     "difficulty": "intermediate",
     "created_at": "2026-02-03"
   },
@@ -30,8 +49,30 @@
     "path": "projects/2026-02-04-ai-safety-explorer",
     "description": "Explore AI safety research, alignment techniques, and control problems. Learn about RLHF, Constitutional AI, scalable oversight, and risk assessment. Features interactive scenarios, visualizations, and quizzes.",
     "category": "AI Research",
-    "tags": ["safety", "alignment", "ethics", "control-problem", "educational", "research"],
+    "tags": [
+      "safety",
+      "alignment",
+      "ethics",
+      "control-problem",
+      "educational",
+      "research"
+    ],
     "created_at": "2026-02-04"
+  },
+  "2026-02-05": {
+    "name": "AI Ethics Dilemma Simulator",
+    "path": "projects/2026-02-05-ai-ethics-simulator",
+    "description": "Explore real-world ethical dilemmas in AI systems. Make decisions, see consequences, and understand complex trade-offs in AI ethics including bias, safety, privacy, and accountability. Interactive scenarios with ethical analysis.",
+    "category": "AI Ethics & Society",
+    "tags": [
+      "ethics",
+      "dilemma",
+      "society",
+      "policy",
+      "decision-making",
+      "fairness"
+    ],
+    "created_at": "2026-02-05"
   },
   "2026-02-23": {
     "name": "Character Generator",
@@ -39,5 +80,21 @@
     "description": "Create unique characters",
     "category": "AI Tools",
     "created_at": "2026-02-23"
+  },
+  "2026-02-06": {
+    "name": "AI Ethics Dilemma Simulator",
+    "path": "projects/2026-02-06-ai-ethics-simulator",
+    "description": "Explore complex ethical challenges in AI development through interactive scenarios. Understand trade-offs between safety, capability, accessibility, and societal impact.",
+    "category": "AI Education",
+    "tags": [
+      "ethics",
+      "dilemmas",
+      "safety",
+      "responsibility",
+      "stakeholders",
+      "educational"
+    ],
+    "difficulty": "Intermediate",
+    "created_at": "2026-02-06"
   }
 }
