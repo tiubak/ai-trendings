@@ -4,6 +4,7 @@
 from . import _2026_02_01  # New naming: YYYY_MM_DD (underscore prefix for valid Python identifier)
 from . import _2026_02_02  # AI Attention Mechanism Explorer
 from . import _2026_02_03  # AI Ethics Simulator - Feb 3, 2026
+from . import _2026_02_04  # AI Safety & Alignment Explorer - Feb 4, 2026
 from . import _2026_02_05  # AI Ethics Dilemma Simulator
 from . import _2026_02_06  # AI Ethics Dilemma Simulator
 from . import _2026_02_07  # AI Token Cost Calculator & Optimizer - Feb 7, 2026
