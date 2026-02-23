@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Character Persona Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            min-height: 400px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #a0a0a0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .persona-card {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .persona-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .persona-name h2 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .persona-role {
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        .persona-section {
+            margin-bottom: 25px;
+        }
+
+        .persona-section h3 {
+            color: #667eea;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .persona-section p {
+            line-height: 1.6;
+            color: #c0c0c0;
+        }
+
+        .traits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .traits-list {
+            list-style: none;
+        }
+
+        .traits-list li {
+            padding: 8px 15px;
+            margin-bottom: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 5px;
+            color: #c0c0c0;
+        }
+
+        .strengths li {
+            border-left-color: #4ade80;
+        }
+
+        .weaknesses li {
+            border-left-color: #f87171;
+        }
+
+        .relationships-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .relationship {
+            margin-bottom: 15px;
+        }
+
+        .relationship:last-child {
+            margin-bottom: 0;
+        }
+
+        .relationship-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #a0a0a0;
+            text-align: center;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .characters-history {
+            margin-top: 40px;
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .history-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .history-card h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .history-card .role {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .error-message {
+            background: rgba(248, 113, 113, 0.1);
+            border: 2px solid #f87171;
+            border-radius: 10px;
+            padding: 20px;
+            color: #fca5a5;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #667eea;
+            margin-left: 10px;
+        }
+
+        .fallback-badge {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 AI Character Persona Generator</h1>
+            <p class="subtitle">Create rich, compelling characters for stories, games, and roleplaying</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-panel">
+                <h2 style="margin-bottom: 25px;">Create Character</h2>
+
+                <div class="form-group">
+                    <label for="name">Character Name *</label>
+                    <input type="text" id="name" placeholder="Enter character name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role / Archetype</label>
+                    <select id="role">
+                        <option value="hero">Hero</option>
+                        <option value="villain">Villain</option>
+                        <option value="mentor">Mentor</option>
+                        <option value="rogue">Rogue</option>
+                        <option value="warrior">Warrior</option>
+                        <option value="scholar">Scholar</option>
+                        <option value="merchant">Merchant</option>
+                        <option value="assassin">Assassin</option>
+                        <option value="healer">Healer</option>
+                        <option value="ruler">Ruler</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="setting">Setting</label>
+                    <input type="text" id="setting" placeholder="e.g., Medieval Fantasy, Cyberpunk, Wild West" value="Fantasy World">
+                </div>
+
+                <div class="form-group">
+                    <label for="theme">Theme / Mood</label>
+                    <input type="text" id="theme" placeholder="e.g., Epic Adventure, Dark Mystery, Hopeful Journey" value="Epic Adventure">
+                </div>
+
+                <div class="form-group">
+                    <label for="traits">Desired Traits</label>
+                    <input type="text" id="traits" placeholder="e.g., brave, cunning, mysterious, balanced" value="balanced">
+                </div>
+
+                <button class="btn" id="generateBtn" onclick="generateCharacter()">
+                    ✨ Generate Persona
+                </button>
+            </div>
+
+            <div class="result-panel" id="resultPanel">
+                <div class="empty-state" id="emptyState">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <h3>Your character awaits</h3>
+                    <p>Fill in the details and click "Generate Persona" to create a unique character</p>
+                </div>
+
+                <div class="loading" id="loadingState" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Crafting your character's story...</p>
+                </div>
+
+                <div id="personaDisplay" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="characters-history" id="historySection" style="display: none;">
+            <h2 class="history-title">📜 Generated Characters</h2>
+            <div class="history-grid" id="historyGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Client-side state storage
+        let generatedCharacters = [];
+        let currentPersona = null;
+
+        async function generateCharacter() {
+            const name = document.getElementById('name').value.trim();
+            const role = document.getElementById('role').value;
+            const setting = document.getElementById('setting').value.trim();
+            const theme = document.getElementById('theme').value.trim();
+            const traits = document.getElementById('traits').value.trim();
+
+            if (!name) {
+                alert('Please enter a character name');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const emptyState = document.getElementById('emptyState');
+            const loadingState = document.getElementById('loadingState');
+            const personaDisplay = document.getElementById('personaDisplay');
+
+            // Show loading state
+            generateBtn.disabled = true;
+            emptyState.style.display = 'none';
+            loadingState.style.display = 'flex';
+            personaDisplay.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/2026-02-23-ai-character-generator/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        role,
+                        setting,
+                        theme,
+                        traits
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.persona) {
+                    currentPersona = data.persona;
+                    displayPersona(data.persona);
+
+                    // Add to history (avoid duplicates)
+                    const exists = generatedCharacters.some(c => c.name === data.persona.name);
+                    if (!exists) {
+                        generatedCharacters.push(data.persona);
+                        updateHistory();
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to generate persona');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                personaDisplay.innerHTML = `
+                    <div class="error-message">
+                        <h3>Oops! Something went wrong</h3>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 15px; font-size: 0.9rem;">Please try again. If the problem persists, the AI service might be temporarily unavailable.</p>
+                    </div>
+                `;
+                personaDisplay.style.display = 'block';
+            } finally {
+                loadingState.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        }
+
+        function displayPersona(persona) {
+            const personaDisplay = document.getElementById('personaDisplay');
+
+            const initials = persona.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+            const fallbackBadge = persona.generated_with === 'fallback'
+                ? '<span class="badge fallback-badge">⚡ Fallback Mode</span>'
+                : '';
+
+            personaDisplay.innerHTML = `
+                <div class="persona-card">
+                    <div class="persona-header">
+                        <div class="persona-avatar">${initials}</div>
+                        <div class="persona-name">
+                            <h2>${escapeHtml(persona.name)} ${fallbackBadge}</h2>
+                            <div class="persona-role">${escapeHtml(persona.role)}</div>
+                        </div>
+                    </div>
+
+                    <div class="persona-section">
+                        <h3>📖 Backstory</h3>
+                        <p>${escapeHtml(persona.backstory)}</p>
+                    </div>
+
+                    <div class="persona-section">
+                        <h3>🎭 Personality</h3>
+                        <p>${escapeHtml(persona.personality)}</p>
+                    </div>
+
+                    <div class="traits-grid">
+                        <div class="persona-section">
+                            <h3>💪 Strengths</h3>
+                            <ul class="traits-list strengths">
+                                ${persona.strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="persona-section">
+                            <h3>⚠️ Weaknesses</h3>
+                            <ul class="traits-list weaknesses">
+                                ${persona.weaknesses.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="persona-section">
+                        <h3>🎯 Motivation</h3>
+                        <p>${escapeHtml(persona.motivation)}</p>
+                    </div>
+
+                    <div class="persona-section">
+                        <h3>👥 Relationships</h3>
+                        <div class="relationships-box">
+                            <div class="relationship">
+                                <div class="relationship-label">🤝 Ally</div>
+                                <p>${escapeHtml(persona.relationships.ally)}</p>
+                            </div>
+                            <div class="relationship">
+                                <div class="relationship-label">⚔️ Rival</div>
+                                <p>${escapeHtml(persona.relationships.rival)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quote-box">
+                        "${escapeHtml(persona.signature_quote)}"
+                    </div>
+                </div>
+            `;
+
+            personaDisplay.style.display = 'block';
+        }
+
+        function updateHistory() {
+            const historySection = document.getElementById('historySection');
+            const historyGrid = document.getElementById('historyGrid');
+
+            if (generatedCharacters.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+
+            historySection.style.display = 'block';
+            historyGrid.innerHTML = generatedCharacters.map((persona, index) => `
+                <div class="history-card" onclick="loadPersona(${index})">
+                    <h4>${escapeHtml(persona.name)}</h4>
+                    <div class="role">${escapeHtml(persona.role)}</div>
+                    <div style="margin-top: 10px; color: #808080; font-size: 0.85rem;">
+                        ${escapeHtml(persona.setting)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadPersona(index) {
+            const persona = generatedCharacters[index];
+            if (persona) {
+                currentPersona = persona;
+
+                // Update form values
+                document.getElementById('name').value = persona.name;
+                document.getElementById('role').value = persona.role || 'hero';
+                document.getElementById('setting').value = persona.setting || '';
+                document.getElementById('theme').value = persona.theme || '';
+                document.getElementById('traits').value = persona.traits || 'balanced';
+
+                // Display persona
+                displayPersona(persona);
+
+                // Scroll to persona display
+                document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Allow Enter key to generate
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        generateCharacter();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

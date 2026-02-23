@@ -8,7 +8,7 @@ A living portfolio showcasing daily AI/ML projects — from NLP to computer visi
 
 ## Stats
 
-- **Projects:** <!-- PROJECT-COUNT -->2<!-- /PROJECT-COUNT --> projects and counting
+- **Projects:** <!-- PROJECT-COUNT -->3<!-- /PROJECT-COUNT --> projects and counting
 - **Tech Stack:** Python, HTML/JS, free APIs only
 - **Automation:** Powered by OpenClaw & Atlas
 
