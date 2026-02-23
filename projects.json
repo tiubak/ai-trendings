@@ -96,5 +96,29 @@
     ],
     "difficulty": "Intermediate",
     "created_at": "2026-02-06"
+  },
+  "2026-02-08": {
+    "name": "AI Embeddings Explorer",
+    "path": "projects/2026-02-08-ai-embeddings-explorer",
+    "description": "Dive deep into vector embeddings—the foundation of semantic AI. Understand how embeddings capture meaning, visualize semantic relationships, compare embedding models, and explore applications in search, recommendations, and clustering. Perfect for developers and AI enthusiasts.",
+    "category": "AI Education",
+    "tags": [
+      "embeddings",
+      "vectors",
+      "semantic-search",
+      "recommendations",
+      "clustering",
+      "ml-basics",
+      "educational"
+    ],
+    "difficulty": "Intermediate",
+    "created_at": "2026-02-08"
+  },
+  "2026-02-23": {
+    "name": "Character Generator",
+    "path": "projects/2026-02-23-ai-character-generator",
+    "description": "Create unique characters",
+    "category": "AI Tools",
+    "created_at": "2026-02-23"
   }
 }
