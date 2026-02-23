@@ -93,36 +93,31 @@ def call_huggingface(prompt: str, model: str) -> str:
     if not HUGGINGFACE_API_KEY:
         return "HUGGINGFACE_API_KEY_NOT_SET"
 
-    # Try new router endpoint, fallback to old one
-    endpoints = [
-        f"https://router.huggingface.co/huggingface-ai/{model}",
-        f"https://api-inference.huggingface.co/models/{model}",
-    ]
+    # Correct HuggingFace router format for serverless inference
+    # https://router.huggingface.co/hf-inference/models/{model}
+    url = f"https://router.huggingface.co/hf-inference/models/{model}"
 
-    for url in endpoints:
-        result = subprocess.run([
-            "curl", "-s", "-X", "POST", url,
-            "-H", f"Authorization: Bearer {HUGGINGFACE_API_KEY}",
-            "-H", "Content-Type: application/json",
-            "-d", json.dumps({"inputs": prompt})
-        ], capture_output=True, timeout=60)
+    result = subprocess.run([
+        "curl", "-s", "-X", "POST", url,
+        "-H", f"Authorization: Bearer {HUGGINGFACE_API_KEY}",
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps({"inputs": prompt})
+    ], capture_output=True, timeout=60)
 
-        if result.returncode != 0:
-            continue
+    if result.returncode != 0:
+        return f"Error: {result.stderr.decode('utf-8', errors='ignore')}"
 
-        # Try to decode as UTF-8 text (e.g., JSON or plain text responses)
-        try:
-            decoded = result.stdout.decode('utf-8')
-            # Skip error responses
-            if "error" in decoded.lower() or decoded.strip() in ["Not Found", ""]:
-                continue
-            return decoded
-        except UnicodeDecodeError:
-            # Binary data (audio, image) -> return base64 string
-            import base64
-            return base64.b64encode(result.stdout).decode('utf-8')
-
-    return "HUGGINGFACE_ERROR"
+    # Try to decode as UTF-8 text (e.g., JSON or plain text responses)
+    try:
+        decoded = result.stdout.decode('utf-8')
+        # Check for error responses
+        if "error" in decoded.lower() and decoded.startswith('{"error"'):
+            return f"API Error: {decoded}"
+        return decoded
+    except UnicodeDecodeError:
+        # Binary data (audio, image) -> return base64 string
+        import base64
+        return base64.b64encode(result.stdout).decode('utf-8')
 
 def extract_json(text: str) -> dict:
     """Extract JSON from text with error handling."""

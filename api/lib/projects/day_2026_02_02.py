@@ -22,10 +22,10 @@ def handle(action: str, data: dict) -> dict:
         tts_prompt = f"A comedian says: {joke_text}"
         audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
 
-        # If audio_base64 is error or not base64? Check if it starts with error indicators
+        # Check if audio was generated successfully (not an error message)
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
-            # Prepend data URI for audio/wav (assuming WAV; could also be other formats)
+        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
+            # Prepend data URI for audio/wav
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
         return {
@@ -44,7 +44,7 @@ def handle(action: str, data: dict) -> dict:
         audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
 
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
+        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
         return {
@@ -63,7 +63,7 @@ def handle(action: str, data: dict) -> dict:
         audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
 
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
+        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
         return {
@@ -78,7 +78,7 @@ def handle(action: str, data: dict) -> dict:
         test_text = data.get('text', 'Hello, this is a test of HuggingFace text-to-speech.')
         audio_base64 = call_huggingface(test_text, "facebook/mms-tts-eng")
 
-        if not audio_base64 or audio_base64.startswith(("HUGGINGFACE_", "Error:")):
+        if not audio_base64 or audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
             return {
                 "success": False,
                 "message": audio_base64 or "Unknown error",
