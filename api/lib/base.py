@@ -35,24 +35,40 @@ def call_openrouter(prompt: str) -> str:
     return call_pollinations(prompt)
 
 def call_pollinations(prompt: str) -> str:
-    """Fallback text generation via Pollinations.AI."""
-    url = f"https://text.pollinations.ai/{quote(prompt)}"
+    """Fallback text generation via Pollinations.AI.
     
-    headers = []
+    Official API: gen.pollinations.ai/v1/chat/completions
+    """
+    url = "https://gen.pollinations.ai/v1/chat/completions"
+    data = {"model": "openai", "messages": [{"role": "user", "content": prompt}]}
+    
+    cmd = [
+        "curl", "-s", "-X", "POST", url,
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps(data)
+    ]
+    
     if POLLINATIONS_API_KEY:
-        headers = ["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"]
+        cmd.insert(3, "-H")
+        cmd.insert(4, f"Authorization: Bearer {POLLINATIONS_API_KEY}")
     
-    result = subprocess.run(["curl", "-s"] + headers + [url], capture_output=True, text=True, timeout=30)
-    return result.stdout.strip() if result.returncode == 0 else "Response unavailable"
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    
+    if result.returncode == 0:
+        try:
+            return json.loads(result.stdout).get("choices", [{}])[0].get("message", {}).get("content", "")
+        except:
+            pass
+    
+    return "Response unavailable"
 
 def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
     """Fetch image as base64 from Pollinations.AI.
     
-    Uses image.pollinations.ai with Authorization header.
-    Returns base64-encoded image data for frontend:
-        <img src="data:image/png;base64,{result}" />
+    Official API: gen.pollinations.ai/image/{prompt}?model=flux
+    Returns base64 for frontend: <img src="data:image/png;base64,{result}">
     """
-    url = f"https://image.pollinations.ai/prompt/{quote(prompt)}?width={width}&height={height}&nologo=true"
+    url = f"https://gen.pollinations.ai/image/{quote(prompt)}?model=flux&width={width}&height={height}"
     
     cmd = ["curl", "-s", url]
     if POLLINATIONS_API_KEY:
