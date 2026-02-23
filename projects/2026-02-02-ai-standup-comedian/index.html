@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stand-up Comedian | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00f260;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff9a00 0%, #ff5e00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Content Sections */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #ff9a00;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.6rem;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(90deg, #ff9a00 0%, #ff5e00 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 154, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Input Styles */
+        textarea, input[type="text"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #ff9a00;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        /* Loading */
+        .loading {
+            color: #ff9a00;
+            font-style: italic;
+        }
+
+        /* Results */
+        .result {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            margin-top: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            height: 40px;
+        }
+
+        /* Error */
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>🎤 AI Stand-up Comedian</h1>
+        <p class="subtitle">Let AI generate jokes, roasts, and funny stories — with voice narration!</p>
+
+        <!-- Joke Generator -->
+        <div class="section">
+            <h2><span class="icon">😂</span> Joke Generator</h2>
+            <p>Enter a topic, and AI will tell a short, clean joke about it. Includes voice narration!</p>
+            <input type="text" id="jokeTopic" placeholder="e.g., cats, programming, Mondays, coffee">
+            <button class="btn" onclick="generateJoke()">Tell me a joke!</button>
+            <div id="jokeResult" class="result" style="display:none;"></div>
+            <div id="jokeAudio" class="audio-player" style="display:none;"></div>
+        </div>
+
+        <!-- Roast Generator -->
+        <div class="section">
+            <h2><span class="icon">🔥</span> Roast Generator</h2>
+            <p>Enter a target (name or thing) for a playful, light-hearted roast. Friendly only!</p>
+            <input type="text" id="roastTarget" placeholder="e.g., John, the weather, Mondays, slow Wi-Fi">
+            <button class="btn" onclick="generateRoast()">Roast!</button>
+            <div id="roastResult" class="result" style="display:none;"></div>
+            <div id="roastAudio" class="audio-player" style="display:none;"></div>
+        </div>
+
+        <!-- Funny Story -->
+        <div class="section">
+            <h2><span class="icon">📖</span> Funny Story</h2>
+            <p>Enter characters and get a short funny story (3-4 sentences) with a punchline, narrated by AI.</p>
+            <input type="text" id="storyChars" placeholder="e.g., a cat and a dog, a robot and a toaster">
+            <button class="btn" onclick="generateStory()">Tell me a story</button>
+            <div id="storyResult" class="result" style="display:none;"></div>
+            <div id="storyAudio" class="audio-player" style="display:none;"></div>
+        </div>
+
+        <!-- HuggingFace TTS Test -->
+        <div class="section">
+            <h2><span class="icon">🔊</span> HuggingFace TTS Test</h2>
+            <p>Test the HuggingFace Text-to-Speech integration directly using the facebook/mms-tts-eng model.</p>
+            <button class="btn btn-secondary" onclick="testTTS()">Run TTS Test</button>
+            <div id="ttsTestResult" class="result" style="display:none;"></div>
+            <div id="ttsTestAudio" class="audio-player" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-02';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        function playAudio(container, base64Data) {
+            container.innerHTML = `<audio controls autoplay><source src="${base64Data}" type="audio/wav"></source>Your browser does not support the audio element.</audio>`;
+        }
+
+        async function generateJoke() {
+            const topic = document.getElementById('jokeTopic').value.trim() || 'programming';
+            const resultDiv = document.getElementById('jokeResult');
+            const audioDiv = document.getElementById('jokeAudio');
+            resultDiv.innerHTML = '<p class="loading">Generating joke...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('joke', { topic });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.joke || "No joke generated.";
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                } else {
+                    audioDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function generateRoast() {
+            const target = document.getElementById('roastTarget').value.trim() || 'the audience';
+            const resultDiv = document.getElementById('roastResult');
+            const audioDiv = document.getElementById('roastAudio');
+            resultDiv.innerHTML = '<p class="loading">Roasting...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('roast', { target });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.roast || "No roast generated.";
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                } else {
+                    audioDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function generateStory() {
+            const chars = document.getElementById('storyChars').value.trim() || 'a cat and a robot';
+            const resultDiv = document.getElementById('storyResult');
+            const audioDiv = document.getElementById('storyAudio');
+            resultDiv.innerHTML = '<p class="loading">Generating story...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('story', { characters: chars });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.story || "No story generated.";
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                } else {
+                    audioDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function testTTS() {
+            const resultDiv = document.getElementById('ttsTestResult');
+            const audioDiv = document.getElementById('ttsTestAudio');
+            resultDiv.innerHTML = '<p class="loading">Testing HuggingFace TTS...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('tts_test');
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else if (!result.success) {
+                resultDiv.innerHTML = `<p class="error">TTS Test failed: ${result.message}</p>`;
+            } else {
+                resultDiv.textContent = `✅ ${result.message} (Text: "${result.text}")`;
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -88,20 +88,30 @@ def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
     return None
 
 def call_huggingface(prompt: str, model: str) -> str:
-    """Call HuggingFace Inference API for specialized tasks."""
+    """Call HuggingFace Inference API for specialized tasks.
+    Returns text as string, or base64-encoded binary for audio/image outputs."""
     if not HUGGINGFACE_API_KEY:
         return "HuggingFace API key not available"
-    
+
     url = f"https://api-inference.huggingface.co/models/{model}"
-    
+
     result = subprocess.run([
         "curl", "-s", "-X", "POST", url,
         "-H", f"Authorization: Bearer {HUGGINGFACE_API_KEY}",
         "-H", "Content-Type: application/json",
         "-d", json.dumps({"inputs": prompt})
-    ], capture_output=True, text=True, timeout=60)
-    
-    return result.stdout if result.returncode == 0 else f"Error: {result.stderr}"
+    ], capture_output=True, timeout=60)
+
+    if result.returncode != 0:
+        return f"Error: {result.stderr.decode('utf-8', errors='ignore')}"
+
+    # Try to decode as UTF-8 text (e.g., JSON or plain text responses)
+    try:
+        return result.stdout.decode('utf-8')
+    except UnicodeDecodeError:
+        # Binary data (audio, image) -> return base64 string
+        import base64
+        return base64.b64encode(result.stdout).decode('utf-8')
 
 def extract_json(text: str) -> dict:
     """Extract JSON from text with error handling."""

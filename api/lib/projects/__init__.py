@@ -2,9 +2,11 @@
 
 # Import project handlers here
 from . import day_2026_02_01
+from . import day_2026_02_02
 
 PROJECTS = {
     "2026-02-01": (day_2026_02_01.handle, day_2026_02_01.META),
+    "2026-02-02": (day_2026_02_02.handle, day_2026_02_02.META),
 }
 
 def get_handler(date_str: str):

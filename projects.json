@@ -5,5 +5,13 @@
     "description": "Learn about context windows in AI models: what they are, why they matter, and how different models compare",
     "category": "AI Education",
     "created_at": "2026-02-01"
+  },
+  "2026-02-02": {
+    "name": "AI Stand-up Comedian",
+    "path": "projects/2026-02-02-ai-standup-comedian",
+    "description": "Generate jokes, roasts, and funny stories with AI-powered voice narration using HuggingFace TTS",
+    "category": "Fun",
+    "created_at": "2026-02-02"
   }
 }
+
