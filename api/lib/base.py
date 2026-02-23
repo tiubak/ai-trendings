@@ -51,24 +51,29 @@ def call_pollinations(prompt: str) -> str:
     return result.stdout.strip() if result.returncode == 0 else "Response unavailable"
 
 def generate_image_url(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Generate image URL using Pollinations.AI.
+    """Generate image URL using Pollinations.AI (for backend use only).
     
-    Official API: https://gen.pollinations.ai
-    Endpoint: /image/{prompt}
+    WARNING: Do NOT use this URL directly in frontend <img> tags!
+    The API requires authentication (401 Unauthorized without key).
     
-    Returns a URL that can be used directly in <img> tags.
-    The API key is included in URL for authentication (401 fix).
+    Use fetch_image() instead to get base64 data for frontend.
     """
-    base_url = f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
-    if POLLINATIONS_API_KEY:
-        base_url += f"&key={POLLINATIONS_API_KEY}"
-    return base_url
+    return f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
 
 def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Fetch image as base64 from Pollinations.AI.
+    """Fetch image as base64 from Pollinations.AI with proper authentication.
     
-    Includes Authorization header for 401 Unauthorized fix.
-    Returns base64-encoded image data.
+    This is the SAFE way to get images - API key stays on backend.
+    Returns base64-encoded image data suitable for frontend:
+        <img src="data:image/png;base64,{result}" />
+    
+    Args:
+        prompt: Image description
+        width: Image width (default 512)
+        height: Image height (default 512)
+    
+    Returns:
+        Base64-encoded image string, or None on failure
     """
     url = generate_image_url(prompt, width, height)
     
@@ -76,11 +81,17 @@ def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
     if POLLINATIONS_API_KEY:
         cmd.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
     
-    result = subprocess.run(cmd, capture_output=True, timeout=60)
+    try:
+        result = subprocess.run(cmd, capture_output=True, timeout=60)
+        
+        if result.returncode == 0 and result.stdout:
+            # Check if it's actually image data (not error JSON)
+            if result.stdout[:4] == b'\x89PNG' or result.stdout[:2] == b'\xff\xd8':
+                import base64
+                return base64.b64encode(result.stdout).decode('utf-8')
+    except:
+        pass
     
-    if result.returncode == 0 and result.stdout:
-        import base64
-        return base64.b64encode(result.stdout).decode('utf-8')
     return None
 
 def call_huggingface(prompt: str, model: str) -> str:
