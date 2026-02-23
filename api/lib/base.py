@@ -12,7 +12,7 @@ POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
 
 def call_openrouter(prompt: str) -> str:
-    """Call OpenRouter for text generation (openrouter/free auto-routes to best free model)."""
+    """Call OpenRouter for text generation."""
     if not OPENROUTER_API_KEY:
         return call_pollinations(prompt)
     
@@ -35,13 +35,8 @@ def call_openrouter(prompt: str) -> str:
     return call_pollinations(prompt)
 
 def call_pollinations(prompt: str) -> str:
-    """Fallback text generation via Pollinations.AI.
-    
-    Official API: https://gen.pollinations.ai
-    Endpoint: /text/{prompt}
-    Requires Authorization header with API key.
-    """
-    url = f"https://gen.pollinations.ai/text/{quote(prompt)}"
+    """Fallback text generation via Pollinations.AI."""
+    url = f"https://text.pollinations.ai/{quote(prompt)}"
     
     headers = []
     if POLLINATIONS_API_KEY:
@@ -50,32 +45,14 @@ def call_pollinations(prompt: str) -> str:
     result = subprocess.run(["curl", "-s"] + headers + [url], capture_output=True, text=True, timeout=30)
     return result.stdout.strip() if result.returncode == 0 else "Response unavailable"
 
-def generate_image_url(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Generate image URL using Pollinations.AI (for backend use only).
-    
-    WARNING: Do NOT use this URL directly in frontend <img> tags!
-    The API requires authentication (401 Unauthorized without key).
-    
-    Use fetch_image() instead to get base64 data for frontend.
-    """
-    return f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
-
 def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Fetch image as base64 from Pollinations.AI with proper authentication.
+    """Fetch image as base64 from Pollinations.AI.
     
-    This is the SAFE way to get images - API key stays on backend.
-    Returns base64-encoded image data suitable for frontend:
+    Uses image.pollinations.ai with Authorization header.
+    Returns base64-encoded image data for frontend:
         <img src="data:image/png;base64,{result}" />
-    
-    Args:
-        prompt: Image description
-        width: Image width (default 512)
-        height: Image height (default 512)
-    
-    Returns:
-        Base64-encoded image string, or None on failure
     """
-    url = generate_image_url(prompt, width, height)
+    url = f"https://image.pollinations.ai/prompt/{quote(prompt)}?width={width}&height={height}&nologo=true"
     
     cmd = ["curl", "-s", url]
     if POLLINATIONS_API_KEY:
@@ -85,7 +62,7 @@ def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
         result = subprocess.run(cmd, capture_output=True, timeout=60)
         
         if result.returncode == 0 and result.stdout:
-            # Check if it's actually image data (not error JSON)
+            # Check if it's PNG or JPEG
             if result.stdout[:4] == b'\x89PNG' or result.stdout[:2] == b'\xff\xd8':
                 import base64
                 return base64.b64encode(result.stdout).decode('utf-8')
@@ -95,7 +72,7 @@ def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
     return None
 
 def call_huggingface(prompt: str, model: str) -> str:
-    """Call HuggingFace Inference API for specialized tasks (TTS, embeddings, audio)."""
+    """Call HuggingFace Inference API for specialized tasks."""
     if not HUGGINGFACE_API_KEY:
         return "HuggingFace API key not available"
     
