@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quote Generator - 2026-02-06</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e8e8e8;
+        }
+
+        .container {
+            background: rgba(25, 25, 45, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #e94560;
+            margin-bottom: 12px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ff9a8b;
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e94560;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 14px;
+            background: rgba(35, 35, 60, 0.8);
+            border: 2px solid rgba(233, 69, 96, 0.3);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #e8e8e8;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #e8e8e8;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row .section {
+            flex: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #e94560, #c23a51);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(233, 69, 96, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff9a8b, #ff6a88);
+            text-transform: none;
+            margin-top: 10px;
+        }
+
+        .quote-card {
+            background: rgba(35, 35, 60, 0.9);
+            border: 2px solid rgba(233, 69, 96, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            position: relative;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quote-card::before,
+        .quote-card::after {
+            content: '"';
+            font-size: 6rem;
+            color: rgba(233, 69, 96, 0.2);
+            position: absolute;
+            font-family: 'Georgia', serif;
+        }
+
+        .quote-card::before {
+            top: 10px;
+            left: 15px;
+        }
+
+        .quote-card::after {
+            bottom: -20px;
+            right: 15px;
+        }
+
+        .quote-text {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 28px;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            text-align: right;
+            color: #ff9a8b;
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .quote-context {
+            font-size: 1rem;
+            color: #aaa;
+            line-height: 1.6;
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .tag {
+            background: rgba(233, 69, 96, 0.2);
+            color: #ff9a8b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 20px;
+            color: #ff9a8b;
+            font-style: italic;
+        }
+
+        .themed-section {
+            margin-top: 24px;
+        }
+
+        .themed-quote {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 10px;
+            margin: 12px 0;
+            border-left: 3px solid #e94560;
+        }
+
+        .themed-quote .q {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .themed-quote .a {
+            color: #ff9a8b;
+            font-style: italic;
+            text-align: right;
+        }
+
+        .daily-section {
+            text-align: center;
+        }
+
+        .reflection-prompt {
+            background: rgba(233, 69, 96, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-style: italic;
+            border-left: 3px solid #e94560;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 28px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .quote-text {
+                font-size: 1.4rem;
+            }
+            .row {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Quote Generator</h1>
+        <p class="subtitle">Wisdom crafted by artificial intelligence</p>
+
+        <div id="inputSection">
+            <div class="section">
+                <label for="mode">Mode</label>
+                <select id="mode" onchange="toggleMode()">
+                    <option value="single">Single Custom Quote</option>
+                    <option value="theme">Theme Collection</option>
+                    <option value="daily">Random Daily Quote</option>
+                </select>
+            </div>
+
+            <div id="singleMode">
+                <div class="row">
+                    <div class="section">
+                        <label for="topic">Topic (optional)</label>
+                        <input type="text" id="topic" placeholder="e.g., courage, love, success...">
+                    </div>
+                    <div class="section">
+                        <label for="style">Style</label>
+                        <select id="style">
+                            <option value="inspirational">Inspirational</option>
+                            <option value="philosophical">Philosophical</option>
+                            <option value="playful">Playful</option>
+                            <option value="reflective">Reflective</option>
+                            <option value="wise">Wise</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section">
+                    <label for="authorHint">Author Style (optional)</label>
+                    <input type="text" id="authorHint" placeholder="e.g., Shakespeare, Rumi, modern CEO...">
+                </div>
+            </div>
+
+            <div id="themeMode" class="hidden">
+                <div class="section">
+                    <label for="theme">Theme</label>
+                    <input type="text" id="theme" placeholder="e.g., resilience, creativity, friendship...">
+                </div>
+                <div class="section">
+                    <label for="count">Number of Quotes</label>
+                    <select id="count">
+                        <option value="3">3 Quotes</option>
+                        <option value="5" selected>5 Quotes</option>
+                        <option value="8">8 Quotes</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateQuote()" id="generateBtn">Generate Quote</button>
+            <button class="btn btn-secondary" onclick="randomDaily()" id="dailyBtn">Daily Inspiration</button>
+        </div>
+
+        <div id="quoteResults" class="hidden">
+            <div class="quote-card">
+                <div class="quote-text" id="quoteText"></div>
+                <div class="quote-author" id="quoteAuthor"></div>
+                <div class="quote-context" id="quoteContext"></div>
+                <div class="tags-container" id="tagsContainer"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="generateAnother()">Generate Another</button>
+            <button class="btn" onclick="viewCollection()">View Collection</button>
+        </div>
+
+        <div id="themedResults" class="hidden">
+            <div class="themed-section">
+                <h2 style="color: #e94560; margin-bottom: 20px; text-align: center;" id="themeTitle"></h2>
+                <div id="quotesList"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="backToInput()">Back to Input</button>
+        </div>
+
+        <div id="dailyResults" class="hidden">
+            <div class="quote-card">
+                <div class="daily-section">
+                    <div style="color: #ff9a8b; margin-bottom: 10px; font-size: 1rem;" id="dayInfo"></div>
+                    <div class="quote-text" id="dailyQuote"></div>
+                    <div class="quote-author" id="dailyAuthor"></div>
+                    <div class="reflection-prompt" id="reflection"></div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="startOver()">Back to Menu</button>
+        </div>
+
+        <div id="loading" class="hidden message">
+            <p>Consulting the wisdom archives...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/2026-02-06-ai-quote-generator';
+        let lastQuote = null;
+        let themedCollection = null;
+
+        async function apiCall(action, data = {}) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, ...data })
+            });
+            return response.json();
+        }
+
+        function toggleMode() {
+            const mode = document.getElementById('mode').value;
+            document.getElementById('singleMode').classList.add('hidden');
+            document.getElementById('themeMode').classList.add('hidden');
+            document.getElementById('themeMode').classList.remove('hidden');
+            document.getElementById('singleMode').classList.remove('hidden');
+
+            if (mode === 'single') {
+                document.getElementById('singleMode').classList.remove('hidden');
+                document.getElementById('themeMode').classList.add('hidden');
+            } else if (mode === 'theme') {
+                document.getElementById('singleMode').classList.add('hidden');
+                document.getElementById('themeMode').classList.remove('hidden');
+            }
+        }
+
+        async function generateQuote() {
+            const mode = document.getElementById('mode').value;
+
+            let request;
+            if (mode === 'single') {
+                request = {
+                    action: 'generate',
+                    topic: document.getElementById('topic').value.trim(),
+                    style: document.getElementById('style').value,
+                    author_hint: document.getElementById('authorHint').value.trim()
+                };
+            } else {
+                const theme = document.getElementById('theme').value.trim();
+                if (!theme) {
+                    alert('Please enter a theme.');
+                    return;
+                }
+                request = {
+                    action: 'by_theme',
+                    theme: theme,
+                    count: parseInt(document.getElementById('count').value)
+                };
+            }
+
+            document.getElementById('inputSection').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                const result = await apiCall(request.action, request);
+                document.getElementById('loading').classList.add('hidden');
+
+                if (mode === 'single' && result.quote) {
+                    lastQuote = result.quote;
+                    displaySingleQuote(result.quote);
+                    document.getElementById('quoteResults').classList.remove('hidden');
+                } else if (mode === 'theme' && result.quotes) {
+                    themedCollection = result;
+                    displayThemedQuotes(result);
+                    document.getElementById('themedResults').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Network error. Please try again.');
+                document.getElementById('inputSection').classList.remove('hidden');
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        function displaySingleQuote(quote) {
+            document.getElementById('quoteText').textContent = quote.quote || 'No quote generated.';
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author || 'Anonymous'}`;
+            document.getElementById('quoteContext').textContent = quote.context || '';
+            document.getElementById('quoteContext').parentElement.classList.toggle('hidden', !quote.context);
+
+            const tagsContainer = document.getElementById('tagsContainer');
+            tagsContainer.innerHTML = '';
+            (quote.tags || []).forEach(tag => {
+                tagsContainer.innerHTML += `<span class="tag">${tag}</span>`;
+            });
+            tagsContainer.parentElement.classList.toggle('hidden', !quote.tags || quote.tags.length === 0);
+        }
+
+        function displayThemedQuotes(data) {
+            document.getElementById('themeTitle').textContent = `Quotes about "${data.theme}"`;
+            const list = document.getElementById('quotesList');
+            list.innerHTML = '';
+
+            (data.quotes || []).forEach(item => {
+                list.innerHTML += `
+                    <div class="themed-quote">
+                        <div class="q">"${item.quote || ''}"</div>
+                        <div class="a">— ${item.author || 'Anonymous'}</div>
+                    </div>
+                `;
+            });
+
+            if (!data.quotes || data.quotes.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #aaa;">No quotes generated.</p>';
+            }
+        }
+
+        async function randomDaily() {
+            document.getElementById('inputSection').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                const result = await apiCall('random_daily');
+                document.getElementById('loading').classList.add('hidden');
+
+                if (result.daily_quote) {
+                    displayDailyQuote(result.daily_quote, result.topic);
+                    document.getElementById('dailyResults').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Network error. Please try again.');
+                document.getElementById('inputSection').classList.remove('hidden');
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        function displayDailyQuote(daily, topic) {
+            document.getElementById('dayInfo').textContent = `Topic: ${topic} • ${daily.day_of_year || 'Daily Inspiration'}`;
+            document.getElementById('dailyQuote').textContent = daily.quote || '';
+            document.getElementById('dailyAuthor').textContent = `— ${daily.author || 'Anonymous'}`;
+            document.getElementById('reflection').innerHTML = `<strong>Reflect:</strong> ${daily.reflection_prompt || ''}`;
+        }
+
+        function generateAnother() {
+            document.getElementById('quoteResults').classList.add('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+        }
+
+        function viewCollection() {
+            document.getElementById('quoteResults').classList.add('hidden');
+            if (themedCollection) {
+                displayThemedQuotes(themedCollection);
+                document.getElementById('themedResults').classList.remove('hidden');
+            } else {
+                alert('No collection available. Try generating by theme first.');
+                document.getElementById('quoteResults').classList.remove('hidden');
+            }
+        }
+
+        function backToInput() {
+            document.getElementById('themedResults').classList.add('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+        }
+
+        function startOver() {
+            document.getElementById('dailyResults').classList.add('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
