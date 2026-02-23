@@ -16,6 +16,15 @@
     "difficulty": "intermediate",
     "created_at": "2026-02-02"
   },
+  "2026-02-03": {
+    "name": "AI Ethics Simulator",
+    "path": "projects/2026-02-03-ai-ethics-simulator",
+    "description": "Explore ethical dilemmas in AI development. Apply philosophical frameworks (utilitarian, deontological, virtue ethics, justice) to real-world scenarios including bias, autonomous vehicles, predictive policing, and medical triage. Engage with stakeholder perspectives and access ethical guidelines.",
+    "category": "AI Education",
+    "tags": ["ethics", "dilemmas", "fairness", "bias", "responsible-ai", "decision-making"],
+    "difficulty": "intermediate",
+    "created_at": "2026-02-03"
+  },
   "2026-02-04": {
     "name": "AI Safety & Alignment Explorer",
     "path": "projects/2026-02-04-ai-safety-explorer",
