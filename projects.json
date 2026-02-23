@@ -1,124 +1,62 @@
 {
   "2026-02-01": {
-    "name": "AI Model Comparator",
+    "name": "Ai Model Comparator",
     "path": "projects/2026-02-01-ai-model-comparator",
-    "description": "Compare major AI language models, explore their evolution, and understand key differences in capabilities and architecture.",
-    "category": "AI Education",
-    "tags": [
-      "comparison",
-      "models",
-      "benchmark",
-      "timeline",
-      "educational"
-    ],
+    "description": "",
     "created_at": "2026-02-01"
   },
   "2026-02-02": {
-    "name": "AI Attention Mechanism Explorer",
+    "name": "Attention Explorer",
     "path": "projects/2026-02-02-attention-explorer",
-    "description": "An interactive educational tool that explains how attention mechanisms work in transformer architectures. Visualize attention weights, understand self-attention computation, and explore Q/K/V dynamics.",
-    "category": "AI Education",
-    "tags": [
-      "transformers",
-      "attention",
-      "neural-networks",
-      "educational",
-      "visualization"
-    ],
-    "difficulty": "intermediate",
+    "description": "",
     "created_at": "2026-02-02"
   },
   "2026-02-03": {
-    "name": "AI Ethics Simulator",
+    "name": "Ai Ethics Simulator",
     "path": "projects/2026-02-03-ai-ethics-simulator",
-    "description": "Explore ethical dilemmas in AI development. Apply philosophical frameworks (utilitarian, deontological, virtue ethics, justice) to real-world scenarios including bias, autonomous vehicles, predictive policing, and medical triage. Engage with stakeholder perspectives and access ethical guidelines.",
-    "category": "AI Education",
-    "tags": [
-      "ethics",
-      "dilemmas",
-      "fairness",
-      "bias",
-      "responsible-ai",
-      "decision-making"
-    ],
-    "difficulty": "intermediate",
+    "description": "",
     "created_at": "2026-02-03"
   },
   "2026-02-04": {
-    "name": "AI Safety & Alignment Explorer",
+    "name": "Ai Safety Explorer",
     "path": "projects/2026-02-04-ai-safety-explorer",
-    "description": "Explore AI safety research, alignment techniques, and control problems. Learn about RLHF, Constitutional AI, scalable oversight, and risk assessment. Features interactive scenarios, visualizations, and quizzes.",
-    "category": "AI Research",
-    "tags": [
-      "safety",
-      "alignment",
-      "ethics",
-      "control-problem",
-      "educational",
-      "research"
-    ],
+    "description": "",
     "created_at": "2026-02-04"
   },
   "2026-02-05": {
-    "name": "AI Ethics Dilemma Simulator",
+    "name": "Ai Ethics Simulator",
     "path": "projects/2026-02-05-ai-ethics-simulator",
-    "description": "Explore real-world ethical dilemmas in AI systems. Make decisions, see consequences, and understand complex trade-offs in AI ethics including bias, safety, privacy, and accountability. Interactive scenarios with ethical analysis.",
-    "category": "AI Ethics & Society",
-    "tags": [
-      "ethics",
-      "dilemma",
-      "society",
-      "policy",
-      "decision-making",
-      "fairness"
-    ],
+    "description": "",
     "created_at": "2026-02-05"
   },
-  "2026-02-23": {
-    "name": "Character Generator",
-    "path": "projects/2026-02-23-ai-character-generator",
-    "description": "Create unique characters",
-    "category": "AI Tools",
-    "created_at": "2026-02-23"
-  },
   "2026-02-06": {
-    "name": "AI Ethics Dilemma Simulator",
+    "name": "Ai Ethics Simulator",
     "path": "projects/2026-02-06-ai-ethics-simulator",
-    "description": "Explore complex ethical challenges in AI development through interactive scenarios. Understand trade-offs between safety, capability, accessibility, and societal impact.",
-    "category": "AI Education",
-    "tags": [
-      "ethics",
-      "dilemmas",
-      "safety",
-      "responsibility",
-      "stakeholders",
-      "educational"
-    ],
-    "difficulty": "Intermediate",
+    "description": "",
     "created_at": "2026-02-06"
   },
+  "2026-02-07": {
+    "name": "Ai Token Cost Calculator",
+    "path": "projects/2026-02-07-ai-token-cost-calculator",
+    "description": "",
+    "created_at": "2026-02-07"
+  },
   "2026-02-08": {
-    "name": "AI Embeddings Explorer",
+    "name": "Ai Embeddings Explorer",
     "path": "projects/2026-02-08-ai-embeddings-explorer",
-    "description": "Dive deep into vector embeddings—the foundation of semantic AI. Understand how embeddings capture meaning, visualize semantic relationships, compare embedding models, and explore applications in search, recommendations, and clustering. Perfect for developers and AI enthusiasts.",
-    "category": "AI Education",
-    "tags": [
-      "embeddings",
-      "vectors",
-      "semantic-search",
-      "recommendations",
-      "clustering",
-      "ml-basics",
-      "educational"
-    ],
-    "difficulty": "Intermediate",
+    "description": "Dive deep into vector embeddings\u2014the foundation of semantic AI.",
     "created_at": "2026-02-08"
   },
-  "2026-02-23": {
-    "name": "Character Generator",
-    "path": "projects/2026-02-23-ai-character-generator",
-    "description": "Create unique characters",
-    "category": "AI Tools",
-    "created_at": "2026-02-23"
+  "2026-02-11": {
+    "name": "Ai Trends Insights",
+    "path": "projects/2026-02-11-ai-trends-insights",
+    "description": "Stay informed about the latest developments in artificial intelligence. Explore current trends, recent breakthroughs, industry news, and educational content to understand what's shaping the AI landscape today.",
+    "created_at": "2026-02-11"
+  },
+  "2026-02-12": {
+    "name": "Ai Frontier Tracker",
+    "path": "projects/2026-02-12-ai-frontier-tracker",
+    "description": "Explore current AI trends, emerging technologies, and the evolving landscape of artificial intelligence. Discover what's hot in AI research, industry adoption patterns, and future directions.",
+    "created_at": "2026-02-12"
   }
 }
