@@ -58,5 +58,11 @@
     "path": "projects/2026-02-12-ai-frontier-tracker",
     "description": "Explore current AI trends, emerging technologies, and the evolving landscape of artificial intelligence. Discover what's hot in AI research, industry adoption patterns, and future directions.",
     "created_at": "2026-02-12"
+  },
+  "2026-02-22": {
+    "name": "About Ai",
+    "path": "projects/2026-02-22-about-ai",
+    "description": "A comprehensive educational guide to understanding AI. Explore what artificial intelligence is, how it works, its history, real-world applications, ethical considerations, and how to start your learning journey.",
+    "created_at": "2026-02-22"
   }
 }

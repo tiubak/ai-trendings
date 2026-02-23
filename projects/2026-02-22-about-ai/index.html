@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fundamentals: About Artificial Intelligence | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #4fc3f7;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(79, 195, 247, 0.1);
+            border-color: #4fc3f7;
+            transform: translateX(-5px);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #4fc3f7, #ab47bc, #ec407a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        /* Main Layout */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .app-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background: rgba(79, 195, 247, 0.15);
+            border-color: #4fc3f7;
+            color: #4fc3f7;
+            font-weight: 600;
+        }
+
+        /* Content Panel */
+        .content-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            min-height: 600px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content-header h2 {
+            font-size: 1.8rem;
+            color: #4fc3f7;
+            font-weight: 700;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #4fc3f7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #ff8a80;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Content Styling */
+        .content-body {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .content-body h3 {
+            color: #4fc3f7;
+            margin: 1.5em 0 0.5em;
+            font-size: 1.3rem;
+        }
+
+        .content-body h4 {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 1.2em 0 0.4em;
+            font-size: 1.1rem;
+        }
+
+        .content-body p {
+            margin-bottom: 1em;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .content-body ul, .content-body ol {
+            margin: 0.5em 0 1em 1.5em;
+        }
+
+        .content-body li {
+            margin-bottom: 0.5em;
+        }
+
+        .content-body strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .visualization {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .visualization img {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Action-specific styles */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            background: rgba(79, 195, 247, 0.1);
+            border-color: #4fc3f7;
+            transform: translateY(-3px);
+        }
+
+        .section-card h4 {
+            margin: 0 0 10px;
+            color: #4fc3f7;
+            font-size: 1.1rem;
+        }
+
+        .section-card p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-question h4 {
+            margin: 0 0 15px;
+            font-size: 1.1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: rgba(79, 195, 247, 0.1);
+        }
+
+        .quiz-option.correct {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4caf50;
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: #f44336;
+        }
+
+        .quiz-explanation {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Form Elements */
+        .control-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        select, input[type="text"] {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4fc3f7;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            color: #000;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Resources list */
+        .resource-category {
+            margin-bottom: 25px;
+        }
+
+        .resource-category h4 {
+            color: #4fc3f7;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .resource-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .resource-item h5 {
+            color: #fff;
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .resource-item p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .resource-url {
+            display: inline-block;
+            margin-top: 8px;
+            color: #4fc3f7;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .resource-url:hover {
+            text-decoration: underline;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .next-steps {
+            background: rgba(29, 233, 182, 0.1);
+            border: 1px solid rgba(29, 233, 182, 0.3);
+            color: #1de9b6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Navigation -->
+        <div class="back-nav">
+            <a href="../" class="back-btn">← Back to Calendar</a>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <div class="date-badge">February 22, 2026</div>
+            <h1>AI Fundamentals: About Artificial Intelligence</h1>
+            <p class="tagline">A comprehensive educational guide to understanding AI - how it works, its history, applications, ethics, and how to get started.</p>
+        </header>
+
+        <div class="app-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <h2>Explore</h2>
+                <nav id="nav-buttons">
+                    <!-- Navigation buttons will be inserted here by JS -->
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-panel">
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading content...</p>
+                </div>
+
+                <div id="error" class="error hidden"></div>
+
+                <div id="content" class="hidden fade-in">
+                    <div class="content-header">
+                        <h2 id="content-title">Section Title</h2>
+                    </div>
+                    <div class="content-body" id="content-body">
+                        <!-- Dynamic content goes here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = '../api';
+        const PROJECT_DATE = '2026-02-22';
+
+        // Sections navigation
+        const sections = [
+            { id: 'start', label: 'Overview', description: 'Introduction to AI' },
+            { id: 'history', label: 'History', description: 'Evolution of AI through the decades' },
+            { id: 'types', label: 'Types of AI', description: 'How AI is categorized' },
+            { id: 'how-it-works', label: 'How It Works', description: 'ML, neural networks explained' },
+            { id: 'applications', label: 'Applications', description: 'AI across industries' },
+            { id: 'ethics', label: 'Ethics', description: 'Bias, fairness, and responsibility' },
+            { id: 'future', label: 'Future of AI', description: 'Predictions and possibilities' },
+            { id: 'get-started', label: 'Get Started', description: 'Learning resources and roadmap' },
+            { id: 'quiz', label: 'Quiz', description: 'Test your knowledge' },
+            { id: 'explain', label: 'Explain Concept', description: 'Explain any AI term on demand' }
+        ];
+
+        // DOM Elements
+        const navContainer = document.getElementById('nav-buttons');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const contentEl = document.getElementById('content');
+        const contentTitle = document.getElementById('content-title');
+        const contentBody = document.getElementById('content-body');
+
+        // Build navigation
+        function buildNav() {
+            navContainer.innerHTML = '';
+            sections.forEach(section => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.textContent = section.label;
+                btn.title = section.description;
+                btn.onclick = () => loadSection(section.id, btn);
+                navContainer.appendChild(btn);
+            });
+        }
+
+        // Show error
+        function showError(msg) {
+            loadingEl.classList.add('hidden');
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+            contentEl.classList.add('hidden');
+        }
+
+        // Hide error
+        function hideError() {
+            errorEl.classList.add('hidden');
+        }
+
+        // Show content
+        function showContent() {
+            loadingEl.classList.add('hidden');
+            errorEl.classList.add('hidden');
+            contentEl.classList.remove('hidden');
+        }
+
+        // Set active nav button
+        function setActiveNav(activeId) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.onclick.toString().includes(`'${activeId}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Make API request
+        async function callAPI(action, data = {}) {
+            const response = await fetch(API_BASE, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: PROJECT_DATE,
+                    action,
+                    ...data
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || `HTTP ${response.status}`);
+            }
+
+            return await response.json();
+        }
+
+        // Render content based on action and result
+        function renderContent(action, result) {
+            if (result.error) {
+                throw new Error(result.error);
+            }
+
+            let html = '';
+
+            switch (action) {
+                case 'start':
+                    html = `
+                        <p>${result.overview.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="AI Overview Visualization" width="1200" height="600">
+                        </div>` : ''}
+                        <div class="sections-grid">
+                            ${result.sections.map(sec => `
+                                <div class="section-card" onclick="loadSection('${sec}')">
+                                    <h4>${sec.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h4>
+                                    <p>Explore ${sec} concepts and information.</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${result.next_steps ? `<div class="next-steps">${result.next_steps}</div>` : ''}
+                    `;
+                    break;
+
+                case 'history':
+                    html = `
+                        <p>${result.timeline.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="AI History Timeline" width="1400" height="500">
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'types':
+                    html = `
+                        <p>${result.explanation.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="AI Types Classification" width="1200" height="800">
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'how-it-works':
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="level-select">Explanation Level: </label>
+                            <select id="level-select">
+                                <option value="beginner" ${result.level === 'beginner' ? 'selected' : ''}>Beginner</option>
+                                <option value="intermediate" ${result.level === 'intermediate' ? 'selected' : ''}>Intermediate</option>
+                                <option value="technical" ${result.level === 'technical' ? 'selected' : ''}>Technical</option>
+                            </select>
+                        </div>
+                        <p>${result.explanation.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="How AI Works" width="1200" height="600">
+                        </div>` : ''}
+                    `;
+                    // Add event listener for level change
+                    setTimeout(() => {
+                        const levelSelect = document.getElementById('level-select');
+                        if (levelSelect) {
+                            levelSelect.onchange = () => {
+                                loadSection('how-it-works', null, { level: levelSelect.value });
+                            };
+                        }
+                    }, 100);
+                    break;
+
+                case 'applications':
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="industry-select">Industry Focus: </label>
+                            <select id="industry-select">
+                                <option value="all" ${result.industry === 'all' ? 'selected' : ''}>All Industries</option>
+                                <option value="healthcare" ${result.industry === 'healthcare' ? 'selected' : ''}>Healthcare</option>
+                                <option value="finance" ${result.industry === 'finance' ? 'selected' : ''}>Finance</option>
+                                <option value="education" ${result.industry === 'education' ? 'selected' : ''}>Education</option>
+                                <option value="manufacturing" ${result.industry === 'manufacturing' ? 'selected' : ''}>Manufacturing</option>
+                                <option value="retail" ${result.industry === 'retail' ? 'selected' : ''}>Retail & E-commerce</option>
+                                <option value="entertainment" ${result.industry === 'entertainment' ? 'selected' : ''}>Entertainment</option>
+                                <option value="transportation" ${result.industry === 'transportation' ? 'selected' : ''}>Transportation</option>
+                                <option value="agriculture" ${result.industry === 'agriculture' ? 'selected' : ''}>Agriculture</option>
+                            </select>
+                        </div>
+                        <p>${result.applications.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="AI Applications" width="1400" height="700">
+                        </div>` : ''}
+                    `;
+                    setTimeout(() => {
+                        const industrySelect = document.getElementById('industry-select');
+                        if (industrySelect) {
+                            industrySelect.onchange = () => {
+                                loadSection('applications', null, { industry: industrySelect.value });
+                            };
+                        }
+                    }, 100);
+                    break;
+
+                case 'ethics':
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="topic-select">Topic: </label>
+                            <select id="topic-select">
+                                <option value="overview" ${result.topic === 'overview' ? 'selected' : ''}>Overview</option>
+                                <option value="bias" ${result.topic === 'bias' ? 'selected' : ''}>Bias</option>
+                                <option value="fairness" ${result.topic === 'fairness' ? 'selected' : ''}>Fairness</option>
+                                <option value="transparency" ${result.topic === 'transparency' ? 'selected' : ''}>Transparency</option>
+                                <option value="safety" ${result.topic === 'safety' ? 'selected' : ''}>Safety</option>
+                            </select>
+                        </div>
+                        <p>${result.content.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="AI Ethics" width="1200" height="600">
+                        </div>` : ''}
+                    `;
+                    setTimeout(() => {
+                        const topicSelect = document.getElementById('topic-select');
+                        if (topicSelect) {
+                            topicSelect.onchange = () => {
+                                loadSection('ethics', null, { topic: topicSelect.value });
+                            };
+                        }
+                    }, 100);
+                    break;
+
+                case 'future':
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="perspective-select">Perspective: </label>
+                            <select id="perspective-select">
+                                <option value="balanced" ${result.perspective === 'balanced' ? 'selected' : ''}>Balanced</option>
+                                <option value="optimistic" ${result.perspective === 'optimistic' ? 'selected' : ''}>Optimistic</option>
+                                <option value="cautious" ${result.perspective === 'cautious' ? 'selected' : ''}>Cautious</option>
+                                <option value="timeline" ${result.perspective === 'timeline' ? 'selected' : ''}>Timeline</option>
+                            </select>
+                        </div>
+                        <p>${result.content.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="Future of AI" width="1400" height="700">
+                        </div>` : ''}
+                    `;
+                    setTimeout(() => {
+                        const perspSelect = document.getElementById('perspective-select');
+                        if (perspSelect) {
+                            perspSelect.onchange = () => {
+                                loadSection('future', null, { perspective: perspSelect.value });
+                            };
+                        }
+                    }, 100);
+                    break;
+
+                case 'get-started':
+                    const type = result.type || 'roadmap';
+                    const typeLabels = {
+                        'roadmap': 'Learning Roadmap',
+                        'courses': 'Courses',
+                        'books': 'Books',
+                        'tools': 'Tools & Frameworks',
+                        'communities': 'Communities'
+                    };
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="resource-select">Resource Type: </label>
+                            <select id="resource-select">
+                                ${Object.entries(typeLabels).map(([k, v]) =>
+                                    `<option value="${k}" ${k === type ? 'selected' : ''}>${v}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="content-body-resources">
+                            ${renderResources(result.resources, type)}
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        const resSelect = document.getElementById('resource-select');
+                        if (resSelect) {
+                            resSelect.onchange = () => {
+                                loadSection('get-started', null, { type: resSelect.value });
+                            };
+                        }
+                    }, 100);
+                    break;
+
+                case 'quiz':
+                    html = `
+                        <div id="quiz-container" class="quiz-container">
+                            ${result.quiz.map((q, idx) => `
+                                <div class="quiz-question" data-id="${q.id}">
+                                    <h4>Q${idx + 1}: ${q.question}</h4>
+                                    <div class="quiz-options">
+                                        ${q.options.map((opt, optIdx) => `
+                                            <div class="quiz-option" data-index="${optIdx}">${opt}</div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="quiz-explanation" style="display: none;"></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button class="btn-primary" onclick="resetQuiz()">Reset Quiz</button>
+                        </div>
+                    `;
+                    // Add click handlers after render
+                    setTimeout(() => {
+                        document.querySelectorAll('.quiz-option').forEach(option => {
+                            option.addEventListener('click', () => handleQuizAnswer(option, result.quiz));
+                        });
+                    }, 100);
+                    break;
+
+                case 'explain':
+                    html = `
+                        <div style="margin-bottom: 20px;">
+                            <label for="concept-input">Concept: </label>
+                            <input type="text" id="concept-input" value="${result.concept}" placeholder="Enter an AI concept...">
+                            <button class="btn-primary" onclick="explainConcept()">Explain</button>
+                        </div>
+                        <p>${result.explanation.replace(/\n\n/g, '</p><p>')}</p>
+                        ${result.visualization_url ? `
+                        <div class="visualization">
+                            <img src="${result.visualization_url}" alt="Concept Visualization" width="1000" height="500">
+                        </div>` : ''}
+                    `;
+                    break;
+
+                default:
+                    html = `<p>Unknown action or result.</p>`;
+            }
+
+            contentBody.innerHTML = html;
+            contentTitle.textContent = sections.find(s => s.id === action)?.label || 'AI Fundamentals';
+        }
+
+        // Render resources (different formats)
+        function renderResources(resources, type) {
+            if (Array.isArray(resources)) {
+                // Structured list of items
+                return resources.map(category => `
+                    <div class="resource-category">
+                        <h4>${category.category}</h4>
+                        ${category.items.map(item => `
+                            <div class="resource-item">
+                                <h5>${item.name}${item.paid ? ' 💰' : ''}</h5>
+                                <p>${item.description}</p>
+                                ${item.url ? `<a href="${item.url}" class="resource-url" target="_blank">Learn More →</a>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `).join('');
+            } else if (typeof resources === 'string') {
+                // Plain text, convert to paragraphs
+                return `<div class="content-body">${resources.replace(/\n\n/g, '</p><p>')}</div>`;
+            } else {
+                return '<p>No resources available.</p>';
+            }
+        }
+
+        // Load a section
+        async function loadSection(action, btnElement = null, extraData = {}) {
+            if (btnElement) {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            } else if (action !== 'start') {
+                // If loading without button click, set active based on action
+                setActiveNav(action);
+            }
+
+            hideError();
+            contentEl.classList.add('hidden');
+            loadingEl.classList.remove('hidden');
+
+            try {
+                const result = await callAPI(action, extraData);
+                renderContent(action, result);
+                showContent();
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        // Quiz functionality
+        function handleQuizAnswer(option, quizData) {
+            const questionEl = option.closest('.quiz-question');
+            const qIndex = Array.from(questionEl.parentElement.children).indexOf(questionEl);
+            const question = quizData[qIndex];
+
+            // Clear previous selection
+            questionEl.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Mark selected
+            const selectedIdx = parseInt(option.dataset.index);
+            const explanationEl = questionEl.querySelector('.quiz-explanation');
+
+            if (selectedIdx === question.correct_index) {
+                option.classList.add('correct');
+                explanationEl.innerHTML = `<strong>Correct!</strong> ${question.explanation}`;
+            } else {
+                option.classList.add('incorrect');
+                // Show correct answer
+                questionEl.querySelector(`.quiz-option[data-index="${question.correct_index}"]`).classList.add('correct');
+                explanationEl.innerHTML = `<strong>Incorrect.</strong> ${question.explanation}`;
+            }
+
+            explanationEl.style.display = 'block';
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                const exp = q.querySelector('.quiz-explanation');
+                if (exp) exp.style.display = 'none';
+            });
+        }
+
+        // Explain concept helper
+        function explainConcept() {
+            const conceptInput = document.getElementById('concept-input');
+            const concept = conceptInput.value.trim();
+            if (concept) {
+                loadSection('explain', null, { concept });
+            }
+        }
+
+        // Set up enter key for concept input
+        function setupEnterKey() {
+            const conceptInput = document.getElementById('concept-input');
+            if (conceptInput) {
+                conceptInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') explainConcept();
+                });
+            }
+        }
+
+        // Initialize
+        function init() {
+            buildNav();
+            // Load start section by default
+            loadSection('start', document.querySelector('.nav-btn'));
+        }
+
+        // Run when DOM ready
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
