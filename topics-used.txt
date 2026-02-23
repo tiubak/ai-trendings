@@ -17,6 +17,7 @@
 # - MUST TEST LOCALLY BEFORE COMMITTING
 
 # Topics used:
+2026-02-01 - LLM Model Comparator (Python backend, openrouter/free, Pollinations images) - Compare popular LLMs, explain AI concepts
 2026-02-21 - AI Meme Generator (Frontend-only - Vercel limitation, later refactored)
 2026-02-21 - AI Dungeon Master (Python backend - FastAPI, Hugging Face + Pollinations.AI)
 2026-02-22 - AI Story Illustrator (Stateless serverless, Pollinations.AI text+images)

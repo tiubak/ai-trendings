@@ -12,42 +12,60 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh;
             color: #e0e0e0;
-            padding: 40px 20px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        /* Header */
         header {
-            text-align: center;
-            margin-bottom: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        h1 {
-            font-size: 3rem;
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
             background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
         }
 
-        .subtitle {
-            color: #a0a0a0;
-            font-size: 1.2rem;
+        .logo-text p {
+            font-size: 0.85rem;
+            color: #888;
         }
 
         .stats {
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
+            gap: 30px;
         }
 
         .stat {
@@ -55,136 +73,294 @@
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #00f260;
         }
 
         .stat-label {
+            font-size: 0.75rem;
             color: #888;
-            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
+        /* Main Content */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
         }
 
-        .day {
+        /* Month Navigation */
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
+        }
+
+        .month-nav button {
+            background: rgba(0, 242, 96, 0.1);
+            border: 1px solid rgba(0, 242, 96, 0.3);
+            color: #00f260;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .month-nav button:hover:not(:disabled) {
+            background: rgba(0, 242, 96, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .month-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .current-month {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* Category Filter */
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: rgba(0, 242, 96, 0.1);
+            border-color: #00f260;
+            color: #00f260;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #888;
+            padding: 10px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .day-cell {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
             min-height: 100px;
+            transition: all 0.3s;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
-        .day:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 242, 96, 0.2);
+        .day-cell:hover:not(.empty) {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 242, 96, 0.1);
         }
 
-        .day.has-project {
-            border-color: #00f260;
-            background: rgba(0, 242, 96, 0.05);
+        .day-cell.has-project {
+            border-color: rgba(0, 242, 96, 0.3);
+            background: rgba(0, 242, 96, 0.03);
+        }
+
+        .day-cell.today {
+            border-color: #0575e6;
+            background: rgba(5, 117, 230, 0.1);
         }
 
         .day-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 8px;
         }
 
-        .day-project {
-            font-size: 0.75rem;
+        .day-cell.has-project .day-number {
             color: #00f260;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
         }
 
-        .day.empty {
-            color: #444;
+        .project-name {
+            font-size: 0.8rem;
+            color: #fff;
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+
+        .project-category {
+            font-size: 0.65rem;
+            color: #00f260;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .day-cell.empty {
             cursor: default;
         }
 
-        .day.empty:hover {
-            transform: none;
-            box-shadow: none;
+        .day-cell.empty .day-number {
+            color: #444;
         }
 
-        .month-label {
-            font-size: 1.8rem;
+        /* Featured Projects */
+        .featured-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
             color: #fff;
-            margin: 40px 0 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 60px;
-            color: #666;
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .featured-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .featured-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 242, 96, 0.1);
+        }
+
+        .featured-card h3 {
+            font-size: 1.2rem;
+            color: #00f260;
+            margin-bottom: 8px;
+        }
+
+        .featured-card p {
             font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
         }
 
-        .footer a {
+        .featured-card .date {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+        }
+
+        footer a {
             color: #00f260;
             text-decoration: none;
         }
 
-        .loading {
+        /* Loading/Error */
+        .loading, .error {
             text-align: center;
-            padding: 40px;
+            padding: 60px;
             color: #888;
         }
 
         .error {
-            text-align: center;
-            padding: 40px;
             color: #ff6b6b;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+            .header-content {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .calendar {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 10px;
+            .stats {
+                gap: 20px;
             }
 
-            .day {
-                min-height: 80px;
-                padding: 10px;
+            .month-nav {
+                flex-direction: column;
+                gap: 15px;
             }
 
-            .day-number {
-                font-size: 1.2rem;
+            .calendar-grid {
+                gap: 5px;
             }
 
-            .day-project {
-                font-size: 0.65rem;
+            .day-cell {
+                min-height: 70px;
+                padding: 8px;
+            }
+
+            .project-name {
+                font-size: 0.7rem;
+            }
+
+            .day-header {
+                font-size: 0.7rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 AI Trendings</h1>
-            <p class="subtitle">One AI project, every single day</p>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-icon">🤖</span>
+                <div class="logo-text">
+                    <h1>AI Trendings</h1>
+                    <p>One AI project, every single day</p>
+                </div>
+            </a>
             <div class="stats">
                 <div class="stat">
                     <div class="stat-value" id="total-projects">-</div>
@@ -194,106 +370,163 @@
                     <div class="stat-value" id="streak-days">-</div>
                     <div class="stat-label">Day Streak</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-value" id="latest-project">-</div>
-                    <div class="stat-label">Latest</div>
-                </div>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <div id="calendar">
+    <main>
+        <div class="month-nav">
+            <button id="prev-month" onclick="changeMonth(-1)">
+                ← Previous Month
+            </button>
+            <h2 class="current-month" id="current-month-label">Loading...</h2>
+            <button id="next-month" onclick="changeMonth(1)">
+                Next Month →
+            </button>
+        </div>
+
+        <div class="category-filter" id="category-filter">
+            <button class="category-btn active" onclick="filterCategory('all')">All</button>
+            <button class="category-btn" onclick="filterCategory('AI Education')">Education</button>
+            <button class="category-btn" onclick="filterCategory('AI Tools')">Tools</button>
+            <button class="category-btn" onclick="filterCategory('AI Research')">Research</button>
+            <button class="category-btn" onclick="filterCategory('AI Visualizers')">Visualizers</button>
+        </div>
+
+        <div class="calendar-grid" id="calendar-grid">
             <div class="loading">Loading projects...</div>
         </div>
 
-        <div class="footer">
-            <p>Built by <a href="https://github.com/tiubak">tiubak</a> • Automated by Atlas 🌍</p>
+        <div class="featured-section">
+            <h2 class="section-title">⭐ Featured Projects</h2>
+            <div class="featured-grid" id="featured-grid"></div>
         </div>
-    </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="https://github.com/tiubak">tiubak</a> • Automated by <a href="https://openclaw.ai">Atlas</a> 🌍</p>
+    </footer>
 
     <script>
-        // Load projects dynamically from projects.json
         let projects = {};
+        let currentDate = new Date();
+        let currentCategory = 'all';
+
+        const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         async function loadProjects() {
             try {
                 const response = await fetch('projects.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 projects = await response.json();
                 generateCalendar();
+                generateFeatured();
+                updateStats();
             } catch (error) {
-                console.error('Failed to load projects:', error);
-                document.getElementById('calendar').innerHTML = `
-                    <div class="error">
-                        Failed to load projects.<br>
-                        <small>${error.message}</small>
-                    </div>
+                document.getElementById('calendar-grid').innerHTML = `
+                    <div class="error">Failed to load projects: ${error.message}</div>
                 `;
             }
         }
 
         function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            calendar.innerHTML = '';
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            // Day headers
+            DAYS.forEach(day => {
+                grid.innerHTML += `<div class="day-header">${day}</div>`;
+            });
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Update month label
+            document.getElementById('current-month-label').textContent = 
+                currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            // Get first day and total days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
             const today = new Date();
-            const startMonth = new Date(2026, 1, 21); // Start date: Feb 21, 2026
-            // Fix: Use last day of today's month as end date, not the 1st
-            const endMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-            let currentMonth = new Date(startMonth);
-            let totalProjects = 0;
-            let latestProject = null;
-            let streakDays = 0;
-
-            while (currentMonth <= endMonth) {
-                const monthLabel = document.createElement('h2');
-                monthLabel.className = 'month-label';
-                monthLabel.textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                calendar.appendChild(monthLabel);
-
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'calendar';
-
-                const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const dayDiv = document.createElement('div');
-                    dayDiv.className = 'day';
-
-                    if (projects[dateStr]) {
-                        dayDiv.classList.add('has-project');
-                        dayDiv.innerHTML = `
-                            <div class="day-number">${day}</div>
-                            <div class="day-project">${projects[dateStr].name}</div>
-                        `;
-                        dayDiv.onclick = () => {
-                            window.location.href = projects[dateStr].path + '/';
-                        };
-                        totalProjects++;
-                        latestProject = projects[dateStr].name;
-                        streakDays++;
-                    } else {
-                        dayDiv.classList.add('empty');
-                        dayDiv.innerHTML = `<div class="day-number">${day}</div>`;
-                    }
-
-                    monthDiv.appendChild(dayDiv);
-                }
-
-                calendar.appendChild(monthDiv);
-                currentMonth.setMonth(currentMonth.getMonth() + 1);
+            // Empty cells for days before 1st
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="day-cell empty"></div>`;
             }
 
-            // Update stats
-            document.getElementById('total-projects').textContent = totalProjects;
-            document.getElementById('streak-days').textContent = streakDays;
-            document.getElementById('latest-project').textContent = latestProject || '—';
+            // Day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const project = projects[dateStr];
+                
+                let classes = 'day-cell';
+                if (project) classes += ' has-project';
+                if (dateStr === todayStr) classes += ' today';
+                
+                // Filter by category
+                if (project && currentCategory !== 'all' && project.category !== currentCategory) {
+                    continue;
+                }
+
+                const projectHtml = project ? `
+                    <div class="project-name">${project.name}</div>
+                    ${project.category ? `<div class="project-category">${project.category}</div>` : ''}
+                ` : '';
+
+                grid.innerHTML += `
+                    <div class="${classes}" onclick="${project ? `window.location.href='${project.path}/'` : ''}">
+                        <div class="day-number">${day}</div>
+                        ${projectHtml}
+                    </div>
+                `;
+            }
+
+            // Update navigation buttons
+            const startMonth = new Date(2026, 1, 1); // Feb 2026
+            document.getElementById('prev-month').disabled = 
+                new Date(year, month, 1) <= startMonth;
+            document.getElementById('next-month').disabled = 
+                new Date(year, month, 1) >= new Date(today.getFullYear(), today.getMonth(), 1);
         }
 
-        // Load projects on page load
+        function generateFeatured() {
+            const featured = document.getElementById('featured-grid');
+            const sorted = Object.entries(projects)
+                .sort((a, b) => b[0].localeCompare(a[0]))
+                .slice(0, 3);
+
+            featured.innerHTML = sorted.map(([date, project]) => `
+                <div class="featured-card" onclick="window.location.href='${project.path}/'">
+                    <h3>${project.name}</h3>
+                    <p>${project.description || 'An AI-powered project'}</p>
+                    <div class="date">${date}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const total = Object.keys(projects).length;
+            document.getElementById('total-projects').textContent = total;
+            document.getElementById('streak-days').textContent = total;
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            generateCalendar();
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(category.toLowerCase()) || 
+                    (category === 'all' && btn.textContent === 'All'));
+            });
+            generateCalendar();
+        }
+
         loadProjects();
     </script>
 </body>

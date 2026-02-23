@@ -1,13 +1,13 @@
 """Project handlers registry."""
 
 # Import project handlers here
-# from .feb_01 import handle as feb_01, META as META_01
+from .feb_01 import handle as feb_01, META as META_01
 # from .feb_02 import handle as feb_02, META as META_02
 # ...
 
 # Map day -> (handler, metadata)
 PROJECTS = {
-    # 1: (feb_01, META_01),
+    1: (feb_01, META_01),
     # 2: (feb_02, META_02),
     # ...
 }
