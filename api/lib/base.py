@@ -35,46 +35,29 @@ def call_openrouter(prompt: str) -> str:
     return call_pollinations(prompt)
 
 def call_pollinations(prompt: str) -> str:
-    """Fallback text generation via Pollinations.AI API.
+    """Fallback text generation via Pollinations.AI.
     
     Official API: https://gen.pollinations.ai
-    Endpoint: /v1/chat/completions (OpenAI-compatible)
+    Endpoint: /text/{prompt}
     """
-    url = "https://gen.pollinations.ai/v1/chat/completions"
-    data = {
-        "model": "openai",  # Default model
-        "messages": [{"role": "user", "content": prompt}]
-    }
-    headers = ["-H", "Content-Type: application/json"]
-    if POLLINATIONS_API_KEY:
-        headers.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
-    
-    result = subprocess.run([
-        "curl", "-s", "-X", "POST", url
-    ] + headers + ["-d", json.dumps(data)], capture_output=True, text=True, timeout=30)
-    
-    if result.returncode == 0:
-        try:
-            return json.loads(result.stdout).get("choices", [{}])[0].get("message", {}).get("content", "")
-        except:
-            pass
-    
-    # Fallback to simple text endpoint
     url = f"https://gen.pollinations.ai/text/{quote(prompt)}"
+    
+    headers = []
     if POLLINATIONS_API_KEY:
-        url += f"?key={POLLINATIONS_API_KEY}"
-    result = subprocess.run(["curl", "-s", url], capture_output=True, text=True, timeout=30)
+        headers = ["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"]
+    
+    result = subprocess.run(["curl", "-s"] + headers + [url], capture_output=True, text=True, timeout=30)
     return result.stdout.strip() if result.returncode == 0 else "Response unavailable"
 
 def generate_image_url(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Generate image URL using Pollinations.AI API.
+    """Generate image URL using Pollinations.AI.
     
     Official API: https://gen.pollinations.ai
-    Endpoint: /image/{prompt}?model=flux
+    Endpoint: /image/{prompt}
     
     Returns a URL that can be used directly in <img> tags.
     """
-    return f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&model=flux&nologo=true"
+    return f"https://gen.pollinations.ai/image/{quote(prompt)}?width={width}&height={height}&nologo=true"
 
 def call_huggingface(prompt: str, model: str) -> str:
     """Call HuggingFace Inference API for specialized tasks (TTS, embeddings, audio)."""
