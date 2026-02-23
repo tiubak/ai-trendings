@@ -5,6 +5,12 @@
     "description": "A compassionate AI tool that analyzes your emotions and provides personalized mood support and coping strategies.",
     "created_at": "2026-02-01"
   },
+  "2026-02-02": {
+    "name": "AI Dream Interpreter",
+    "path": "projects/2026-02-02-ai-dream-interpreter",
+    "description": "Explore the hidden meanings of your dreams with AI-powered analysis and symbol exploration.",
+    "created_at": "2026-02-02"
+  },
   "2026-02-20": {
     "name": "AI Cosmic Whisperer",
     "path": "projects/2026-02-20-ai-cosmic-whisperer",
