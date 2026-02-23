@@ -35,16 +35,22 @@ def call_openrouter(prompt: str) -> str:
     return call_pollinations(prompt)
 
 def call_pollinations(prompt: str) -> str:
-    """Fallback text generation via Pollinations.AI (curl required - urllib blocked by Cloudflare)."""
-    url = f"https://text.pollinations.ai/{quote(prompt)}"
+    """Fallback text generation via Pollinations.AI (curl required - urllib blocked by Cloudflare).
+    
+    Uses gen.pollinations.ai endpoint (text.pollinations.ai is deprecated).
+    """
+    url = f"https://gen.pollinations.ai/{quote(prompt)}"
     headers = ["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"] if POLLINATIONS_API_KEY else []
     
     result = subprocess.run(["curl", "-s"] + headers + [url], capture_output=True, text=True, timeout=30)
     return result.stdout.strip() if result.returncode == 0 else "Response unavailable"
 
 def generate_image_url(prompt: str, width: int = 512, height: int = 512) -> str:
-    """Generate image URL using Pollinations.AI Flux model."""
-    return f"https://image.pollinations.ai/prompt/{quote(prompt)}?width={width}&height={height}&model=flux&nologo=true"
+    """Generate image URL using Pollinations.AI Flux model.
+    
+    Uses gen.pollinations.ai for image generation (image.pollinations.ai may be deprecated).
+    """
+    return f"https://gen.pollinations.ai/prompt/{quote(prompt)}?width={width}&height={height}&model=flux&nologo=true"
 
 def call_huggingface(prompt: str, model: str) -> str:
     """Call HuggingFace Inference API for specialized tasks (TTS, embeddings, audio)."""
