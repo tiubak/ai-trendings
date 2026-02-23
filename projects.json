@@ -65,6 +65,12 @@
     "description": "Generate genuine, uplifting compliments to spread kindness and positivity.",
     "created_at": "2026-02-11"
   },
+  "2026-02-12": {
+    "name": "AI Excuse Generator",
+    "path": "projects/2026-02-12-ai-excuse-generator",
+    "description": "Generate plausible (and funny) excuses for canceling plans, missing events, or getting out of commitments.",
+    "created_at": "2026-02-12"
+  },
   "2026-02-20": {
     "name": "AI Cosmic Whisperer",
     "path": "projects/2026-02-20-ai-cosmic-whisperer",
