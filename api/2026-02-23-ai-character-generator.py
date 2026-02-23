@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 """
 AI Character Generator - Combined API
-Handles all character generation actions via POST with action parameter
-
-Actions:
-- start: Generate new character
-- develop: Develop character further
-
-Built for AI Trendings — https://github.com/tiubak/ai-trendings
+Actions: start (generate), develop
 """
 
 import os
 import json
 import logging
+import re
 from http.server import BaseHTTPRequestHandler
 import subprocess
 from urllib.parse import quote
@@ -38,64 +33,82 @@ def call_pollinations(prompt: str) -> str:
         raise Exception(f"curl failed: {result.stderr}")
     except Exception as e:
         logger.error(f"Pollinations error: {e}")
-        return "A mysterious character emerges..."
+        return '{"error": "API unavailable"}'
+
+def extract_json(text: str) -> dict:
+    """Extract JSON from text that might have extra content"""
+    # Try direct parse first
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    
+    # Find JSON object in text
+    start = text.find('{')
+    if start == -1:
+        return None
+    
+    # Find matching closing brace
+    depth = 0
+    for i, char in enumerate(text[start:], start):
+        if char == '{':
+            depth += 1
+        elif char == '}':
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start:i+1])
+                except json.JSONDecodeError:
+                    continue
+    
+    return None
 
 def generate_character(name: str, role: str, setting: str, theme: str):
     """Generate complete character profile"""
-    prompt = f"""Create a detailed character profile for a {role} named {name}.
+    prompt = f'''Create a JSON character profile for a {role} named {name}.
 
 Setting: {setting}
 Theme: {theme}
 
-Generate JSON format:
-{{
-  "name": "{name}",
-  "role": "{role}",
-  "backstory": "3-4 sentences about their origin and past",
-  "personality": "2-3 sentences describing temperament and behavior",
-  "strengths": ["strength1", "strength2", "strength3"],
-  "weaknesses": ["weakness1", "weakness2", "weakness3"],
-  "motivation": "What drives this character",
-  "relationships": {{
-    "ally": "Description of an important ally",
-    "rival": "Description of an important rival"
-  }},
-  "signature_quote": "A memorable line this character would say"
-}}
+Return ONLY valid JSON with these fields:
+- name: "{name}"
+- role: "{role}"
+- backstory: string
+- personality: string  
+- strengths: array of 3 strings
+- weaknesses: array of 3 strings
+- motivation: string
+- relationships: object with ally and rival
+- signature_quote: string
 
-Make it compelling and consistent with the {role} archetype."""
+No markdown, no explanation, just the JSON object.'''
 
     text = call_pollinations(prompt)
-    try:
-        # Try to parse JSON directly
-        character = json.loads(text)
-    except json.JSONDecodeError:
-        # Extract JSON from response
-        import re
-        json_match = re.search(r'\{[^}]+\}', text, re.DOTALL)
-        if json_match:
-            character = json.loads(json_match.group(0))
-        else:
-            character = {
-                "name": name, "role": role, "backstory": text,
-                "personality": "Complex and nuanced", "strengths": ["Determined"],
-                "weaknesses": ["Stubborn"], "motivation": "Unknown",
-                "relationships": {"ally": "None", "rival": "None"},
-                "signature_quote": "..."
-            }
+    character = extract_json(text)
+    
+    if not character:
+        character = {
+            "name": name,
+            "role": role,
+            "backstory": f"A mysterious {role} from {setting}.",
+            "personality": "Enigmatic and determined.",
+            "strengths": ["Resourceful", "Determined", "Cunning"],
+            "weaknesses": ["Secretive", "Stubborn", "Overconfident"],
+            "motivation": "Driven by a hidden purpose.",
+            "relationships": {"ally": "A trusted companion", "rival": "A shadow from the past"},
+            "signature_quote": "The path forward is never clear."
+        }
     
     return {"character": character, "setting": setting, "theme": theme}
 
 def develop_character(character: dict, aspect: str):
-    """Develop character further in specific aspect"""
-    prompt = f"""Develop this character's {aspect} further:
+    """Develop character further"""
+    prompt = f'''Expand on this character's {aspect}:
 
-Character: {json.dumps(character)}
+{json.dumps(character, indent=2)}
 
-Write 2-3 paragraphs expanding on their {aspect}.
-Include specific examples, memories, or scenarios.
-Make it deeper and more nuanced."""
-
+Write 2 paragraphs developing their {aspect} further. Be specific and vivid.'''
+    
     development = call_pollinations(prompt)
     return {"character": character, "aspect": aspect, "development": development}
 
