@@ -26,7 +26,7 @@ Generate rich, detailed character profiles for stories, games, and roleplaying u
 - Fallback templates ensure functionality even if AI API fails
 
 **API Endpoint:**
-- `POST /api/2026-02-23-ai-character-generator/start`
+- `POST /api/character (action: start)`
 - Request: `{ name, role, setting, theme, traits }`
 - Response: `{ success: true, persona: { ... } }`
 
