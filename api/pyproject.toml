@@ -1,0 +1,10 @@
+[project]
+name = "ai-trendings-api"
+version = "0.1.0"
+description = "AI Trendings serverless functions"
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
