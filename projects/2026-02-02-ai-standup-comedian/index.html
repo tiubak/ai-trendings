@@ -219,7 +219,7 @@
         </nav>
 
         <h1>🎤 AI Stand-up Comedian</h1>
-        <p class="subtitle">Let AI generate jokes, roasts, and funny stories — with free voice narration (Edge TTS)!</p>
+        <p class="subtitle">Let AI generate jokes, roasts, and funny stories — with free voice narration (Google TTS)!</p>
 
         <!-- Joke Generator -->
         <div class="section">
@@ -251,10 +251,10 @@
             <div id="storyAudio" class="audio-player" style="display:none;"></div>
         </div>
 
-        <!-- Edge TTS Test -->
+        <!-- gTTS Test -->
         <div class="section">
-            <h2><span class="icon">🔊</span> Edge TTS Test</h2>
-            <p>Test the free Edge Text-to-Speech integration (no API key required). Uses Microsoft Edge's online TTS service.</p>
+            <h2><span class="icon">🔊</span> TTS Test</h2>
+            <p>Test the free text-to-speech integration (Google TTS, no API key required).</p>
             <button class="btn btn-secondary" onclick="testTTS()">Run TTS Test</button>
             <div id="ttsTestResult" class="result" style="display:none;"></div>
             <div id="ttsTestAudio" class="audio-player" style="display:none;"></div>
@@ -361,7 +361,7 @@
         async function testTTS() {
             const resultDiv = document.getElementById('ttsTestResult');
             const audioDiv = document.getElementById('ttsTestAudio');
-            resultDiv.innerHTML = '<p class="loading">Testing Edge TTS...</p>';
+            resultDiv.innerHTML = '<p class="loading">Testing TTS...</p>';
             resultDiv.style.display = 'block';
             audioDiv.style.display = 'none';
 
