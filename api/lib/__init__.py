@@ -3,7 +3,7 @@
 from .base import (
     call_openrouter,
     call_pollinations,
-    generate_image_url,
+    fetch_image,
     call_huggingface,
     extract_json,
     Handler
@@ -13,7 +13,7 @@ from .projects import get_handler, get_meta, PROJECTS
 __all__ = [
     'call_openrouter',
     'call_pollinations', 
-    'generate_image_url',
+    'fetch_image',
     'call_huggingface',
     'extract_json',
     'Handler',
