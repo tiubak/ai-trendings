@@ -26,8 +26,8 @@ Transform your story ideas into beautifully illustrated narratives using AI.
 - API calls have fallback handling for reliability
 
 **Endpoints**
-- `POST /api/story (action: enhance)` - Enhances story text
-- `POST /api/story (action: illustrate)` - Generates illustration URL
+- `POST /api/2026-02-22-ai-story-illustrator (action: enhance)` - Enhances story text
+- `POST /api/2026-02-22-ai-story-illustrator (action: illustrate)` - Generates illustration URL
 
 ## Tech Stack
 
