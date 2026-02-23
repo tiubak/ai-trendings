@@ -13,8 +13,7 @@ import json
 import logging
 import random
 from http.server import BaseHTTPRequestHandler
-from urllib.request import Request, urlopen
-from urllib.parse import quote
+import subprocess
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

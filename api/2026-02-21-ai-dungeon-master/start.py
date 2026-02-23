@@ -13,8 +13,7 @@ import json
 import uuid
 import logging
 from http.server import BaseHTTPRequestHandler
-from urllib.request import Request, urlopen
-from urllib.parse import quote
+import subprocess
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,28 +21,41 @@ logger = logging.getLogger(__name__)
 POLLINATIONS_API_KEY = os.getenv("POLLINATIONS_API_KEY", "")
 
 def generate_text_pollinations(prompt: str) -> str:
-    """Generate text using Pollinations.AI"""
+    """Generate text using Pollinations.AI via curl subprocess
+
+    CRITICAL: Python urllib is BLOCKED by Cloudflare (403 Forbidden)!
+    Must use curl subprocess to bypass Cloudflare.
+    """
     try:
+        # URL encode the prompt
+        from urllib.parse import quote
         url = f"https://text.pollinations.ai/{quote(prompt)}"
-        headers = {}
+
+        headers = []
         if POLLINATIONS_API_KEY:
-            headers["Authorization"] = f"Bearer {POLLINATIONS_API_KEY}"
-        
-        req = Request(url, headers=headers)
-        with urlopen(req, timeout=30) as response:
-            if response.status == 200:
-                return response.read().decode('utf-8').strip()
-        raise Exception("Text generation failed")
+            headers.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
+
+        # Use curl subprocess instead of urllib
+        result = subprocess.run(
+            ["curl", "-s"] + headers + [url],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+
+        if result.returncode == 0:
+            return result.stdout.strip()
+        raise Exception(f"curl failed with status {result.returncode}: {result.stderr}")
+
     except Exception as e:
-        logger.exception(f"Text generation error: {e}")
-        # Return fallback text if API fails
-        return """You stand at the entrance of a mysterious dungeon. Torchlight flickers on ancient stone walls.
+        logging.error(f"Text generation error: {e}")
+        # Return fallback
+        return "The story continues... A new challenge awaits.
 
 Choices:
-1. Enter the dark corridor ahead
-2. Examine the strange symbols on the door
-3. Light another torch and prepare yourself"""
-
+1. Press forward
+2. Take a different path
+3. Rest and reconsider"
 def parse_scene_and_choices(text: str):
     """Parse generated text into scene and choices"""
     lines = [l.strip() for l in text.split('\n') if l.strip()]

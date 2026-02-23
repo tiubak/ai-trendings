@@ -1,7 +1,7 @@
 import os, json, logging
 from http.server import BaseHTTPRequestHandler
-from urllib.request import Request, urlopen
-from urllib.error import URLError, HTTPError
+import subprocess
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,15 +41,25 @@ Generate the following in JSON format:
 Make it compelling and consistent with the {role} archetype."""
 
     try:
-        # Call Pollinations.AI API
-        url = f"https://text.pollinations.ai/{prompt}"
-        headers = {
-            "Authorization": f"Bearer {POLLINATIONS_API_KEY}"
-        }
-
-        req = Request(url, headers=headers)
-        response = urlopen(req, timeout=30)
-        content = response.read().decode('utf-8')
+        # Call Pollinations.AI API using curl subprocess
+        from urllib.parse import quote
+        url = f"https://text.pollinations.ai/{quote(prompt)}"
+        
+        headers = []
+        if POLLINATIONS_API_KEY:
+            headers.extend(["-H", f"Authorization: Bearer {POLLINATIONS_API_KEY}"])
+        
+        result = subprocess.run(
+            ["curl", "-s"] + headers + [url],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        if result.returncode == 0:
+            content = result.stdout.strip()
+        else:
+            raise Exception(f"curl failed: {result.stderr}")
 
         # Try to parse as JSON, fallback to structured extraction if needed
         try:
@@ -66,12 +76,10 @@ Make it compelling and consistent with the {role} archetype."""
                 # Final fallback: use the text as backstory
                 return generate_fallback_persona(name, role, setting, content)
 
-    except (URLError, HTTPError) as e:
+    except Exception as e:
         logger.error(f"Pollinations.AI request failed: {e}")
         return generate_fallback_persona(name, role, setting, theme)
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        return generate_fallback_persona(name, role, setting, theme)
+
 
 
 def generate_fallback_persona(name, role, setting, context=""):
@@ -219,7 +227,4 @@ class Handler(BaseHTTPRequestHandler):
                 "message": str(e)
             })
 
-
-def handler(event):
-    """Vercel serverless function entry point"""
-    return Handler(event).handler(event)
+# Vercel uses the Handler class directly - no separate handler() function needed!
