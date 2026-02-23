@@ -4,7 +4,8 @@
 from . import _2026_02_01  # New naming: YYYY_MM_DD (underscore prefix for valid Python identifier)
 from . import _2026_02_02  # AI Attention Mechanism Explorer
 from . import _2026_02_03  # AI Ethics Simulator - Feb 3, 2026
-from . import _2026_02_04  # AI Safety & Alignment Explorer - Feb 4, 2026
+from . import _2026_02_05  # AI Ethics Dilemma Simulator
+from . import _2026_02_06  # AI Ethics Dilemma Simulator
 # from . import 2026_02_03
 # ...
 
@@ -16,6 +17,8 @@ PROJECTS = {
     "2026-02-02": (lambda a, d: _2026_02_02.handle(a, d), _2026_02_02.META),
     "2026-02-03": (lambda a, d: _2026_02_03.handle(a, d), _2026_02_03.META),
     "2026-02-04": (lambda a, d: _2026_02_04.handle(a, d), _2026_02_04.META),
+    "2026-02-05": (lambda a, d: _2026_02_05.handle(a, d), _2026_02_05.META),
+    "2026-02-06": (lambda a, d: _2026_02_06.handle(a, d), _2026_02_06.META),
 }
 
 def get_handler(date_str: str):
