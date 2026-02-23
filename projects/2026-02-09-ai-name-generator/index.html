@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Name Generator - 2026-02-09</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .mode-tab.active {
+            background: rgba(255,255,255,0.9);
+            color: #f5576c;
+            border-color: white;
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #f5576c;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f0d0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row .section {
+            flex: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .results {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 24px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .results-meta {
+            opacity: 0.9;
+        }
+
+        .names-list {
+            padding: 0;
+        }
+
+        .name-card {
+            padding: 24px;
+            border-bottom: 1px solid #f8d0e4;
+            transition: background 0.3s;
+        }
+
+        .name-card:last-child {
+            border-bottom: none;
+        }
+
+        .name-card:hover {
+            background: #fff5f8;
+        }
+
+        .name-primary {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f5576c;
+            margin-bottom: 8px;
+        }
+
+        .name-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .detail-badge {
+            background: #f8d0e4;
+            color: #c95d83;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .name-info {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .story-hook {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fff5f8;
+            border-radius: 8px;
+            border-left: 3px solid #f5576c;
+            font-style: italic;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .mode-tabs {
+                flex-direction: column;
+            }
+            .row {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Name Generator</h1>
+        <p class="subtitle">Perfect names for babies, characters, and businesses</p>
+
+        <div class="mode-tabs">
+            <div class="mode-tab active" onclick="setMode('baby')" id="tabBaby">Baby Name</div>
+            <div class="mode-tab" onclick="setMode('character')" id="tabCharacter">Character Name</div>
+            <div class="mode-tab" onclick="setMode('business')" id="tabBusiness">Business Name</div>
+        </div>
+
+        <div class="control-panel">
+            <!-- Baby Name Controls -->
+            <div id="babyControls">
+                <div class="row">
+                    <div class="section">
+                        <label for="gender">Gender</label>
+                        <select id="gender">
+                            <option value="any">Any / Unisex</option>
+                            <option value="boy">Boy</option>
+                            <option value="girl">Girl</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="origin">Origin (optional)</label>
+                        <input type="text" id="origin" placeholder="e.g., Irish, Spanish, Greek">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="section">
+                        <label for="meaning">Meaning Preference (optional)</label>
+                        <input type="text" id="meaning" placeholder="e.g., strong, peaceful, warrior">
+                    </div>
+                    <div class="section">
+                        <label for="sibling">Sibling Name (optional)</label>
+                        <input type="text" id="sibling" placeholder="For name compatibility">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character Name Controls -->
+            <div id="characterControls" class="hidden">
+                <div class="row">
+                    <div class="section">
+                        <label for="archetype">Character Archetype</label>
+                        <input type="text" id="archetype" placeholder="e.g., hero, villain, mentor, rogue">
+                    </div>
+                    <div class="section">
+                        <label for="charGenre">Genre</label>
+                        <select id="charGenre">
+                            <option value="fantasy">Fantasy</option>
+                            <option value="sci-fi">Science Fiction</option>
+                            <option value="historical">Historical</option>
+                            <option value="contemporary">Contemporary</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section">
+                    <label for="charGender">Gender</label>
+                    <select id="charGender">
+                        <option value="any">Any</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Business Name Controls -->
+            <div id="businessControls" class="hidden">
+                <div class="section">
+                    <label for="industry">Industry</label>
+                    <input type="text" id="industry" placeholder="e.g., tech, cafe, fitness, consulting">
+                </div>
+                <div class="row">
+                    <div class="section">
+                        <label for="bizStyle">Style</label>
+                        <select id="bizStyle">
+                            <option value="modern">Modern</option>
+                            <option value="classic">Classic</option>
+                            <option value="playful">Playful</option>
+                            <option value="sophisticated">Sophisticated</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="keywords">Keywords (comma separated)</label>
+                        <input type="text" id="keywords" placeholder="e.g., fast, smart, green">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateNames()">Generate Names</button>
+        </div>
+
+        <div id="loading" class="hidden message">
+            <p>Consulting the name archives...</p>
+        </div>
+
+        <div id="results" class="results hidden">
+            <div class="results-header">
+                <div class="results-title" id="resultsTitle"></div>
+                <div class="results-meta" id="resultsMeta"></div>
+            </div>
+
+            <div class="names-list" id="namesList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/2026-02-09-ai-name-generator';
+        let currentMode = 'baby';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('babyControls').classList.add('hidden');
+            document.getElementById('characterControls').classList.add('hidden');
+            document.getElementById('businessControls').classList.add('hidden');
+
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+
+            if (mode === 'baby') {
+                document.getElementById('babyControls').classList.remove('hidden');
+            } else if (mode === 'character') {
+                document.getElementById('characterControls').classList.remove('hidden');
+            } else if (mode === 'business') {
+                document.getElementById('businessControls').classList.remove('hidden');
+            }
+        }
+
+        async function generateNames() {
+            let request;
+
+            if (currentMode === 'baby') {
+                request = {
+                    action: 'baby_name',
+                    gender: document.getElementById('gender').value,
+                    origin: document.getElementById('origin').value.trim(),
+                    meaning_pref: document.getElementById('meaning').value.trim(),
+                    sibling_name: document.getElementById('sibling').value.trim()
+                };
+            } else if (currentMode === 'character') {
+                const archetype = document.getElementById('archetype').value.trim();
+                if (!archetype) {
+                    alert('Please enter a character archetype.');
+                    return;
+                }
+                request = {
+                    action: 'character_name',
+                    archetype: archetype,
+                    genre: document.getElementById('charGenre').value,
+                    gender: document.getElementById('charGender').value
+                };
+            } else if (currentMode === 'business') {
+                const industry = document.getElementById('industry').value.trim();
+                if (!industry) {
+                    alert('Please enter an industry.');
+                    return;
+                }
+                const keywordsStr = document.getElementById('keywords').value.trim();
+                const keywords = keywordsStr ? keywordsStr.split(',').map(k => k.trim()) : [];
+                request = {
+                    action: 'business_name',
+                    industry: industry,
+                    style: document.getElementById('bizStyle').value,
+                    keywords: keywords
+                };
+            }
+
+            document.querySelector('.control-panel').style.opacity = '0.6';
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+                const result = await response.json();
+
+                displayNames(result, currentMode);
+            } catch (error) {
+                console.error(error);
+                alert('Network error. Please try again.');
+            }
+
+            document.getElementById('loading').classList.add('hidden');
+            document.querySelector('.control-panel').style.opacity = '1';
+        }
+
+        function displayNames(result, mode) {
+            document.getElementById('results').classList.remove('hidden');
+
+            let title = '';
+            let meta = '';
+
+            if (mode === 'baby') {
+                title = 'Baby Name Suggestions';
+                meta = `Gender: ${result.gender}${result.origin ? ` • Origin: ${result.origin}` : ''}`;
+            } else if (mode === 'character') {
+                title = `Character Names: ${result.archetype}`;
+                meta = `Genre: ${result.genre} • ${result.genre}`;
+            } else if (mode === 'business') {
+                title = `Business Names: ${result.industry}`;
+                meta = `Style: ${result.style}`;
+            }
+
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsMeta').textContent = meta;
+
+            const list = document.getElementById('namesList');
+            list.innerHTML = '';
+
+            const names = result.names || [];
+            names.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'name-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                let ratingHtml = '';
+                if (item.memorability_score) {
+                    ratingHtml = `<div class="detail-badge">⭐ ${item.memorability_score}/10 memorable</div>`;
+                }
+
+                let storyHookHtml = '';
+                if (item.story_hook) {
+                    storyHookHtml = `<div class="story-hook"><strong>Story Hook:</strong> ${item.story_hook}</div>`;
+                }
+
+                let explanationHtml = '';
+                if (item.reasoning) {
+                    explanationHtml = `<div class="name-info"><strong>Why it works:</strong> ${item.reasoning}</div>`;
+                }
+
+                let domainHtml = '';
+                if (item.domain_available !== undefined) {
+                    const domainStatus = item.domain_available ? '✅ .com likely available' : '⚠️ .com may be taken';
+                    domainHtml = `<div class="detail-badge">${domainStatus}</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="name-primary">${item.name}</div>
+                    ${item.full_name ? `<div class="name-info" style="font-size:1.1rem; margin-bottom:8px;">${item.full_name}</div>` : ''}
+                    <div class="name-details">
+                        ${ratingHtml}
+                        ${item.gender ? `<span class="detail-badge">${item.gender}</span>` : ''}
+                        ${item.origin ? `<span class="detail-badge">${item.origin}</span>` : ''}
+                        ${item.archetype_match ? `<span class="detail-badge">${item.archetype_match}</span>` : ''}
+                        ${item.vibe ? `<span class="detail-badge">${item.vibe}</span>` : ''}
+                        ${domainHtml}
+                    </div>
+                    <div class="name-info"><strong>Meaning:</strong> ${item.meaning || 'No meaning provided'}</div>
+                    ${explanationHtml}
+                    ${storyHookHtml}
+                `;
+
+                list.appendChild(card);
+            });
+
+            if (names.length === 0) {
+                list.innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No names generated. Try different parameters.</div>';
+            }
+        }
+    </script>
+</body>
+</html>
