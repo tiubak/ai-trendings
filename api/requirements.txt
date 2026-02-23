@@ -1,2 +1,5 @@
-# No external dependencies needed
-# Uses Python standard library only
+# AI Trendings Requirements
+# Minimal dependencies for Vercel deployment
+
+# Text-to-Speech (Google TTS - free, no API key required)
+gtts>=2.5.0
