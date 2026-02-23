@@ -1,1 +1,9 @@
-{}
+{
+  "2026-02-01": {
+    "name": "AI Context Window Explorer",
+    "path": "projects/2026-02-01-ai-context-window-explorer",
+    "description": "Learn about context windows in AI models: what they are, why they matter, and how different models compare",
+    "category": "AI Education",
+    "created_at": "2026-02-01"
+  }
+}

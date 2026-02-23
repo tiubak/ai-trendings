@@ -1,10 +1,11 @@
 """Project handlers registry."""
 
 # Import project handlers here
-# from . import day_2026_02_01
-# ...
+from . import day_2026_02_01
 
-PROJECTS = {}
+PROJECTS = {
+    "2026-02-01": (day_2026_02_01.handle, day_2026_02_01.META),
+}
 
 def get_handler(date_str: str):
     if date_str in PROJECTS and PROJECTS[date_str]:
