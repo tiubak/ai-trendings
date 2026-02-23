@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Playful Insult Generator - 2026-02-13</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Bungee', 'Impact', sans-serif;
+            background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 2.8rem;
+            text-shadow: 3px 3px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 14px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 12px;
+            color: #333;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 700;
+        }
+
+        .mode-tab.active {
+            background: #333;
+            color: white;
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border: 3px solid #333;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #333;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #ff5f6d;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row .section {
+            flex: 1;
+        }
+
+        .btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 12px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) rotate(-1deg);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: #ff5f6d;
+        }
+
+        .btn-secondary {
+            background: #ff5f6d;
+            margin-top: 10px;
+        }
+
+        .warning-box {
+            background: rgba(255, 95, 109, 0.1);
+            border: 3px dashed #ff5f6d;
+            padding: 12px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .results {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border: 3px solid #333;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) rotate(2deg); }
+            to { opacity: 1; transform: translateY(0) rotate(0); }
+        }
+
+        .results-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid #333;
+        }
+
+        .results-title {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        .results-meta {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .insult-card {
+            background: #fff9e6;
+            border: 3px solid #ffc371;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 16px 0;
+            transform: rotate(-0.5deg);
+            transition: transform 0.3s;
+        }
+
+        .insult-card:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .insult-text {
+            font-size: 2rem;
+            color: #333;
+            line-height: 1.3;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .insult-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .meta-badge {
+            background: #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .meta-badge.warning {
+            background: #ff5f6d;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .emoji-display {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .safe-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 40px;
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .mode-tabs {
+                flex-direction: column;
+            }
+            .row {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .insult-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Playful Insult Generator</h1>
+        <p class="subtitle">Because sometimes friends need to be roasted (lovingly)</p>
+
+        <div class="mode-tabs">
+            <div class="mode-tab active" onclick="setMode('insult')" id="tabInsult">Insult</div>
+            <div class="mode-tab" onclick="setMode('tease')" id="tabTease">Tease a Friend</div>
+            <div class="mode-tab" onclick="setMode('roast')" id="tabRoast">Roast Me</div>
+        </div>
+
+        <div class="control-panel">
+            <!-- Insult Mode -->
+            <div id="insultMode">
+                <div class="row">
+                    <div class="section">
+                        <label for="target">Target</label>
+                        <select id="target">
+                            <option value="personality">Personality</option>
+                            <option value="appearance">Appearance</option>
+                            <option value="skills">Skills/Talent</option>
+                            <option value="habits">Habits</option>
+                            <option value="intelligence">Intelligence/Smarts</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <label for="intensity">Intensity</label>
+                        <select id="intensity">
+                            <option value="light">Light (super friendly)</option>
+                            <option value="moderate" selected>Moderate (teasing)</option>
+                            <option value="bold">Bold (sassy but safe)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section">
+                    <label for="relationship">Relationship</label>
+                    <select id="relationship">
+                        <option value="friends">Friends</option>
+                        <option value="bff">Best Friends</option>
+                        <option value="siblings">Siblings</option>
+                        <option value="coworkers">Coworkers (clean)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tease Mode -->
+            <div id="teaseMode" class="hidden">
+                <div class="section">
+                    <label for="quirk">Friend's Quirk/Habit</label>
+                    <input type="text" id="quirk" placeholder="e.g., always late, weird dance moves, loves puns too much">
+                </div>
+            </div>
+
+            <!-- Roast Mode -->
+            <div id="roastMode" class="hidden">
+                <div class="row">
+                    <div class="section">
+                        <label for="roastTrait">Your Trait (what to roast yourself about)</label>
+                        <input type="text" id="roastTrait" placeholder="e.g., procrastination, terrible at math, weird laugh">
+                    </div>
+                    <div class="section">
+                        <label for="roastStyle">Style</label>
+                        <select id="roastStyle">
+                            <option value="light">Light</option>
+                            <option value="moderate" selected>Moderate</option>
+                            <option value="brutal">Brutal (but still joking)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateInsult()">🔥 Roast!</button>
+            <button class="btn btn-secondary" onclick="startOver()">Reset</button>
+
+            <div class="warning-box">
+                ⚠️ <strong>Remember:</strong> Only use with people who know you're joking! Read the room first.
+            </div>
+        </div>
+
+        <div id="loading" class="hidden message">
+            <p>Cooking up some playful burns...</p>
+        </div>
+
+        <div id="results" class="results hidden">
+            <div class="results-header" id="resultsHeader"></div>
+
+            <div id="insultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/2026-02-13-ai-playful-insult-generator';
+        let currentMode = 'insult';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('insultMode').classList.add('hidden');
+            document.getElementById('teaseMode').classList.add('hidden');
+            document.getElementById('roastMode').classList.add('hidden');
+
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+
+            if (mode === 'insult') {
+                document.getElementById('insultMode').classList.remove('hidden');
+            } else if (mode === 'tease') {
+                document.getElementById('teaseMode').classList.remove('hidden');
+            } else if (mode === 'roast') {
+                document.getElementById('roastMode').classList.remove('hidden');
+            }
+        }
+
+        async function generateInsult() {
+            let request;
+
+            if (currentMode === 'insult') {
+                request = {
+                    action: 'generate',
+                    target_type: document.getElementById('target').value,
+                    intensity: document.getElementById('intensity').value,
+                    relationship: document.getElementById('relationship').value
+                };
+            } else if (currentMode === 'tease') {
+                const quirk = document.getElementById('quirk').value.trim();
+                if (!quirk) {
+                    alert('Please describe your friend\'s quirk.');
+                    return;
+                }
+                request = {
+                    action: 'between_friends',
+                    friend_quirk: quirk
+                };
+            } else if (currentMode === 'roast') {
+                const trait = document.getElementById('roastTrait').value.trim();
+                if (!trait) {
+                    alert('What trait do you want to roast yourself about?');
+                    return;
+                }
+                request = {
+                    action: 'roast_me',
+                    personality_trait: trait,
+                    style: document.getElementById('roastStyle').value
+                };
+            }
+
+            document.querySelector('.control-panel').style.opacity = '0.6';
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+                const result = await response.json();
+
+                displayResults(result, currentMode);
+            } catch (error) {
+                console.error(error);
+                alert('Network error. Please try again.');
+            }
+
+            document.getElementById('loading').classList.add('hidden');
+            document.querySelector('.control-panel').style.opacity = '1';
+        }
+
+        function displayResults(result, mode) {
+            document.getElementById('results').classList.remove('hidden');
+            const header = document.getElementById('resultsHeader');
+            const content = document.getElementById('insultContent');
+
+            content.innerHTML = '';
+
+            if (mode === 'insult') {
+                const ins = result.insult;
+                header.innerHTML = `
+                    <div class="results-title">Playful Insult</div>
+                    <div class="results-meta">Intensity: ${ins.intensity} • Target: ${ins.target} • Relationship: ${ins.relationship}</div>
+                `;
+
+                const card = document.createElement('div');
+                card.className = 'insult-card';
+                card.innerHTML = `
+                    <div class="insult-text">"${ins.insult}"</div>
+                    <div class="insult-meta">
+                        <span class="meta-badge">${ins.humor_style}</span>
+                        <span class="meta-badge">${ins.intensity} intensity</span>
+                        <span class="meta-badge warning">Safe: ${ins.safe_for_relationship ? '✅ Yes' : '⚠️ Maybe'}</span>
+                    </div>
+                    <div class="emoji-display">${ins.smiley_suggestion || '😄'}</div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Relationship</div>
+                            <div class="detail-value">${ins.relationship}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Target</div>
+                            <div class="detail-value">${ins.target}</div>
+                        </div>
+                    </div>
+                `;
+                content.appendChild(card);
+
+            } else if (mode === 'tease') {
+                const tease = result.tease;
+                header.innerHTML = `
+                    <div class="results-title">Friendly Tease</div>
+                    <div class="results-meta">Affection level: ${tease.affection_level}/10 • ${tease.relationship_strength}</div>
+                `;
+
+                const card = document.createElement('div');
+                card.className = 'insult-card';
+                card.innerHTML = `
+                    <div class="insult-text">"${tease.tease}"</div>
+                    <div class="insult-meta">
+                        <span class="meta-badge">Teasing</span>
+                        <span class="meta-badge">Affectionate</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Quirk Targeted</div>
+                            <div class="detail-value">${tease.quirk_targeted}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Comeback Potential</div>
+                            <div class="detail-value">${tease.comeback_opportunity}</div>
+                        </div>
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">Follow Up (Nice Part)</div>
+                            <div class="detail-value">"${tease.follow_up_positive}"</div>
+                        </div>
+                    </div>
+                `;
+                content.appendChild(card);
+
+            } else if (mode === 'roast') {
+                const roast = result.roast;
+                header.innerHTML = `
+                    <div class="results-title">Self-Roast</div>
+                    <div class="results-meta">Style: ${roast.style} • Target: ${roast.trait_targeted}</div>
+                `;
+
+                const card = document.createElement('div');
+                card.className = 'insult-card';
+                card.innerHTML = `
+                    <div class="insult-text">"${roast.roast}"</div>
+                    <div class="insult-meta">
+                        <span class="meta-badge">Self-deprecating</span>
+                        <span class="meta-badge">${roast.style}</span>
+                    </div>
+                    <div class="emoji-display">😅</div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Confidence Required</div>
+                            <div class="detail-value">${roast.confidence_required}/10</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Audience Reaction</div>
+                            <div class="detail-value" style="font-size:0.95rem;">${roast.audience_reaction}</div>
+                        </div>
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">Balance Tip</div>
+                            <div class="detail-value" style="font-style:italic;">${roast.self_love_balance}</div>
+                        </div>
+                    </div>
+                `;
+                content.appendChild(card);
+            }
+        }
+
+        function startOver() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('quirk').value = '';
+            document.getElementById('roastTrait').value = '';
+        }
+    </script>
+</body>
+</html>

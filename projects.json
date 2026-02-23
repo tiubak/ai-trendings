@@ -71,6 +71,12 @@
     "description": "Generate plausible (and funny) excuses for canceling plans, missing events, or getting out of commitments.",
     "created_at": "2026-02-12"
   },
+  "2026-02-13": {
+    "name": "AI Playful Insult Generator",
+    "path": "projects/2026-02-13-ai-playful-insult-generator",
+    "description": "Generate playful, friendly insults for bantering with friends and lighthearted roasting.",
+    "created_at": "2026-02-13"
+  },
   "2026-02-20": {
     "name": "AI Cosmic Whisperer",
     "path": "projects/2026-02-20-ai-cosmic-whisperer",
