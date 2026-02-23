@@ -1,6 +1,6 @@
 """AI Stand-up Comedian - Jokes, Roasts, and Stories with Voice"""
 
-from ..base import call_openrouter, call_huggingface
+from ..base import call_openrouter, call_edge_tts
 
 def handle(action: str, data: dict) -> dict:
     """Handle project actions."""
@@ -18,15 +18,14 @@ def handle(action: str, data: dict) -> dict:
         prompt = f"Tell me a short, clean, and funny joke about {topic}. Keep it under 2 sentences."
         joke_text = call_openrouter(prompt)
 
-        # Generate TTS for the joke
-        tts_prompt = f"A comedian says: {joke_text}"
-        audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
+        # Generate TTS for the joke using Edge TTS (free, no API key)
+        audio_base64 = call_edge_tts(joke_text)
 
-        # Check if audio was generated successfully (not an error message)
+        # Check if audio was generated successfully
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
-            # Prepend data URI for audio/wav
-            audio_url = f"data:audio/wav;base64,{audio_base64}"
+        if audio_base64:
+            # Edge TTS returns MP3
+            audio_url = f"data:audio/mp3;base64,{audio_base64}"
 
         return {
             "joke": joke_text,
@@ -40,12 +39,12 @@ def handle(action: str, data: dict) -> dict:
         prompt = f"Give a playful, light-hearted roast of {target}. Keep it friendly and short."
         roast_text = call_openrouter(prompt)
 
-        tts_prompt = f"A comedian roasts: {roast_text}"
-        audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
+        # Generate TTS using Edge TTS (free, no API key)
+        audio_base64 = call_edge_tts(roast_text)
 
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
-            audio_url = f"data:audio/wav;base64,{audio_base64}"
+        if audio_base64:
+            audio_url = f"data:audio/mp3;base64,{audio_base64}"
 
         return {
             "roast": roast_text,
@@ -59,12 +58,12 @@ def handle(action: str, data: dict) -> dict:
         prompt = f"Write a very short funny story (3-4 sentences) about {characters}. Include a punchline."
         story_text = call_openrouter(prompt)
 
-        tts_prompt = f"Comedian narrates: {story_text}"
-        audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
+        # Generate TTS using Edge TTS (free, no API key)
+        audio_base64 = call_edge_tts(story_text)
 
         audio_url = None
-        if audio_base64 and not audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
-            audio_url = f"data:audio/wav;base64,{audio_base64}"
+        if audio_base64:
+            audio_url = f"data:audio/mp3;base64,{audio_base64}"
 
         return {
             "story": story_text,
@@ -74,21 +73,21 @@ def handle(action: str, data: dict) -> dict:
         }
 
     elif action == 'tts_test':
-        # Direct test of HuggingFace TTS as requested
-        test_text = data.get('text', 'Hello, this is a test of HuggingFace text-to-speech.')
-        audio_base64 = call_huggingface(test_text, "facebook/mms-tts-eng")
+        # Direct test of Edge TTS
+        test_text = data.get('text', 'Hello, this is a test of text-to-speech.')
+        audio_base64 = call_edge_tts(test_text)
 
-        if not audio_base64 or audio_base64.startswith(("API Error", "HUGGINGFACE", "Error:")):
+        if not audio_base64:
             return {
                 "success": False,
-                "message": audio_base64 or "Unknown error",
+                "message": "TTS generation failed",
                 "date": "2026-02-02"
             }
         else:
             return {
                 "success": True,
-                "message": "TTS generated successfully!",
-                "audio": f"data:audio/wav;base64,{audio_base64}",
+                "message": "TTS generated successfully using Edge TTS (free, no API key required)!",
+                "audio": f"data:audio/mp3;base64,{audio_base64}",
                 "text": test_text,
                 "date": "2026-02-02"
             }

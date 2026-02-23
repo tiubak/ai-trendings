@@ -87,11 +87,56 @@ def fetch_image(prompt: str, width: int = 512, height: int = 512) -> str:
     
     return None
 
+def call_edge_tts(text: str) -> str:
+    """Call free Edge TTS API (Microsoft Edge, no API key required).
+    Returns base64-encoded audio."""
+    # Edge TTS is free and requires no API key
+    # Using the open source edge-tts Python library approach via curl
+    
+    # Edge TTS requires specific headers to simulate Edge browser
+    # Use the Edge read-aloud endpoint format
+    url = "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1"
+    
+    # Edge TTS request format
+    data = {
+        "text": text,
+        "voice": "en-US-AriaNeural",  # Default voice
+        "rate": "+0%",  # Speaking speed
+        "pitch": "+0Hz",  # Pitch adjustment
+    }
+    
+    headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    }
+    
+    result = subprocess.run([
+        "curl", "-s", "-X", "POST", url,
+        "-H", f"Content-Type: {headers['Content-Type']}",
+        "-H", f"User-Agent: {headers['User-Agent']}",
+        "-d", json.dumps(data)
+    ], capture_output=True, timeout=60)
+    
+    if result.returncode != 0:
+        return None
+    
+    # Edge TTS returns MP3 audio, encode as base64
+    try:
+        import base64
+        return base64.b64encode(result.stdout).decode('utf-8')
+    except:
+        return None
+
+
 def call_huggingface(prompt: str, model: str) -> str:
     """Call HuggingFace Inference API for specialized tasks.
     Returns text as string, or base64-encoded binary for audio/image outputs."""
     if not HUGGINGFACE_API_KEY:
         return "HUGGINGFACE_API_KEY_NOT_SET"
+
+    # NOTE: HuggingFace Inference Providers does NOT support Text-to-Speech
+    # Use call_edge_tts() instead for TTS
+    # This function remains for other supported tasks (images, etc.)
 
     # Correct HuggingFace router format for serverless inference
     # https://router.huggingface.co/hf-inference/models/{model}

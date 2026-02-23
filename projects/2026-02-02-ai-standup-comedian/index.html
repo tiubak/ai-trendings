@@ -219,7 +219,7 @@
         </nav>
 
         <h1>🎤 AI Stand-up Comedian</h1>
-        <p class="subtitle">Let AI generate jokes, roasts, and funny stories — with voice narration!</p>
+        <p class="subtitle">Let AI generate jokes, roasts, and funny stories — with free voice narration (Edge TTS)!</p>
 
         <!-- Joke Generator -->
         <div class="section">
@@ -251,10 +251,10 @@
             <div id="storyAudio" class="audio-player" style="display:none;"></div>
         </div>
 
-        <!-- HuggingFace TTS Test -->
+        <!-- Edge TTS Test -->
         <div class="section">
-            <h2><span class="icon">🔊</span> HuggingFace TTS Test</h2>
-            <p>Test the HuggingFace Text-to-Speech integration directly using the facebook/mms-tts-eng model.</p>
+            <h2><span class="icon">🔊</span> Edge TTS Test</h2>
+            <p>Test the free Edge Text-to-Speech integration (no API key required). Uses Microsoft Edge's online TTS service.</p>
             <button class="btn btn-secondary" onclick="testTTS()">Run TTS Test</button>
             <div id="ttsTestResult" class="result" style="display:none;"></div>
             <div id="ttsTestAudio" class="audio-player" style="display:none;"></div>
@@ -279,7 +279,7 @@
         }
 
         function playAudio(container, base64Data) {
-            container.innerHTML = `<audio controls autoplay><source src="${base64Data}" type="audio/wav"></source>Your browser does not support the audio element.</audio>`;
+            container.innerHTML = `<audio controls autoplay><source src="${base64Data}" type="audio/mp3"></source>Your browser does not support the audio element.</audio>`;
         }
 
         function showAudioError(container, message) {
@@ -301,15 +301,11 @@
             } else {
                 resultDiv.textContent = result.joke || "No joke generated.";
                 if (result.audio) {
-                    if (result.audio.startsWith("API Error") || result.audio.startsWith("HUGGINGFACE")) {
-                        showAudioError(audioDiv, "HuggingFace TTS failed - API error or key not configured");
-                        audioDiv.style.display = 'block';
-                    } else {
-                        playAudio(audioDiv, result.audio);
-                        audioDiv.style.display = 'flex';
-                    }
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
                 } else {
-                    audioDiv.style.display = 'none';
+                    showAudioError(audioDiv, "TTS generation failed");
+                    audioDiv.style.display = 'block';
                 }
             }
         }
@@ -329,15 +325,11 @@
             } else {
                 resultDiv.textContent = result.roast || "No roast generated.";
                 if (result.audio) {
-                    if (result.audio.startsWith("API Error") || result.audio.startsWith("HUGGINGFACE")) {
-                        showAudioError(audioDiv, "HuggingFace TTS failed - API error or key not configured");
-                        audioDiv.style.display = 'block';
-                    } else {
-                        playAudio(audioDiv, result.audio);
-                        audioDiv.style.display = 'flex';
-                    }
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
                 } else {
-                    audioDiv.style.display = 'none';
+                    showAudioError(audioDiv, "TTS generation failed");
+                    audioDiv.style.display = 'block';
                 }
             }
         }
@@ -357,15 +349,11 @@
             } else {
                 resultDiv.textContent = result.story || "No story generated.";
                 if (result.audio) {
-                    if (result.audio.startsWith("API Error") || result.audio.startsWith("HUGGINGFACE")) {
-                        showAudioError(audioDiv, "HuggingFace TTS failed - API error or key not configured");
-                        audioDiv.style.display = 'block';
-                    } else {
-                        playAudio(audioDiv, result.audio);
-                        audioDiv.style.display = 'flex';
-                    }
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
                 } else {
-                    audioDiv.style.display = 'none';
+                    showAudioError(audioDiv, "TTS generation failed");
+                    audioDiv.style.display = 'block';
                 }
             }
         }
@@ -373,7 +361,7 @@
         async function testTTS() {
             const resultDiv = document.getElementById('ttsTestResult');
             const audioDiv = document.getElementById('ttsTestAudio');
-            resultDiv.innerHTML = '<p class="loading">Testing HuggingFace TTS...</p>';
+            resultDiv.innerHTML = '<p class="loading">Testing Edge TTS...</p>';
             resultDiv.style.display = 'block';
             audioDiv.style.display = 'none';
 
@@ -386,13 +374,8 @@
             } else {
                 resultDiv.textContent = `✅ ${result.message} (Text: "${result.text}")`;
                 if (result.audio) {
-                    if (result.audio.startsWith("API Error") || result.audio.startsWith("HUGGINGFACE")) {
-                        showAudioError(audioDiv, "HuggingFace TTS failed");
-                        audioDiv.style.display = 'block';
-                    } else {
-                        playAudio(audioDiv, result.audio);
-                        audioDiv.style.display = 'flex';
-                    }
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
                 }
             }
         }
