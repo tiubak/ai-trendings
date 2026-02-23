@@ -1,58 +1,110 @@
 # 🤖 AI Trendings
 
-One AI project, every single day. Fully automated by Atlas.
+**One AI project, every single day. Fully automated by Atlas.**
+
+🔗 **Live Site:** [https://ai-trendings.vercel.app](https://ai-trendings.vercel.app)
 
 ## What This Is
 
-A living portfolio showcasing daily AI/ML projects — from NLP to computer vision to generative AI. Each project is built from scratch using free APIs and open-source tools.
+A living portfolio showcasing daily AI/ML projects — interactive web apps powered by free AI APIs. Each project is built from scratch, committed automatically, and deployed to Vercel.
 
-## Stats
+**Goal:** Demonstrate creativity, technical skill, and consistent delivery through 30+ unique AI applications.
 
-- **Projects:** <!-- PROJECT-COUNT -->3<!-- /PROJECT-COUNT --> projects and counting
-- **Tech Stack:** Python, HTML/JS, free APIs only
-- **Automation:** Powered by OpenClaw & Atlas
+## Tech Stack
 
-## Browse Projects
-
-Visit the [live site](https://ai-trendings.vercel.app) or explore the calendar on the homepage.
+| Layer | Technology |
+|-------|------------|
+| **AI/ML** | Pollinations.AI (free text/image generation) |
+| **Backend** | Python serverless functions on Vercel |
+| **Frontend** | Vanilla HTML/CSS/JS (no frameworks) |
+| **Deployment** | Vercel (auto-deploys from GitHub) |
+| **Automation** | OpenClaw cron job running daily at 2 AM ET |
 
 ## Project Structure
 
 ```
 ai-trendings/
-├── index.html          # Main calendar landing page
-├── projects/           # Daily projects (one per day)
-│   └── YYYY-MM-DD-project-name/
-│       ├── main.py     # Python backend
-│       ├── index.html  # Frontend
-│       ├── README.md   # Project documentation
-│       └── requirements.txt
-├── vercel.json         # Vercel config
-└── README.md           # This file
+├── api/                        # Python serverless functions
+│   ├── 2026-02-20-*.py        # One file per project (FLAT structure!)
+│   ├── 2026-02-21-*.py
+│   ├── pyproject.toml         # Build config
+│   └── requirements.txt       # Dependencies
+├── projects/                   # Daily project frontends
+│   ├── 2026-02-20-ai-cosmic-whisperer/
+│   │   ├── index.html         # Frontend UI
+│   │   └── README.md          # Project docs
+│   ├── 2026-02-21-ai-dungeon-master/
+│   └── ...
+├── projects.json               # Project registry
+├── index.html                  # Main calendar landing page
+└── README.md                   # This file
 ```
+
+## How It Works
+
+Each project follows this architecture:
+
+```
+api/2026-02-XX-project-name.py  →  /api/2026-02-XX-project-name
+projects/2026-02-XX-project-name/index.html → frontend
+```
+
+**Key Design Decisions:**
+- **Single API file per project** — all endpoints via `action` parameter
+- **Flat API structure** — Vercel Python requires `api/*.py` directly (no nested dirs!)
+- **curl subprocess** — Pollinations.AI blocks Python urllib (Cloudflare 403)
+- **Stateless handlers** — each request is independent
+
+## Featured Projects
+
+| Date | Project | Description |
+|------|---------|-------------|
+| Feb 20 | [AI Cosmic Whisperer](projects/2026-02-20-ai-cosmic-whisperer/) | Mystical wisdom generator with space-themed UI |
+| Feb 21 | [AI Dungeon Master](projects/2026-02-21-ai-dungeon-master/) | Interactive text adventure game |
+| Feb 22 | [AI Story Illustrator](projects/2026-02-22-ai-story-illustrator/) | Transform stories into illustrated narratives |
+| Feb 23 | [AI Character Generator](projects/2026-02-23-ai-character-generator/) | Create detailed character profiles |
+
+*...and counting!*
 
 ## API Policy
 
-All projects use **free APIs only**:
-- [Pollinations.AI](https://pollinations.ai) — Text/image generation
-- [Hugging Face Inference](https://huggingface.co/docs/api-inference) — ML models
-- Local models — Faster-Whisper, etc.
+**Free APIs only:**
+- **Pollinations.AI** — Text and image generation (free, generous limits)
+- **Hugging Face Inference** — ML models (free tier)
+- **Local models** — Faster-Whisper, etc.
 
-No paid services. No API keys in the repo.
+No paid services. No credit cards required.
 
 ## Automation
 
-This project is fully automated by a nightly cron job that:
+Powered by a nightly cron job (2:00 AM ET) that:
 
-1. Researches an AI trend/topic
-2. Designs a small, useful application
-3. Writes the code (Python + HTML/JS)
-4. Tests and fixes bugs
-5. Commits and pushes to main
-6. Updates the calendar on index.html
+1. Reads [`skills/ai-trending-generator.md`](../skills/ai-trending-generator.md) for instructions
+2. Picks a creative project idea
+3. Generates Python backend + HTML frontend
+4. Updates `projects.json` registry
+5. Commits and pushes to GitHub
+6. Vercel auto-deploys the changes
 
-The agent runs in session mode with context compaction, so it can handle projects of ~2000 lines without hitting token limits.
+The agent uses the `stepfun/step-3.5-flash` model via OpenRouter (free tier).
+
+## Development
+
+```bash
+# Clone the repo
+git clone https://github.com/tiubak/ai-trendings.git
+
+# No build step needed — just open index.html
+# Or deploy to Vercel for full functionality
+
+# Environment variables (for Vercel)
+POLLINATIONS_API_KEY=your_key_here  # Optional but recommended
+```
+
+## License
+
+MIT — use anything here for your own projects!
 
 ---
 
-Built by [@tiubak](https://github.com/tiubak) • Automated by Atlas 🌍
+Built by [@tiubak](https://github.com/tiubak) • Automated by [Atlas](https://openclaw.ai) 🌍
