@@ -1,7 +1,7 @@
 """Project handlers registry."""
 
 # Import project handlers here
-# from . import 2026_02_01  # New naming: YYYY_MM_DD
+from . import _2026_02_01  # New naming: YYYY_MM_DD (underscore prefix for valid Python identifier)
 # from . import 2026_02_02
 # ...
 
@@ -9,7 +9,7 @@
 # Key: "YYYY-MM-DD" (e.g., "2026-02-01")
 # Value: (handler_function, META_dict)
 PROJECTS = {
-    # "2026-02-01": (lambda a, d: _2026_02_01.handle(a, d), _2026_02_01.META),
+    "2026-02-01": (lambda a, d: _2026_02_01.handle(a, d), _2026_02_01.META),
     # "2026-02-02": (lambda a, d: _2026_02_02.handle(a, d), _2026_02_02.META),
 }
 

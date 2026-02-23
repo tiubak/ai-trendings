@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Comparator | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00d4ff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #00d4ff, #9b59b6, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Models Grid */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .model-chip {
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .model-chip:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+
+        .model-chip.selected {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .model-chip .name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .model-chip .dev {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #00d4ff, #9b59b6);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Results */
+        .result-area {
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 150px;
+        }
+
+        .result-area h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .result-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .result-content li {
+            margin-bottom: 8px;
+        }
+
+        .result-content strong {
+            color: #ff6b6b;
+        }
+
+        /* Overview Display */
+        #overview {
+            line-height: 1.9;
+        }
+
+        #overview h3 {
+            color: #9b59b6;
+            margin: 25px 0 15px;
+            font-size: 1.3rem;
+        }
+
+        #overview p {
+            margin-bottom: 15px;
+        }
+
+        /* Comparison Section */
+        .comparison-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .comparison-controls select {
+            flex: 1;
+            min-width: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-controls select:hover,
+        .comparison-controls select:focus {
+            border-color: #00d4ff;
+            outline: none;
+        }
+
+        /* Visualizations */
+        .viz-container {
+            text-align: center;
+        }
+
+        .viz-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+        }
+
+        .viz-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .quiz-question h3 {
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+
+        .quiz-option.correct {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #00d4ff;
+        }
+
+        .quiz-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            display: none;
+        }
+
+        .quiz-explanation.show {
+            display: block;
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .quiz-score.show {
+            display: block;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00d4ff;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: linear-gradient(to bottom, #00d4ff, #9b59b6);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .timeline-item .year {
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-item .model {
+            color: #9b59b6;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item .description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(155, 89, 182, 0.1);
+            border-left: 4px solid #9b59b6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #9b59b6;
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem !important;
+            }
+            
+            .tagline {
+                font-size: 1.1rem !important;
+            }
+            
+            .back-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button (REQUIRED!) -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <header>
+            <h1>AI Model Comparator</h1>
+            <p class="tagline">Explore, compare, and understand the world's leading AI language models</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Overview Section -->
+            <section class="card">
+                <h2><span class="icon">📊</span> Overview</h2>
+                <button class="btn" onclick="loadOverview()" id="overviewBtn">
+                    <span id="overviewSpinner" class="loading" style="display:none;"></span>
+                    Load Model Overview
+                </button>
+                <div class="result-area" id="overviewResult" style="display:none;">
+                    <div id="overview"></div>
+                </div>
+            </section>
+
+            <!-- Compare Models -->
+            <section class="card">
+                <h2><span class="icon">⚖️</span> Compare Models</h2>
+                <div class="comparison-controls">
+                    <select id="model1">
+                        <option value="gpt4">GPT-4 (OpenAI)</option>
+                        <option value="claude">Claude 3.5 Sonnet (Anthropic)</option>
+                        <option value="gemini">Gemini 2.0 (Google)</option>
+                        <option value="llama">Llama 3.3 (Meta)</option>
+                        <option value="mistral">Mistral Large (Mistral)</option>
+                        <option value="command">Command R+ (Cohere)</option>
+                    </select>
+                    <select id="model2">
+                        <option value="claude">Claude 3.5 Sonnet (Anthropic)</option>
+                        <option value="gpt4">GPT-4 (OpenAI)</option>
+                        <option value="gemini">Gemini 2.0 (Google)</option>
+                        <option value="llama">Llama 3.3 (Meta)</option>
+                        <option value="mistral">Mistral Large (Mistral)</option>
+                        <option value="command">Command R+ (Cohere)</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="compareModels()" id="compareBtn">
+                    <span id="compareSpinner" class="loading" style="display:none;"></span>
+                    Compare Selected Models
+                </button>
+                <div class="result-area" id="comparisonResult" style="display:none;">
+                    <div class="result-content" id="comparison"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Evolution Timeline -->
+        <section class="card" style="margin-bottom: 30px;">
+            <h2><span class="icon">📅</span> Evolution Timeline</h2>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Explore the history of AI language models from 2018 to 2026</p>
+            <div class="viz-controls">
+                <button class="btn" onclick="loadTimeline('all')" id="timelineFullBtn">Full Timeline</button>
+                <button class="btn btn-secondary" onclick="loadTimeline('2024')">2024</button>
+                <button class="btn btn-secondary" onclick="loadTimeline('2025')">2025</button>
+                <button class="btn btn-secondary" onclick="loadTimeline('2026')">2026</button>
+            </div>
+            <div class="result-area" id="timelineResult" style="display:none;">
+                <div id="timeline"></div>
+            </div>
+        </section>
+
+        <!-- Visualizations -->
+        <section class="card" style="margin-bottom: 30px;">
+            <h2><span class="icon">🎨</span> Visualizations</h2>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Generate diagrams explaining AI architectures and comparisons</p>
+            <div class="viz-controls">
+                <button class="btn btn-secondary" onclick="generateVisualization('architecture', 'transformer')">Transformer Architecture</button>
+                <button class="btn btn-secondary" onclick="generateVisualization('architecture', 'gpt4')">GPT-4 Architecture</button>
+                <button class="btn btn-secondary" onclick="generateVisualization('comparison')">Model Comparison Chart</button>
+                <button class="btn btn-secondary" onclick="generateVisualization('attention')">Attention Mechanism</button>
+            </div>
+            <div class="result-area viz-container" id="vizResult" style="display:none;">
+                <img id="visualization" src="" alt="Visualization" style="display:none;">
+                <p id="vizPrompt" style="font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 10px;"></p>
+            </div>
+        </section>
+
+        <!-- Quiz -->
+        <section class="card">
+            <h2><span class="icon">🧠</span> Test Your Knowledge</h2>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Challenge yourself with questions about AI models</p>
+            <button class="btn" onclick="loadQuiz()" id="quizBtn">
+                <span id="quizSpinner" class="loading" style="display:none;"></span>
+                Generate Quiz
+            </button>
+            
+            <div class="quiz-container" id="quizContainer" style="display:none;">
+                <div id="quizQuestions"></div>
+                <div class="quiz-score" id="quizScore">
+                    <strong id="scoreText"></strong>
+                </div>
+                <button class="btn" onclick="loadQuiz()" style="margin-top: 20px;">Try Again</button>
+            </div>
+        </section>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h4>💡 About This Project</h4>
+            <p>This interactive tool helps developers and AI enthusiasts understand the landscape of AI language models. Compare capabilities, explore historical evolution, and test your knowledge. All information is generated using AI and reflects the state of the art as of early 2026.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>AI Model Comparator • February 1, 2026 • <a href="/">AI Trendings</a></p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">Built with OpenRouter & Pollinations.AI</p>
+    </footer>
+
+    <script>
+        // Configuration
+        const DATE = '2026-02-01';
+        const API_URL = '/api/index';
+
+        // API Call function
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { error: error.message };
+            }
+        }
+
+        // Spinner control
+        function showSpinner(btnId, spinnerId) {
+            document.getElementById(spinnerId).style.display = 'inline-block';
+            document.getElementById(btnId).disabled = true;
+        }
+
+        function hideSpinner(btnId, spinnerId) {
+            document.getElementById(spinnerId).style.display = 'none';
+            document.getElementById(btnId).disabled = false;
+        }
+
+        // Load Overview
+        async function loadOverview() {
+            const resultArea = document.getElementById('overviewResult');
+            const content = document.getElementById('overview');
+            
+            showSpinner('overviewBtn', 'overviewSpinner');
+            resultArea.style.display = 'block';
+            content.innerHTML = '<p>Loading overview...</p>';
+            
+            const result = await apiCall('start');
+            
+            if (result.error) {
+                content.innerHTML = `<p style="color: #ff6b6b;">Error: ${result.error}</p>`;
+            } else {
+                content.innerHTML = formatOverview(result.overview, result.models);
+            }
+            
+            hideSpinner('overviewBtn', 'overviewSpinner');
+        }
+
+        function formatOverview(text, models) {
+            return `<div class="overview-text">${text}</div>`;
+        }
+
+        // Compare Models
+        async function compareModels() {
+            const model1 = document.getElementById('model1').value;
+            const model2 = document.getElementById('model2').value;
+            
+            if (model1 === model2) {
+                alert('Please select two different models to compare.');
+                return;
+            }
+            
+            const resultArea = document.getElementById('comparisonResult');
+            const content = document.getElementById('comparison');
+            
+            showSpinner('compareBtn', 'compareSpinner');
+            resultArea.style.display = 'block';
+            content.innerHTML = '<p>Generating comparison...</p>';
+            
+            const result = await apiCall('compare', { model1, model2 });
+            
+            if (result.error) {
+                content.innerHTML = `<p style="color: #ff6b6b;">Error: ${result.error}</p>`;
+            } else {
+                content.innerHTML = formatComparison(result.comparison, result.model1, result.model2);
+            }
+            
+            hideSpinner('compareBtn', 'compareSpinner');
+        }
+
+        function formatComparison(text, model1, model2) {
+            // Simple formatting - convert markdown-like to HTML
+            let html = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>')
+                .replace(/• /g, '&bull; ');
+            return html;
+        }
+
+        // Load Timeline
+        async function loadTimeline(year) {
+            const resultArea = document.getElementById('timelineResult');
+            const content = document.getElementById('timeline');
+            
+            resultArea.style.display = 'block';
+            content.innerHTML = '<p>Loading timeline...</p>';
+            
+            const result = await apiCall('timeline', { year });
+            
+            if (result.error) {
+                content.innerHTML = `<p style="color: #ff6b6b;">Error: ${result.error}</p>`;
+            } else {
+                content.innerHTML = formatTimeline(result.timeline);
+            }
+        }
+
+        function formatTimeline(text) {
+            // Convert timeline text to visual timeline items
+            const lines = text.split('\n').filter(line => line.trim());
+            let html = '<div class="timeline">';
+            
+            lines.forEach(line => {
+                // Simple parsing - could be improved
+                if (line.match(/^\d{4}/)) {
+                    const yearMatch = line.match(/^(\d{4})/);
+                    if (yearMatch) {
+                        html += `<div class="timeline-item">
+                            <div class="year">${yearMatch[1]}</div>
+                            <div class="description">${line.replace(yearMatch[1], '')}</div>
+                        </div>`;
+                    }
+                } else if (line.includes('GPT') || line.includes('Claude') || line.includes('Llama') || line.includes('Gemini') || line.includes('Mistral')) {
+                    html += `<div class="timeline-item">
+                        <div class="model">${line}</div>
+                    </div>`;
+                } else if (line.trim()) {
+                    html += `<div class="timeline-item">
+                        <div class="description">${line}</div>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Generate Visualization
+        async function generateVisualization(type, model) {
+            const resultArea = document.getElementById('vizResult');
+            const img = document.getElementById('visualization');
+            const promptText = document.getElementById('vizPrompt');
+            
+            showSpinner('timelineFullBtn', 'timelineFullSpinner'); // reuse any spinner
+            resultArea.style.display = 'block';
+            img.style.display = 'none';
+            promptText.textContent = 'Generating visualization...';
+            
+            const result = await apiCall('visualize', { type, model });
+            
+            if (result.error) {
+                promptText.textContent = `Error: ${result.error}`;
+            } else {
+                img.src = result.image_url;
+                img.style.display = 'block';
+                promptText.textContent = `Prompt: ${result.prompt}`;
+            }
+            
+            hideSpinner('timelineFullBtn', 'timelineFullSpinner');
+        }
+
+        // Load Quiz
+        async function loadQuiz() {
+            const container = document.getElementById('quizContainer');
+            const questionsDiv = document.getElementById('quizQuestions');
+            const scoreDiv = document.getElementById('quizScore');
+            
+            showSpinner('quizBtn', 'quizSpinner');
+            container.style.display = 'block';
+            scoreDiv.classList.remove('show');
+            questionsDiv.innerHTML = '<p>Loading quiz...</p>';
+            
+            const result = await apiCall('quiz');
+            
+            if (result.error || !result.quiz || result.quiz.length === 0) {
+                questionsDiv.innerHTML = `<p style="color: #ff6b6b;">Error generating quiz: ${result.error || 'No questions returned'}</p>`;
+            } else {
+                questionsDiv.innerHTML = formatQuiz(result.quiz);
+                setupQuiz();
+            }
+            
+            hideSpinner('quizBtn', 'quizSpinner');
+        }
+
+        function formatQuiz(questions) {
+            let html = '';
+            questions.forEach((q, idx) => {
+                html += `<div class="quiz-question" data-index="${idx}">
+                    <h3>Question ${idx + 1}: ${q.question}</h3>
+                    <div class="quiz-options">`;
+                q.options.forEach((opt, optIdx) => {
+                    html += `<label class="quiz-option" data-correct="${q.correct}">
+                        <input type="radio" name="q${idx}" value="${optIdx}">
+                        ${opt}
+                    </label>`;
+                });
+                html += `</div>
+                    <div class="quiz-explanation" id="explanation${idx}">
+                        <strong>Explanation:</strong> ${q.explanation}
+                    </div>
+                </div>`;
+            });
+            return html;
+        }
+
+        function setupQuiz() {
+            const options = document.querySelectorAll('.quiz-option');
+            let score = 0;
+            let answered = 0;
+            const total = document.querySelectorAll('.quiz-question').length;
+            
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const question = option.closest('.quiz-question');
+                    const qIndex = parseInt(question.dataset.index);
+                    const selected = parseInt(option.querySelector('input').value);
+                    const correct = parseInt(option.dataset.correct);
+                    const explanation = document.getElementById(`explanation${qIndex}`);
+                    
+                    // Disable all options in this question
+                    const allOptions = question.querySelectorAll('.quiz-option');
+                    allOptions.forEach(opt => {
+                        opt.style.pointerEvents = 'none';
+                        const optVal = parseInt(opt.querySelector('input').value);
+                        if (optVal === correct) {
+                            opt.classList.add('correct');
+                        } else if (optVal === selected && selected !== correct) {
+                            opt.classList.add('incorrect');
+                        }
+                    });
+                    
+                    explanation.classList.add('show');
+                    
+                    if (selected === correct) {
+                        score++;
+                    }
+                    answered++;
+                    
+                    // Check if all answered
+                    if (answered === total) {
+                        document.getElementById('scoreText').textContent = 
+                            `You scored ${score} out of ${total} (${Math.round(score/total*100)}%)`;
+                        document.getElementById('quizScore').classList.add('show');
+                    }
+                });
+            });
+        }
+
+        // Load overview on page load for immediate engagement
+        window.onload = function() {
+            // Optional: auto-load overview
+            // loadOverview();
+        };
+    </script>
+</body>
+</html>
