@@ -265,6 +265,18 @@
         const DATE = '2026-02-02';
         const API_URL = '/api/index';
 
+        // Web Speech API fallback
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                speechSynthesis.speak(utterance);
+                return true;
+            }
+            return false;
+        }
+
         async function apiCall(action, data = {}) {
             try {
                 const response = await fetch(API_URL, {
@@ -282,6 +294,14 @@
             container.innerHTML = `<audio controls autoplay><source src="${base64Data}" type="audio/wav"></source>Your browser does not support the audio element.</audio>`;
         }
 
+        function showFallbackMessage(container, text) {
+            container.innerHTML = `<p style="color: #ff9a00; font-size: 0.9rem;">🔊 Using browser TTS (HuggingFace API key not configured)</p>`;
+            // Speak the text
+            if (!speakText(text)) {
+                container.innerHTML += `<p style="color: #ff6b6b; margin-top: 10px;">Speech synthesis not supported in this browser.</p>`;
+            }
+        }
+
         async function generateJoke() {
             const topic = document.getElementById('jokeTopic').value.trim() || 'programming';
             const resultDiv = document.getElementById('jokeResult');
@@ -296,9 +316,12 @@
                 resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
             } else {
                 resultDiv.textContent = result.joke || "No joke generated.";
-                if (result.audio) {
+                if (result.audio && !result.audio.startsWith("HUGGINGFACE")) {
                     playAudio(audioDiv, result.audio);
                     audioDiv.style.display = 'flex';
+                } else if (result.joke) {
+                    showFallbackMessage(audioDiv, result.joke);
+                    audioDiv.style.display = 'block';
                 } else {
                     audioDiv.style.display = 'none';
                 }
@@ -319,9 +342,12 @@
                 resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
             } else {
                 resultDiv.textContent = result.roast || "No roast generated.";
-                if (result.audio) {
+                if (result.audio && !result.audio.startsWith("HUGGINGFACE")) {
                     playAudio(audioDiv, result.audio);
                     audioDiv.style.display = 'flex';
+                } else if (result.roast) {
+                    showFallbackMessage(audioDiv, result.roast);
+                    audioDiv.style.display = 'block';
                 } else {
                     audioDiv.style.display = 'none';
                 }
@@ -342,9 +368,12 @@
                 resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
             } else {
                 resultDiv.textContent = result.story || "No story generated.";
-                if (result.audio) {
+                if (result.audio && !result.audio.startsWith("HUGGINGFACE")) {
                     playAudio(audioDiv, result.audio);
                     audioDiv.style.display = 'flex';
+                } else if (result.story) {
+                    showFallbackMessage(audioDiv, result.story);
+                    audioDiv.style.display = 'block';
                 } else {
                     audioDiv.style.display = 'none';
                 }
@@ -354,7 +383,7 @@
         async function testTTS() {
             const resultDiv = document.getElementById('ttsTestResult');
             const audioDiv = document.getElementById('ttsTestAudio');
-            resultDiv.innerHTML = '<p class="loading">Testing HuggingFace TTS...</p>';
+            resultDiv.innerHTML = '<p class="loading">Testing TTS...</p>';
             resultDiv.style.display = 'block';
             audioDiv.style.display = 'none';
 
@@ -363,10 +392,18 @@
             if (result.error) {
                 resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
             } else if (!result.success) {
-                resultDiv.innerHTML = `<p class="error">TTS Test failed: ${result.message}</p>`;
+                // Fallback to browser TTS
+                resultDiv.innerHTML = `<p style="color: #ff9a00;">⚠️ HuggingFace TTS not available (${result.message})</p><p>Trying browser speech synthesis...</p>`;
+                const testText = "Hello, this is a test of text to speech.";
+                if (speakText(testText)) {
+                    resultDiv.innerHTML += `<p style="color: #4CAF50;">✅ Browser TTS working!</p>`;
+                    audioDiv.style.display = 'none';
+                } else {
+                    resultDiv.innerHTML += `<p class="error">Browser TTS not supported in this browser.</p>`;
+                }
             } else {
                 resultDiv.textContent = `✅ ${result.message} (Text: "${result.text}")`;
-                if (result.audio) {
+                if (result.audio && !result.audio.startsWith("HUGGINGFACE")) {
                     playAudio(audioDiv, result.audio);
                     audioDiv.style.display = 'flex';
                 }

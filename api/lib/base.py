@@ -91,27 +91,38 @@ def call_huggingface(prompt: str, model: str) -> str:
     """Call HuggingFace Inference API for specialized tasks.
     Returns text as string, or base64-encoded binary for audio/image outputs."""
     if not HUGGINGFACE_API_KEY:
-        return "HuggingFace API key not available"
+        return "HUGGINGFACE_API_KEY_NOT_SET"
 
-    url = f"https://api-inference.huggingface.co/models/{model}"
+    # Try new router endpoint, fallback to old one
+    endpoints = [
+        f"https://router.huggingface.co/huggingface-ai/{model}",
+        f"https://api-inference.huggingface.co/models/{model}",
+    ]
 
-    result = subprocess.run([
-        "curl", "-s", "-X", "POST", url,
-        "-H", f"Authorization: Bearer {HUGGINGFACE_API_KEY}",
-        "-H", "Content-Type: application/json",
-        "-d", json.dumps({"inputs": prompt})
-    ], capture_output=True, timeout=60)
+    for url in endpoints:
+        result = subprocess.run([
+            "curl", "-s", "-X", "POST", url,
+            "-H", f"Authorization: Bearer {HUGGINGFACE_API_KEY}",
+            "-H", "Content-Type: application/json",
+            "-d", json.dumps({"inputs": prompt})
+        ], capture_output=True, timeout=60)
 
-    if result.returncode != 0:
-        return f"Error: {result.stderr.decode('utf-8', errors='ignore')}"
+        if result.returncode != 0:
+            continue
 
-    # Try to decode as UTF-8 text (e.g., JSON or plain text responses)
-    try:
-        return result.stdout.decode('utf-8')
-    except UnicodeDecodeError:
-        # Binary data (audio, image) -> return base64 string
-        import base64
-        return base64.b64encode(result.stdout).decode('utf-8')
+        # Try to decode as UTF-8 text (e.g., JSON or plain text responses)
+        try:
+            decoded = result.stdout.decode('utf-8')
+            # Skip error responses
+            if "error" in decoded.lower() or decoded.strip() in ["Not Found", ""]:
+                continue
+            return decoded
+        except UnicodeDecodeError:
+            # Binary data (audio, image) -> return base64 string
+            import base64
+            return base64.b64encode(result.stdout).decode('utf-8')
+
+    return "HUGGINGFACE_ERROR"
 
 def extract_json(text: str) -> dict:
     """Extract JSON from text with error handling."""

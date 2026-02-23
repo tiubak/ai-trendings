@@ -24,7 +24,7 @@ def handle(action: str, data: dict) -> dict:
 
         # If audio_base64 is error or not base64? Check if it starts with error indicators
         audio_url = None
-        if not audio_base64.startswith(("Error:", "HuggingFace")):
+        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
             # Prepend data URI for audio/wav (assuming WAV; could also be other formats)
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
@@ -44,7 +44,7 @@ def handle(action: str, data: dict) -> dict:
         audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
 
         audio_url = None
-        if not audio_base64.startswith(("Error:", "HuggingFace")):
+        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
         return {
@@ -63,7 +63,7 @@ def handle(action: str, data: dict) -> dict:
         audio_base64 = call_huggingface(tts_prompt, "facebook/mms-tts-eng")
 
         audio_url = None
-        if not audio_base64.startswith(("Error:", "HuggingFace")):
+        if audio_base64 and not audio_base64.startswith(("HUGGINGFACE_", "Error:")):
             audio_url = f"data:audio/wav;base64,{audio_base64}"
 
         return {
@@ -78,10 +78,10 @@ def handle(action: str, data: dict) -> dict:
         test_text = data.get('text', 'Hello, this is a test of HuggingFace text-to-speech.')
         audio_base64 = call_huggingface(test_text, "facebook/mms-tts-eng")
 
-        if audio_base64.startswith(("Error:", "HuggingFace")):
+        if not audio_base64 or audio_base64.startswith(("HUGGINGFACE_", "Error:")):
             return {
                 "success": False,
-                "message": audio_base64,
+                "message": audio_base64 or "Unknown error",
                 "date": "2026-02-02"
             }
         else:
