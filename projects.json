@@ -59,6 +59,12 @@
     "description": "Craft catchy, memorable taglines and slogans for products, brands, or projects.",
     "created_at": "2026-02-10"
   },
+  "2026-02-11": {
+    "name": "AI Compliment Generator",
+    "path": "projects/2026-02-11-ai-compliment-generator",
+    "description": "Generate genuine, uplifting compliments to spread kindness and positivity.",
+    "created_at": "2026-02-11"
+  },
   "2026-02-20": {
     "name": "AI Cosmic Whisperer",
     "path": "projects/2026-02-20-ai-cosmic-whisperer",
