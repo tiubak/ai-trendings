@@ -2,91 +2,152 @@
 
 **One AI project, every single day. Fully automated by Atlas.**
 
-🔗 **Live Site:** [https://ai-trendings.vercel.app](https://ai-trendings.vercel.app)
+🔗 **Live:** [https://ai-trendings.vercel.app](https://ai-trendings.vercel.app)  
+📦 **Repo:** [https://github.com/tiubak/ai-trendings](https://github.com/tiubak/ai-trendings)
+
+---
 
 ## What This Is
 
-A living portfolio showcasing daily AI/ML projects — interactive web apps powered by free AI APIs. Each project is built from scratch, committed automatically, and deployed to Vercel.
+A living portfolio showcasing **daily AI/ML projects** — interactive web apps powered by free AI APIs. Each project is built from scratch, committed automatically, and deployed to Vercel.
 
-**Goal:** Demonstrate creativity, technical skill, and consistent delivery through 30+ unique AI applications.
+**Goal:** Demonstrate creativity, technical skill, and consistent delivery through unique AI applications.
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| **AI/ML** | Pollinations.AI (free text/image generation) |
+| **AI/ML** | OpenRouter (text), Pollinations.AI (images), HuggingFace (TTS, embeddings) |
 | **Backend** | Python serverless functions on Vercel |
 | **Frontend** | Vanilla HTML/CSS/JS (no frameworks) |
 | **Deployment** | Vercel (auto-deploys from GitHub) |
-| **Automation** | OpenClaw cron job running daily at 2 AM ET |
+| **Automation** | OpenClaw cron job running daily at 2:00 AM ET |
 
-## Project Structure
+---
+
+## Project Types
+
+We maintain a **balance** between educational and fun projects:
+
+### 🧠 Deep AI Topics (2-3 days/week)
+Educational projects **ABOUT AI**:
+- AI concept explainers (transformers, attention, embeddings)
+- AI model comparators (GPT vs Claude vs Gemini)
+- Neural network visualizers
+- AI ethics simulators, safety explorers
+- Training cost calculators, token counters
+
+### 🎮 Fun AI Applications (2-3 days/week)
+Entertaining projects **USING AI**:
+- AI Dream Interpreter, AI Fortune Teller
+- AI Story Generator, AI Poetry Creator
+- AI Meme Generator, AI Joke Teller
+- AI Game Master, AI Adventure Guide
+
+### 🛠️ Practical AI Tools (1-2 days/week)
+Useful everyday applications:
+- AI Email Drafter, AI Summarizer
+- AI Code Explainer, AI Translator
+
+---
+
+## Architecture
+
+### Single Serverless Function Design
+
+Vercel's Hobby plan limits to **12 serverless functions**. We use **ONE** with dynamic routing.
 
 ```
-ai-trendings/
-├── api/                        # Python serverless functions
-│   ├── 2026-02-20-*.py        # One file per project (FLAT structure!)
-│   ├── 2026-02-21-*.py
-│   ├── pyproject.toml         # Build config
-│   └── requirements.txt       # Dependencies
-├── projects/                   # Daily project frontends
-│   ├── 2026-02-20-ai-cosmic-whisperer/
-│   │   ├── index.html         # Frontend UI
-│   │   └── README.md          # Project docs
-│   ├── 2026-02-21-ai-dungeon-master/
-│   └── ...
-├── projects.json               # Project registry
-├── index.html                  # Main calendar landing page
-└── README.md                   # This file
+api/
+├── index.py           ← SINGLE function (routes by date)
+├── lib/
+│   ├── base.py        ← Common: OpenRouter, Pollinations, HuggingFace
+│   └── projects/
+│       ├── __init__.py
+│       ├── day_2026_02_01.py  ← Each project's logic
+│       └── day_2026_02_02.py
+├── pyproject.toml
+└── requirements.txt
+
+projects/
+├── 2026-02-01-ai-context-window/
+│   ├── index.html     ← Frontend
+│   └── README.md
+└── projects.json      ← Project registry (for calendar)
+
+index.html              ← Main calendar landing page
 ```
 
-## How It Works
-
-Each project follows this architecture:
+### How It Works
 
 ```
-api/2026-02-XX-project-name.py  →  /api/2026-02-XX-project-name
-projects/2026-02-XX-project-name/index.html → frontend
+Frontend sends POST to /api/index with { date: "2026-02-01", action: "start", ... }
+                                    ↓
+                           api/index.py routes by date
+                                    ↓
+                  lib/projects/day_2026_02_01.py handles action
+                                    ↓
+                            Returns JSON response
 ```
 
-**Key Design Decisions:**
-- **Single API file per project** — all endpoints via `action` parameter
-- **Flat API structure** — Vercel Python requires `api/*.py` directly (no nested dirs!)
-- **curl subprocess** — Pollinations.AI blocks Python urllib (Cloudflare 403)
-- **Stateless handlers** — each request is independent
-
-## Featured Projects
-
-| Date | Project | Description |
-|------|---------|-------------|
-| Feb 20 | [AI Cosmic Whisperer](projects/2026-02-20-ai-cosmic-whisperer/) | Mystical wisdom generator with space-themed UI |
-| Feb 21 | [AI Dungeon Master](projects/2026-02-21-ai-dungeon-master/) | Interactive text adventure game |
-| Feb 22 | [AI Story Illustrator](projects/2026-02-22-ai-story-illustrator/) | Transform stories into illustrated narratives |
-| Feb 23 | [AI Character Generator](projects/2026-02-23-ai-character-generator/) | Create detailed character profiles |
-
-*...and counting!*
+---
 
 ## API Policy
 
 **Free APIs only:**
-- **Pollinations.AI** — Text and image generation (free, generous limits)
-- **Hugging Face Inference** — ML models (free tier)
-- **Local models** — Faster-Whisper, etc.
 
-No paid services. No credit cards required.
+| API | Use Case | Auth |
+|-----|----------|------|
+| **OpenRouter** | Text generation (primary) | `OPENROUTER_API_KEY` |
+| **Pollinations.AI** | Image generation | `POLLINATIONS_API_KEY` |
+| **HuggingFace** | TTS, embeddings, audio | `HUGGINGFACE_API_KEY` |
+
+**No paid services. No credit cards required.**
+
+---
+
+## Featured Projects
+
+| Date | Project | Type |
+|------|---------|------|
+| Feb 1 | [AI Context Window Explorer](projects/2026-02-01-ai-context-window-explorer/) | 🧠 Education |
+| Feb 2 | *Coming soon...* | 🎮 Fun |
+
+*Projects generated daily at 2:00 AM ET.*
+
+---
+
+## Security
+
+**API keys NEVER exposed to frontend:**
+
+```python
+# ❌ WRONG - Exposes API key!
+return {"image_url": "https://...?key=SECRET"}
+
+# ✅ CORRECT - API key stays on backend
+image_base64 = fetch_image(prompt)  # Auth handled in backend
+return {"image_base64": image_base64}  # Frontend: data:image/png;base64,...
+```
+
+---
 
 ## Automation
 
-Powered by a nightly cron job (2:00 AM ET) that:
+Powered by a nightly cron job that:
 
-1. Reads [`skills/ai-trending-generator.md`](../skills/ai-trending-generator.md) for instructions
-2. Picks a creative project idea
-3. Generates Python backend + HTML frontend
+1. Reads `skills/ai-trending-generator.md` for instructions
+2. Picks a project idea (balanced by type)
+3. Creates Python backend + HTML frontend
 4. Updates `projects.json` registry
 5. Commits and pushes to GitHub
-6. Vercel auto-deploys the changes
+6. Vercel auto-deploys
 
-The agent uses the `stepfun/step-3.5-flash` model via OpenRouter (free tier).
+**Agent Model:** `openrouter/stepfun/step-3.5-flash:free`
+
+---
 
 ## Development
 
@@ -94,12 +155,40 @@ The agent uses the `stepfun/step-3.5-flash` model via OpenRouter (free tier).
 # Clone the repo
 git clone https://github.com/tiubak/ai-trendings.git
 
-# No build step needed — just open index.html
-# Or deploy to Vercel for full functionality
+# Install dependencies (for local testing)
+cd ai-trendings/api
+pip install -r requirements.txt
 
-# Environment variables (for Vercel)
-POLLINATIONS_API_KEY=your_key_here  # Optional but recommended
+# Environment variables (set in Vercel)
+OPENROUTER_API_KEY=your_key
+POLLINATIONS_API_KEY=your_key
+HUGGINGFACE_API_KEY=your_key
+
+# Local development
+python -m http.server 8000  # Serve frontends
+# Or deploy to Vercel for full functionality
 ```
+
+---
+
+## Project Guidelines
+
+See [`skills/ai-trending-generator.md`](../skills/ai-trending-generator.md) for complete instructions on:
+- Project structure and naming
+- Security requirements
+- Balance guidelines
+- Mandatory checklist
+
+---
+
+## Stats
+
+- **Projects:** Daily since Feb 2026
+- **API Cost:** $0 (all free tiers)
+- **Deployment:** Automated via Vercel
+- **Uptime:** 99.9% (Vercel SLA)
+
+---
 
 ## License
 
