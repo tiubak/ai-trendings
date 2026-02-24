@@ -20,6 +20,13 @@
     "category": "AI Education",
     "created_at": "2026-02-03"
   },
+  "2026-02-04": {
+    "name": "AI Superhero Forge",
+    "path": "projects/2026-02-04-ai-superhero-forge",
+    "description": "Create your own superhero with AI: generate a name, powers, backstory, weakness, and avatar image",
+    "category": "Fun",
+    "created_at": "2026-02-04"
+  },
   "2026-02-05": {
     "name": "Emerging AI Architectures Explorer",
     "path": "projects/2026-02-05-emerging-ai-architectures-explorer",
