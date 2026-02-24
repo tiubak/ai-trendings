@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Attention Explorer | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00f260;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #00f260;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: linear-gradient(90deg, #0575e6 0%, #021b79 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 117, 230, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00f260;
+        }
+
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .output img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .loading {
+            color: #00f260;
+            font-style: italic;
+        }
+
+        .error {
+            color: #ff6b6b;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            background: transparent;
+            color: #888;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            background: rgba(0, 242, 96, 0.2);
+            color: #00f260;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid #0575e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>AI Attention Explorer</h1>
+        <p class="subtitle">Understanding how transformers focus on what matters</p>
+
+        <!-- Welcome Section -->
+        <div class="section" id="welcome">
+            <h2>Welcome!</h2>
+            <div id="intro-output" class="output">Click "Load Introduction" to get started.</div>
+            <button onclick="loadIntro()" id="intro-btn">Load Introduction</button>
+        </div>
+
+        <!-- Deep Dive Section -->
+        <div class="section">
+            <h2>Deep Dive into Attention</h2>
+            <p>Select a detail level and explore how attention mechanisms work:</p>
+
+            <div class="btn-group">
+                <button onclick="explainAttention('basic')">Basic</button>
+                <button onclick="explainAttention('intermediate')">Intermediate</button>
+                <button onclick="explainAttention('advanced')">Advanced</button>
+            </div>
+
+            <div id="explain-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="section">
+            <h2>Types of Attention</h2>
+            <p>Learn about different attention mechanisms used in transformers:</p>
+            <button onclick="compareAttention()">Compare Types</button>
+            <div id="compare-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Visualization Section -->
+        <div class="section">
+            <h2>Visualization</h2>
+            <p>Generate an educational diagram of attention:</p>
+            <div class="btn-group">
+                <button onclick="visualizeAttention('attention mechanism')">General Attention</button>
+                <button onclick="visualizeAttention('multi-head attention')">Multi-Head Attention</button>
+                <button onclick="visualizeAttention('self-attention flow')">Self-Attention Flow</button>
+            </div>
+            <div id="visualize-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Example Section -->
+        <div class="section">
+            <h2>Concrete Example</h2>
+            <p>See attention in action with a specific sentence:</p>
+            <div class="input-group">
+                <input type="text" id="sentence-input" value="The cat sat on the mat" placeholder="Enter a sentence...">
+                <button onclick="showExample()">Analyze</button>
+            </div>
+            <div id="example-output" class="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-03';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        async function loadIntro() {
+            const btn = document.getElementById('intro-btn');
+            const output = document.getElementById('intro-output');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            output.innerHTML = '<span class="loading">Generating introduction...</span>';
+
+            const result = await apiCall('start');
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else if (result.intro) {
+                output.innerHTML = result.intro;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Load Introduction';
+        }
+
+        async function explainAttention(level) {
+            const output = document.getElementById('explain-output');
+            output.style.display = 'block';
+            output.innerHTML = '<span class="loading">Generating explanation...</span>';
+
+            const result = await apiCall('explain', { level });
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else if (result.explanation) {
+                output.innerHTML = result.explanation;
+            }
+        }
+
+        async function compareAttention() {
+            const output = document.getElementById('compare-output');
+            output.style.display = 'block';
+            output.innerHTML = '<span class="loading">Comparing attention types...</span>';
+
+            const result = await apiCall('compare');
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else if (result.comparison) {
+                output.innerHTML = result.comparison;
+            }
+        }
+
+        async function visualizeAttention(concept) {
+            const output = document.getElementById('visualize-output');
+            output.style.display = 'block';
+            output.innerHTML = '<span class="loading">Generating diagram...</span>';
+
+            const result = await apiCall('visualize', { concept });
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else if (result.image) {
+                output.innerHTML = `<img src="${result.image}" alt="Attention visualization">`;
+            }
+        }
+
+        async function showExample() {
+            const sentence = document.getElementById('sentence-input').value;
+            const output = document.getElementById('example-output');
+            output.style.display = 'block';
+            output.innerHTML = '<span class="loading">Analyzing sentence...</span>';
+
+            const result = await apiCall('example', { sentence });
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else if (result.example) {
+                output.innerHTML = `<div class="example-box"><strong>Sentence:</strong> "${result.sentence}"</div><br>${result.example}`;
+            }
+        }
+
+        // Optionally auto-load intro on page load
+        // loadIntro();
+    </script>
+</body>
+</html>

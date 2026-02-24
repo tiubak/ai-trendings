@@ -12,6 +12,13 @@
     "description": "Generate jokes, roasts, and funny stories with AI-powered voice narration using HuggingFace TTS",
     "category": "Fun",
     "created_at": "2026-02-02"
+  },
+  "2026-02-03": {
+    "name": "AI Attention Explorer",
+    "path": "projects/2026-02-03-ai-attention-explorer",
+    "description": "Explore how attention mechanisms work in transformers: the math, intuition, and how AI focuses on relevant information",
+    "category": "AI Education",
+    "created_at": "2026-02-03"
   }
 }
 
