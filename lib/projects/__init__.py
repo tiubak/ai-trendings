@@ -1,45 +1,39 @@
-"""Project handlers registry."""
+"""Project handlers registry — auto-discovers day_*.py modules."""
 
-# Import project handlers here
-from . import day_2026_02_01
-from . import day_2026_02_02
-from . import day_2026_02_03
-from . import day_2026_02_04
-from . import day_2026_02_05
-from . import day_2026_02_06
-from . import day_2026_02_07
-from . import day_2026_02_08
-from . import day_2026_02_09
-from . import day_2026_02_10
-from . import day_2026_02_11
-from . import day_2026_02_12
-from . import day_2026_02_24
+import importlib
+import os
+import re
 
-PROJECTS = {
-    "2026-02-01": (day_2026_02_01.handle, day_2026_02_01.META),
-    "2026-02-02": (day_2026_02_02.handle, day_2026_02_02.META),
-    "2026-02-03": (day_2026_02_03.handle, day_2026_02_03.META),
-    "2026-02-04": (day_2026_02_04.handle, day_2026_02_04.META),
-    "2026-02-05": (day_2026_02_05.handle, day_2026_02_05.META),
-    "2026-02-06": (day_2026_02_06.handle, day_2026_02_06.META),
-    "2026-02-07": (day_2026_02_07.handle, day_2026_02_07.META),
-    "2026-02-08": (day_2026_02_08.handle, day_2026_02_08.META),
-    "2026-02-09": (day_2026_02_09.handle, day_2026_02_09.META),
-    "2026-02-10": (day_2026_02_10.handle, day_2026_02_10.META),
-    "2026-02-11": (day_2026_02_11.handle, day_2026_02_11.META),
-    "2026-02-12": (day_2026_02_12.handle, day_2026_02_12.META),
-    "2026-02-24": (day_2026_02_24.handle, day_2026_02_24.META),
-}
+PROJECTS = {}
+
+def _discover():
+    """Auto-discover and register all day_YYYY_MM_DD.py modules."""
+    pkg_dir = os.path.dirname(__file__)
+    pattern = re.compile(r'^day_(\d{4})_(\d{2})_(\d{2})\.py$')
+    
+    for filename in sorted(os.listdir(pkg_dir)):
+        m = pattern.match(filename)
+        if not m:
+            continue
+        date_str = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+        mod_name = filename[:-3]  # strip .py
+        try:
+            mod = importlib.import_module(f".{mod_name}", package=__name__)
+            handler = getattr(mod, 'handle', None)
+            meta = getattr(mod, 'META', {})
+            if handler:
+                PROJECTS[date_str] = (handler, meta)
+        except Exception as e:
+            # Don't crash the whole app if one project is broken
+            import logging
+            logging.getLogger(__name__).warning(f"Failed to load {mod_name}: {e}")
+
+_discover()
 
 def get_handler(date_str: str):
-    if date_str in PROJECTS and PROJECTS[date_str]:
-        return PROJECTS[date_str][0]
-    return None
+    entry = PROJECTS.get(date_str)
+    return entry[0] if entry else None
 
 def get_meta(date_str: str):
-    if date_str in PROJECTS and PROJECTS[date_str]:
-        return PROJECTS[date_str][1]
-    return None
-
-def register(date_str: str, handler, meta: dict):
-    PROJECTS[date_str] = (handler, meta)
+    entry = PROJECTS.get(date_str)
+    return entry[1] if entry else None

@@ -1,86 +1,86 @@
 {
-  "2026-02-01": {
-    "name": "AI Context Window Explorer",
-    "path": "projects/2026-02-01-ai-context-window-explorer",
-    "description": "Learn about context windows in AI models: what they are, why they matter, and how different models compare",
-    "category": "AI Education",
-    "created_at": "2026-02-01"
-  },
-  "2026-02-02": {
-    "name": "AI Stand-up Comedian",
-    "path": "projects/2026-02-02-ai-standup-comedian",
-    "description": "Generate jokes, roasts, and funny stories with AI-powered voice narration using HuggingFace TTS",
-    "category": "Fun",
-    "created_at": "2026-02-02"
-  },
-  "2026-02-03": {
-    "name": "AI Attention Explorer",
-    "path": "projects/2026-02-03-ai-attention-explorer",
-    "description": "Explore how attention mechanisms work in transformers: the math, intuition, and how AI focuses on relevant information",
-    "category": "AI Education",
-    "created_at": "2026-02-03"
-  },
-  "2026-02-04": {
-    "name": "AI Superhero Forge",
-    "path": "projects/2026-02-04-ai-superhero-forge",
-    "description": "Create your own superhero with AI: generate a name, powers, backstory, weakness, and avatar image",
-    "category": "Fun",
-    "created_at": "2026-02-04"
-  },
-  "2026-02-05": {
-    "name": "Emerging AI Architectures Explorer",
-    "path": "projects/2026-02-05-emerging-ai-architectures-explorer",
-    "description": "Explore AI architectures beyond transformers: state-space models, neuro-symbolic systems, and the future of AI design",
-    "category": "AI Education",
-    "created_at": "2026-02-05"
-  },
-  "2026-02-06": {
-    "name": "AI Mystic Fortune Teller",
-    "path": "projects/2026-02-06-ai-mystic-fortune-teller",
-    "description": "Discover what the future holds! Get personalized AI-generated fortunes with mystical visuals and categories like love, career, wealth, and adventure",
-    "category": "Fun",
-    "created_at": "2026-02-06"
-  },
-  "2026-02-07": {
-    "name": "AI Model Collapse Simulator",
-    "path": "projects/2026-02-07-ai-model-collapse-simulator",
-    "description": "Explore the phenomenon where AI models degrade when trained on their own synthetic outputs through interactive simulations",
-    "category": "AI Education",
-    "created_at": "2026-02-07"
-  },
-  "2026-02-08": {
-    "name": "AI Mystic Oracle",
-    "path": "projects/2026-02-08-ai-mystic-oracle",
-    "description": "Ask questions, draw tarot cards, gaze into the crystal ball, and check your daily horoscope — all with AI-powered mystical predictions and TTS narration",
-    "category": "Fun",
-    "created_at": "2026-02-08"
-  },
-  "2026-02-10": {
-    "name": "AI Ice Cream Flavor Generator",
-    "path": "projects/2026-02-10-ai-ice-cream-flavor-generator",
-    "description": "Generate creative and delicious ice cream flavor ideas with AI, including name, description, ingredients, and visual representation",
-    "category": "Fun",
-    "created_at": "2026-02-10"
-  },
-  "2026-02-11": {
-    "name": "AI Tokenization Visualizer",
-    "path": "projects/2026-02-11-ai-tokenization-visualizer",
-    "description": "Explore how text is broken into tokens for AI models: visualize token splits, compare tokenizers, and learn efficiency tips",
-    "category": "AI Education",
-    "created_at": "2026-02-11"
-  },
-  "2026-02-12": {
-    "name": "AI Love Letter Analyst",
-    "path": "projects/2026-02-12-ai-love-letter-analyst",
-    "description": "Explore how AI understands romantic language, generate personalized love letters, and learn about sentiment analysis and emotional AI",
-    "category": "Fun",
-    "created_at": "2026-02-12"
-  },
-  "2026-02-24": {
-    "name": "AI Adventure Game Master",
-    "path": "projects/2026-02-24-ai-adventure-game-master",
-    "description": "Embark on an AI-generated interactive journey where your choices shape the story through fantasy, sci-fi, mystery, and more",
-    "category": "Fun",
-    "created_at": "2026-02-24"
-  }
+    "2026-02-01": {
+        "name": "AI Context Window Explorer",
+        "path": "projects/2026-02-01-ai-context-window-explorer",
+        "description": "Learn about context windows in AI models: what they are, why they matter, and how different models compare",
+        "category": "AI Education",
+        "created_at": "2026-02-01"
+    },
+    "2026-02-02": {
+        "name": "AI Stand-up Comedian",
+        "path": "projects/2026-02-02-ai-standup-comedian",
+        "description": "Generate jokes, roasts, and funny stories with AI-powered voice narration using HuggingFace TTS",
+        "category": "Fun",
+        "created_at": "2026-02-02"
+    },
+    "2026-02-03": {
+        "name": "AI Attention Explorer",
+        "path": "projects/2026-02-03-ai-attention-explorer",
+        "description": "Explore how attention mechanisms work in transformers: the math, intuition, and how AI focuses on relevant information",
+        "category": "AI Education",
+        "created_at": "2026-02-03"
+    },
+    "2026-02-04": {
+        "name": "AI Superhero Forge",
+        "path": "projects/2026-02-04-ai-superhero-forge",
+        "description": "Create your own superhero with AI: generate a name, powers, backstory, weakness, and avatar image",
+        "category": "Fun",
+        "created_at": "2026-02-04"
+    },
+    "2026-02-05": {
+        "name": "Emerging AI Architectures Explorer",
+        "path": "projects/2026-02-05-emerging-ai-architectures-explorer",
+        "description": "Explore AI architectures beyond transformers: state-space models, neuro-symbolic systems, and the future of AI design",
+        "category": "AI Education",
+        "created_at": "2026-02-05"
+    },
+    "2026-02-06": {
+        "name": "AI Mystic Fortune Teller",
+        "path": "projects/2026-02-06-ai-mystic-fortune-teller",
+        "description": "Discover what the future holds! Get personalized AI-generated fortunes with mystical visuals and categories like love, career, wealth, and adventure",
+        "category": "Fun",
+        "created_at": "2026-02-06"
+    },
+    "2026-02-07": {
+        "name": "AI Model Collapse Simulator",
+        "path": "projects/2026-02-07-ai-model-collapse-simulator",
+        "description": "Explore the phenomenon where AI models degrade when trained on their own synthetic outputs through interactive simulations",
+        "category": "AI Education",
+        "created_at": "2026-02-07"
+    },
+    "2026-02-08": {
+        "name": "AI Mystic Oracle",
+        "path": "projects/2026-02-08-ai-mystic-oracle",
+        "description": "Ask questions, draw tarot cards, gaze into the crystal ball, and check your daily horoscope \u2014 all with AI-powered mystical predictions and TTS narration",
+        "category": "Fun",
+        "created_at": "2026-02-08"
+    },
+    "2026-02-10": {
+        "name": "AI Ice Cream Flavor Generator",
+        "path": "projects/2026-02-10-ai-ice-cream-flavor-generator",
+        "description": "Generate creative and delicious ice cream flavor ideas with AI, including name, description, ingredients, and visual representation",
+        "category": "Fun",
+        "created_at": "2026-02-10"
+    },
+    "2026-02-11": {
+        "name": "AI Tokenization Visualizer",
+        "path": "projects/2026-02-11-ai-tokenization-visualizer",
+        "description": "Explore how text is broken into tokens for AI models: visualize token splits, compare tokenizers, and learn efficiency tips",
+        "category": "AI Education",
+        "created_at": "2026-02-11"
+    },
+    "2026-02-12": {
+        "name": "AI Love Letter Analyst",
+        "path": "projects/2026-02-12-ai-love-letter-analyst",
+        "description": "Explore how AI understands romantic language, generate personalized love letters, and learn about sentiment analysis and emotional AI",
+        "category": "Fun",
+        "created_at": "2026-02-12"
+    },
+    "2026-02-24": {
+        "name": "AI Adventure Game Master",
+        "path": "projects/2026-02-24-ai-adventure-game-master",
+        "description": "Embark on an AI-generated interactive journey where your choices shape the story through fantasy, sci-fi, mystery, and more",
+        "category": "Fun",
+        "created_at": "2026-02-24"
+    }
 }

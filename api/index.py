@@ -9,7 +9,7 @@ Vercel Hobby plan limits to 12 functions, so we use ONE.
 import json
 import logging
 from http.server import BaseHTTPRequestHandler
-from lib.projects import get_handler, get_meta
+from lib.projects import get_handler
 from lib.base import call_openrouter
 
 logging.basicConfig(level=logging.INFO)
@@ -20,8 +20,7 @@ class Handler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         try:
-            # Parse request
-            content_length = int(self.headers.get('Content-Length', 0))
+            content_length = int(self.headers.get('Content-Type', 0) if False else self.headers.get('Content-Length', 0))
             if content_length == 0:
                 self._send_error("Empty request")
                 return
@@ -29,7 +28,6 @@ class Handler(BaseHTTPRequestHandler):
             body = self.rfile.read(content_length).decode('utf-8')
             data = json.loads(body) if body else {}
             
-            # Get date and action
             date_str = data.get('date', '')
             action = data.get('action', 'start')
             
@@ -37,17 +35,13 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_error("Missing 'date' parameter")
                 return
             
-            # Get project handler by date string (YYYY-MM-DD)
             handler = get_handler(date_str)
             
             if handler:
-                # Call project-specific handler
                 result = handler(action, data)
             else:
-                # Fallback: generate response with OpenRouter
-                result = self._fallback_handler(action, data, day)
+                result = self._fallback_handler(action, data, date_str)
             
-            # Send response
             self._send_json(result)
             
         except Exception as e:
@@ -67,7 +61,6 @@ class Handler(BaseHTTPRequestHandler):
         }
     
     def _send_json(self, data: dict, status: int = 200):
-        """Send JSON response."""
         self.send_response(status)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -75,11 +68,9 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode())
     
     def _send_error(self, message: str, status: int = 400):
-        """Send error response."""
         self._send_json({"error": message}, status)
     
     def do_OPTIONS(self):
-        """Handle CORS preflight."""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -87,5 +78,4 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
     
     def log_message(self, format, *args):
-        """Log requests."""
         logger.info("%s", format % args)
