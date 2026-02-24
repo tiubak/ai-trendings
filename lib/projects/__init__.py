@@ -9,6 +9,9 @@ from . import day_2026_02_05
 from . import day_2026_02_06
 from . import day_2026_02_07
 from . import day_2026_02_08
+from . import day_2026_02_09
+from . import day_2026_02_10
+from . import day_2026_02_11
 from . import day_2026_02_24
 
 PROJECTS = {
@@ -20,6 +23,9 @@ PROJECTS = {
     "2026-02-06": (day_2026_02_06.handle, day_2026_02_06.META),
     "2026-02-07": (day_2026_02_07.handle, day_2026_02_07.META),
     "2026-02-08": (day_2026_02_08.handle, day_2026_02_08.META),
+    "2026-02-09": (day_2026_02_09.handle, day_2026_02_09.META),
+    "2026-02-10": (day_2026_02_10.handle, day_2026_02_10.META),
+    "2026-02-11": (day_2026_02_11.handle, day_2026_02_11.META),
     "2026-02-24": (day_2026_02_24.handle, day_2026_02_24.META),
 }
 

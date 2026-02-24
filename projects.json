@@ -62,6 +62,13 @@
     "category": "Fun",
     "created_at": "2026-02-10"
   },
+  "2026-02-11": {
+    "name": "AI Tokenization Visualizer",
+    "path": "projects/2026-02-11-ai-tokenization-visualizer",
+    "description": "Explore how text is broken into tokens for AI models: visualize token splits, compare tokenizers, and learn efficiency tips",
+    "category": "AI Education",
+    "created_at": "2026-02-11"
+  },
   "2026-02-24": {
     "name": "AI Adventure Game Master",
     "path": "projects/2026-02-24-ai-adventure-game-master",

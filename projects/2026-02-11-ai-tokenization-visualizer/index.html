@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tokenization Visualizer | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00f260;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Content Sections */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #00f260;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.6rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 242, 96, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Input Styles */
+        textarea, input[type="text"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #00f260;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        /* Loading */
+        .loading {
+            color: #00f260;
+            font-style: italic;
+        }
+
+        /* Results */
+        .result {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* Token Display */
+        .token-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .token {
+            background: rgba(0, 242, 96, 0.2);
+            border: 1px solid rgba(0, 242, 96, 0.4);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: #00f260;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00f260;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 242, 96, 0.2);
+            color: #00f260;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Image */
+        .visualization {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+        }
+
+        .visualization img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        /* Error */
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>AI Tokenization Visualizer</h1>
+        <p class="subtitle">Explore how text is broken into tokens for AI models: visualize token splits, compare tokenizers, and learn efficiency tips</p>
+
+        <!-- Introduction -->
+        <div class="section">
+            <h2><span class="icon">📚</span> About Tokenization</h2>
+            <button class="btn" onclick="loadIntro()">Load Introduction</button>
+            <div id="intro" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Tokenize Text -->
+        <div class="section">
+            <h2><span class="icon">🔍</span> Tokenize Your Text</h2>
+            <p style="margin-bottom: 15px;">Enter any text to see how it's broken down into tokens that AI models process.</p>
+            
+            <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
+            
+            <label for="modelType" style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">Tokenizer Type:</label>
+            <select id="modelType">
+                <option value="GPT-style (BPE)">GPT-style (BPE) - Byte-Pair Encoding</option>
+                <option value="BERT-style (WordPiece)">BERT-style (WordPiece)</option>
+                <option value="SentencePiece">SentencePiece (Unigram/BPE)</option>
+            </select>
+            
+            <button class="btn" onclick="tokenizeText()">Tokenize</button>
+            <div id="tokenResult" style="display: none;"></div>
+        </div>
+
+        <!-- Compare Tokenizers -->
+        <div class="section">
+            <h2><span class="icon">⚖️</span> Compare Tokenizers</h2>
+            <p style="margin-bottom: 15px;">See how different tokenization approaches handle the same text.</p>
+            
+            <textarea id="compareText" placeholder="Enter text to compare across tokenizers..."></textarea>
+            
+            <button class="btn" onclick="compareTokenizers()">Compare</button>
+            <div id="compareResult" style="display: none;"></div>
+        </div>
+
+        <!-- Learn More -->
+        <div class="section">
+            <h2><span class="icon">🎓</span> Learn About Tokenization</h2>
+            <p style="margin-bottom: 15px;">Deepen your understanding of tokenization concepts.</p>
+            
+            <button class="btn" onclick="loadExplanation('overview')">What is Tokenization?</button>
+            <button class="btn" onclick="loadExplanation('bpe')">How BPE Works</button>
+            <button class="btn btn-secondary" onclick="loadExplanation('costs')">Token Costs & Efficiency</button>
+            
+            <div id="explanationResult" class="result" style="display: none; margin-top: 15px;"></div>
+        </div>
+
+        <!-- Efficiency Analysis -->
+        <div class="section">
+            <h2><span class="icon">💰</span> Efficiency Analyzer</h2>
+            <p style="margin-bottom: 15px;">Get tips to reduce token count and optimize your AI usage costs.</p>
+            
+            <textarea id="efficiencyText" placeholder="Paste text to analyze token efficiency..."></textarea>
+            
+            <button class="btn" onclick="analyzeEfficiency()">Analyze</button>
+            <div id="efficiencyResult" style="display: none;"></div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="section">
+            <h2><span class="icon">🖼️</span> Visual Explanation</h2>
+            <button class="btn" onclick="loadVisualization()">Generate Tokenization Diagram</button>
+            <div id="visualization" class="visualization" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-11';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        async function loadIntro() {
+            const container = document.getElementById('intro');
+            container.innerHTML = '<p class="loading">Loading introduction...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('start');
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                container.textContent = result.intro;
+            }
+        }
+
+        async function tokenizeText() {
+            const text = document.getElementById('inputText').value.trim();
+            const model = document.getElementById('modelType').value;
+            const container = document.getElementById('tokenResult');
+            
+            if (!text) {
+                container.innerHTML = '<p class="error">Please enter some text.</p>';
+                container.style.display = 'block';
+                return;
+            }
+            
+            container.innerHTML = '<p class="loading">Tokenizing...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('tokenize', { text, model });
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else if (result.analysis && result.analysis.tokens) {
+                const analysis = result.analysis;
+                container.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${analysis.token_count}</div>
+                            <div class="stat-label">Tokens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${analysis.character_count}</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${analysis.word_count}</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${analysis.tokens_per_word.toFixed(2)}</div>
+                            <div class="stat-label">Tokens/Word</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-top: 20px; color: #00f260; margin-bottom: 10px;">Token Breakdown:</h3>
+                    <div class="token-display">
+                        ${analysis.tokens.map(t => `<span class="token">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                    <p style="margin-top: 15px; color: rgba(255,255,255,0.7); line-height: 1.6;">${analysis.notes || ''}</p>
+                `;
+            } else {
+                container.innerHTML = `<div class="result">${escapeHtml(JSON.stringify(result.analysis, null, 2))}</div>`;
+            }
+        }
+
+        async function compareTokenizers() {
+            const text = document.getElementById('compareText').value.trim();
+            const container = document.getElementById('compareResult');
+            
+            if (!text) {
+                container.innerHTML = '<p class="error">Please enter some text.</p>';
+                container.style.display = 'block';
+                return;
+            }
+            
+            container.innerHTML = '<p class="loading">Comparing tokenizers...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('compare', { text });
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                container.innerHTML = `<div class="result">${escapeHtml(result.comparison).replace(/\n/g, '<br>')}</div>`;
+            }
+        }
+
+        async function loadExplanation(topic) {
+            const container = document.getElementById('explanationResult');
+            container.innerHTML = '<p class="loading">Loading explanation...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('explain', { topic });
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                container.textContent = result.explanation;
+            }
+        }
+
+        async function analyzeEfficiency() {
+            const text = document.getElementById('efficiencyText').value.trim();
+            const container = document.getElementById('efficiencyResult');
+            
+            if (!text) {
+                container.innerHTML = '<p class="error">Please enter some text.</p>';
+                container.style.display = 'block';
+                return;
+            }
+            
+            container.innerHTML = '<p class="loading">Analyzing efficiency...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('efficiency', { text });
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else if (result.efficiency_analysis) {
+                const analysis = result.efficiency_analysis;
+                let html = '<div class="stats-grid">';
+                
+                if (analysis.word_count) {
+                    html += `<div class="stat-card"><div class="stat-value">${analysis.word_count}</div><div class="stat-label">Words</div></div>`;
+                }
+                if (analysis.token_count) {
+                    html += `<div class="stat-card"><div class="stat-value">${analysis.token_count}</div><div class="stat-label">Tokens</div></div>`;
+                }
+                if (analysis.tokens_per_word) {
+                    html += `<div class="stat-card"><div class="stat-value">${analysis.tokens_per_word.toFixed(2)}</div><div class="stat-label">Tokens/Word</div></div>`;
+                }
+                if (analysis.estimated_cost) {
+                    html += `<div class="stat-card"><div class="stat-value">${analysis.estimated_cost}</div><div class="stat-label">Est. Cost</div></div>`;
+                }
+                
+                html += '</div>';
+                
+                if (analysis.inefficiencies && analysis.inefficiencies.length > 0) {
+                    html += '<h3 style="margin-top: 20px; color: #ff6b6b; margin-bottom: 10px;">Inefficiencies Detected:</h3><ul style="padding-left: 20px; margin-bottom: 15px;">';
+                    analysis.inefficiencies.forEach(ineff => {
+                        html += `<li style="margin-bottom: 8px;">${escapeHtml(ineff)}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                
+                if (analysis.optimization_suggestions && analysis.optimization_suggestions.length > 0) {
+                    html += '<h3 style="color: #00f260; margin-bottom: 10px;">Optimization Suggestions:</h3><ul style="padding-left: 20px;">';
+                    analysis.optimization_suggestions.forEach(sugg => {
+                        html += `<li style="margin-bottom: 8px;">${escapeHtml(sugg)}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="result">${escapeHtml(JSON.stringify(result.efficiency_analysis, null, 2))}</div>`;
+            }
+        }
+
+        async function loadVisualization() {
+            const container = document.getElementById('visualization');
+            container.innerHTML = '<p class="loading">Generating visualization...</p>';
+            container.style.display = 'block';
+            
+            const result = await apiCall('visualize');
+            
+            if (result.error) {
+                container.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else if (result.image) {
+                container.innerHTML = `<img src="${result.image}" alt="Tokenization Process Diagram" />`;
+            } else {
+                container.innerHTML = '<p class="error">Failed to generate image.</p>';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
