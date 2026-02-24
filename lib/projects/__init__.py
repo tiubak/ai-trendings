@@ -9,6 +9,7 @@ from . import day_2026_02_05
 from . import day_2026_02_06
 from . import day_2026_02_07
 from . import day_2026_02_08
+from . import day_2026_02_24
 
 PROJECTS = {
     "2026-02-01": (day_2026_02_01.handle, day_2026_02_01.META),
@@ -19,6 +20,7 @@ PROJECTS = {
     "2026-02-06": (day_2026_02_06.handle, day_2026_02_06.META),
     "2026-02-07": (day_2026_02_07.handle, day_2026_02_07.META),
     "2026-02-08": (day_2026_02_08.handle, day_2026_02_08.META),
+    "2026-02-24": (day_2026_02_24.handle, day_2026_02_24.META),
 }
 
 def get_handler(date_str: str):

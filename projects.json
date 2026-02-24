@@ -54,5 +54,12 @@
     "description": "Ask questions, draw tarot cards, gaze into the crystal ball, and check your daily horoscope — all with AI-powered mystical predictions and TTS narration",
     "category": "Fun",
     "created_at": "2026-02-08"
+  },
+  "2026-02-24": {
+    "name": "AI Adventure Game Master",
+    "path": "projects/2026-02-24-ai-adventure-game-master",
+    "description": "Embark on an AI-generated interactive journey where your choices shape the story through fantasy, sci-fi, mystery, and more",
+    "category": "Fun",
+    "created_at": "2026-02-24"
   }
 }
