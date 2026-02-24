@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Collapse Simulator | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00f260;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .section h2 {
+            color: #00f260;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #0575e6 0%, #021b79 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 117, 230, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .generation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid #0575e6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .generation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .generation-output {
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        .visualization {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .visualization img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #ffc107;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+        
+        .error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #dc3545;
+        }
+        
+        .meta-info {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+        
+        <h1>AI Model Collapse Simulator</h1>
+        <p class="subtitle">Explore how AI models degrade when trained on their own synthetic outputs</p>
+        
+        <!-- Introduction -->
+        <div class="section">
+            <h2>What is Model Collapse?</h2>
+            <div id="intro-section">
+                <button onclick="loadIntro()">Load Introduction</button>
+            </div>
+            <div id="intro-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <!-- Interactive Simulation -->
+        <div class="section">
+            <h2>Interactive Simulation</h2>
+            <p style="margin-bottom: 15px; color: #aaa;">
+                Watch how AI responses degrade over multiple "generations" of training on synthetic data.
+                Enter a topic, then click "Run Simulation" to see the collapse in action.
+            </p>
+            
+            <div class="input-group">
+                <label for="sim-prompt">Topic Prompt:</label>
+                <textarea id="sim-prompt" placeholder="e.g., Explain quantum computing in simple terms">Explain the theory of relativity in simple terms</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="sim-generations">Number of Generations:</label>
+                <select id="sim-generations">
+                    <option value="3">3 generations</option>
+                    <option value="5" selected>5 generations</option>
+                    <option value="8">8 generations</option>
+                    <option value="10">10 generations</option>
+                </select>
+            </div>
+            
+            <button id="sim-btn" onclick="runSimulation()">Run Simulation</button>
+            <button onclick="clearSimulation()" style="background: #6c757d;">Clear</button>
+            
+            <div id="sim-output"></div>
+        </div>
+        
+        <!-- Detailed Explanation -->
+        <div class="section">
+            <h2>Deep Dive</h2>
+            <div class="btn-group">
+                <button onclick="explain('basic')">Basic Explanation</button>
+                <button onclick="explain('intermediate')">Intermediate</button>
+                <button onclick="explain('advanced')">Advanced</button>
+            </div>
+            <div id="explain-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <!-- Visualization -->
+        <div class="section">
+            <h2>Visualization</h2>
+            <button onclick="generateVisualization()">Generate Diagram</button>
+            <div id="viz-output" style="display: none;"></div>
+        </div>
+        
+        <!-- Comparison -->
+        <div class="section">
+            <h2>Compare with Other AI Problems</h2>
+            <button onclick="loadComparison()">Show Comparison</button>
+            <div id="compare-output" class="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const DATE = '2026-02-07';
+        const API_URL = '/api/index';
+        
+        // API call wrapper
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'API error');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API call failed:', error);
+                throw error;
+            }
+        }
+        
+        // Load Introduction
+        async function loadIntro() {
+            const container = document.getElementById('intro-section');
+            const output = document.getElementById('intro-output');
+            
+            container.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const result = await apiCall('start');
+                output.innerHTML = result.intro.replace(/\n/g, '<br>');
+                output.style.display = 'block';
+                container.innerHTML = '<button onclick="loadIntro()">Reload Introduction</button>';
+            } catch (error) {
+                container.innerHTML = '<button onclick="loadIntro()">Retry</button>';
+                output.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                output.style.display = 'block';
+            }
+        }
+        
+        // Run Simulation
+        async function runSimulation() {
+            const prompt = document.getElementById('sim-prompt').value.trim();
+            const generations = parseInt(document.getElementById('sim-generations').value);
+            const btn = document.getElementById('sim-btn');
+            const output = document.getElementById('sim-output');
+            
+            if (!prompt) {
+                alert('Please enter a topic prompt');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Running...';
+            output.innerHTML = '<div class="loading">Running simulation... This may take a minute.</div>';
+            
+            try {
+                const result = await apiCall('simulate', { prompt, generations });
+                
+                let html = `<div style="margin-top: 20px;">
+                    <h3 style="color: #00f260; margin-bottom: 15px;">Simulation Results</h3>
+                    <p style="margin-bottom: 20px; color: #aaa;">${result.summary}</p>
+                `;
+                
+                result.simulation_results.forEach((gen, idx) => {
+                    const diversityColor = gen.diversity_hint === 'varied' ? '#00f260' : '#ffc107';
+                    html += `
+                        <div class="generation-card">
+                            <div class="generation-header">
+                                <strong>Generation ${gen.generation}</strong>
+                                <span style="color: ${diversityColor}">${gen.diversity_hint} (${gen.word_count} words)</span>
+                            </div>
+                            <div class="generation-output">${gen.output.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                output.innerHTML = html;
+            } catch (error) {
+                output.innerHTML = `<div class="error">Simulation failed: ${error.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Simulation';
+            }
+        }
+        
+        function clearSimulation() {
+            document.getElementById('sim-output').innerHTML = '';
+            document.getElementById('sim-prompt').value = 'Explain the theory of relativity in simple terms';
+        }
+        
+        // Deep Dive Explanation
+        async function explain(level) {
+            const output = document.getElementById('explain-output');
+            output.style.display = 'block';
+            output.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                const result = await apiCall('explain', { level });
+                output.innerHTML = result.explanation.replace(/\n/g, '<br>');
+            } catch (error) {
+                output.innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+        
+        // Visualization
+        async function generateVisualization() {
+            const output = document.getElementById('viz-output');
+            output.style.display = 'block';
+            output.innerHTML = '<div class="loading">Generating diagram...</div>';
+            
+            try {
+                const result = await apiCall('visualize');
+                
+                if (result.error) {
+                    output.innerHTML = `<div class="error">${result.error}</div>`;
+                } else {
+                    output.innerHTML = `
+                        <div class="visualization">
+                            <img src="${result.image}" alt="Model Collapse Diagram">
+                            <p style="margin-top: 10px; color: #aaa; font-size: 0.9rem;">
+                                Model collapse process: degradation over generations
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+        
+        // Comparison
+        async function loadComparison() {
+            const output = document.getElementById('compare-output');
+            output.style.display = 'block';
+            output.innerHTML = '<div class="loading">Loading comparison...</div>';
+            
+            try {
+                const result = await apiCall('compare');
+                // Convert plain text to preserve formatting
+                output.innerHTML = result.comparison.replace(/\n/g, '<br>');
+            } catch (error) {
+                output.innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

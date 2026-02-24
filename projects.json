@@ -19,6 +19,19 @@
     "description": "Explore how attention mechanisms work in transformers: the math, intuition, and how AI focuses on relevant information",
     "category": "AI Education",
     "created_at": "2026-02-03"
+  },
+  "2026-02-06": {
+    "name": "AI Mystic Fortune Teller",
+    "path": "projects/2026-02-06-ai-mystic-fortune-teller",
+    "description": "Discover what the future holds! Get personalized AI-generated fortunes with mystical visuals and categories like love, career, wealth, and adventure",
+    "category": "Fun",
+    "created_at": "2026-02-06"
+  },
+  "2026-02-08": {
+    "name": "AI Mystic Oracle",
+    "path": "projects/2026-02-08-ai-mystic-oracle",
+    "description": "Ask questions, draw tarot cards, gaze into the crystal ball, and check your daily horoscope — all with AI-powered mystical predictions and TTS narration",
+    "category": "Fun",
+    "created_at": "2026-02-08"
   }
 }
-

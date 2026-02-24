@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mystic Oracle | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            color: #b19cd9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #b19cd9 0%, #9370db 50%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* Content Sections */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section h2 {
+            color: #b19cd9;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.6rem;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(90deg, #8a2be2 0%, #9370db 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(138, 43, 226, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(138, 43, 226, 0.5);
+        }
+
+        /* Input Styles */
+        textarea, input[type="text"], select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #9370db;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Image Display */
+        .vision-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4);
+        }
+
+        /* Loading */
+        .loading {
+            color: #9370db;
+            font-style: italic;
+        }
+
+        /* Results */
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            border-left: 4px solid #9370db;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            margin-top: 15px;
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .audio-player audio {
+            width: 100%;
+            height: 40px;
+        }
+
+        /* Error */
+        .error {
+            color: #ffa07a;
+            background: rgba(255, 160, 122, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 160, 122, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>🔮 AI Mystic Oracle</h1>
+        <p class="subtitle">Peer into the mystical realm and receive your fate...</p>
+
+        <!-- General Fortune -->
+        <div class="section">
+            <h2><span class="icon">✨</span> Ask the Oracle</h2>
+            <p>Pose a question about your future, and the AI oracle will reveal a mystical fortune.</p>
+            <input type="text" id="fortuneQuestion" placeholder="e.g., What does my love life hold? Will I get that job?">
+            <button class="btn" onclick="askFortune()">Reveal my fate</button>
+            <div id="fortuneResult" class="result" style="display:none;"></div>
+            <div id="fortuneAudio" class="audio-player" style="display:none;"></div>
+        </div>
+
+        <!-- Tarot Reading -->
+        <div class="section">
+            <h2><span class="icon">🃏</span> Tarot Reading</h2>
+            <p>Draw cards and receive a mystical interpretation of your past, present, and future.</p>
+            <select id="tarotSpread">
+                <option value="single">Single Card (quick insight)</option>
+                <option value="three">Three Cards (past, present, future)</option>
+                <option value="five">Five Cards (in-depth reading)</option>
+            </select>
+            <button class="btn" onclick="doTarot()">Draw the cards</button>
+            <div id="tarotResult" class="result" style="display:none;"></div>
+            <img id="tarotImage" class="vision-image" style="display:none;" alt="Tarot visualization">
+        </div>
+
+        <!-- Crystal Ball Vision -->
+        <div class="section">
+            <h2><span class="icon">🔮</span> Crystal Ball Vision</h2>
+            <p>Gaze into the crystal ball to see visions and symbols about a specific area of your life.</p>
+            <input type="text" id="crystalTopic" placeholder="e.g., career, love, health, travel">
+            <button class="btn" onclick="gazeCrystal()">See the vision</button>
+            <div id="crystalResult" class="result" style="display:none;"></div>
+            <img id="crystalImage" class="vision-image" style="display:none;" alt="Crystal ball vision">
+        </div>
+
+        <!-- Daily Horoscope -->
+        <div class="section">
+            <h2><span class="icon">⭐</span> Daily Horoscope</h2>
+            <p>Select your zodiac sign and receive your daily mystical forecast, narrated by the oracle.</p>
+            <select id="zodiacSign">
+                <option value="Aries">Aries (Mar 21 - Apr 19)</option>
+                <option value="Taurus">Taurus (Apr 20 - May 20)</option>
+                <option value="Gemini">Gemini (May 21 - Jun 20)</option>
+                <option value="Cancer">Cancer (Jun 21 - Jul 22)</option>
+                <option value="Leo">Leo (Jul 23 - Aug 22)</option>
+                <option value="Virgo">Virgo (Aug 23 - Sep 22)</option>
+                <option value="Libra">Libra (Sep 23 - Oct 22)</option>
+                <option value="Scorpio">Scorpio (Oct 23 - Nov 21)</option>
+                <option value="Sagittarius">Sagittarius (Nov 22 - Dec 21)</option>
+                <option value="Capricorn">Capricorn (Dec 22 - Jan 19)</option>
+                <option value="Aquarius">Aquarius (Jan 20 - Feb 18)</option>
+                <option value="Pisces">Pisces (Feb 19 - Mar 20)</option>
+            </select>
+            <button class="btn" onclick="getHoroscope()">Reveal my stars</button>
+            <div id="horoscopeResult" class="result" style="display:none;"></div>
+            <div id="horoscopeAudio" class="audio-player" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-08';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        function playAudio(container, base64Data) {
+            container.innerHTML = `<audio controls autoplay><source src="${base64Data}" type="audio/mp3"></source>Your browser does not support the audio element.</audio>`;
+        }
+
+        function showAudioError(container, message) {
+            container.innerHTML = `<p style="color: #ffa07a; font-size: 0.9rem;">⚠️ Audio Error: ${message}</p>`;
+        }
+
+        async function askFortune() {
+            const question = document.getElementById('fortuneQuestion').value.trim() || 'What does my future hold?';
+            const resultDiv = document.getElementById('fortuneResult');
+            const audioDiv = document.getElementById('fortuneAudio');
+            resultDiv.innerHTML = '<p class="loading">The mists are clearing...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('fortune', { question });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">The oracle is silent: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.fortune || "The stars are unclear...";
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                } else {
+                    showAudioError(audioDiv, "The oracle's voice is silent today");
+                    audioDiv.style.display = 'block';
+                }
+            }
+        }
+
+        async function doTarot() {
+            const spread = document.getElementById('tarotSpread').value;
+            const resultDiv = document.getElementById('tarotResult');
+            const img = document.getElementById('tarotImage');
+            resultDiv.innerHTML = '<p class="loading">Shuffling the cards...</p>';
+            resultDiv.style.display = 'block';
+            img.style.display = 'none';
+
+            const result = await apiCall('tarot', { spread });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">The cards refuse to speak: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.reading || "The cards are blank.";
+                if (result.image) {
+                    img.src = result.image;
+                    img.style.display = 'block';
+                }
+            }
+        }
+
+        async function gazeCrystal() {
+            const topic = document.getElementById('crystalTopic').value.trim() || 'love';
+            const resultDiv = document.getElementById('crystalResult');
+            const img = document.getElementById('crystalImage');
+            resultDiv.innerHTML = '<p class="loading">The crystal ball is clouding...</p>';
+            resultDiv.style.display = 'block';
+            img.style.display = 'none';
+
+            const result = await apiCall('crystal_ball', { topic });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">The ball shows only darkness: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.vision || "The mist obscures all sight.";
+                if (result.image) {
+                    img.src = result.image;
+                    img.style.display = 'block';
+                }
+            }
+        }
+
+        async function getHoroscope() {
+            const zodiac = document.getElementById('zodiacSign').value;
+            const resultDiv = document.getElementById('horoscopeResult');
+            const audioDiv = document.getElementById('horoscopeAudio');
+            resultDiv.innerHTML = '<p class="loading">Consulting the stars...</p>';
+            resultDiv.style.display = 'block';
+            audioDiv.style.display = 'none';
+
+            const result = await apiCall('horoscope', { zodiac });
+
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="error">The stars are in retrograde: ${result.error}</p>`;
+            } else {
+                resultDiv.textContent = result.horoscope || "The cosmos remain silent.";
+                if (result.audio) {
+                    playAudio(audioDiv, result.audio);
+                    audioDiv.style.display = 'flex';
+                } else {
+                    showAudioError(audioDiv, "The cosmic voices are muted");
+                    audioDiv.style.display = 'block';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

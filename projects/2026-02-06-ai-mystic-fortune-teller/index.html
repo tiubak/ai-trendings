@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mystic Fortune Teller | AI Trendings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+            min-height: 100vh;
+            color: #e0d5ff;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Mystical floating stars background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffd700, transparent),
+                radial-gradient(2px 2px at 40px 70px, #f0e68c, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ff6b6b, transparent),
+                radial-gradient(2px 2px at 160px 120px, #00d4ff, transparent),
+                radial-gradient(1px 1px at 230px 80px, #ff69b4, transparent);
+            background-size: 250px 150px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            transform: translateX(-5px);
+        }
+
+        /* Header */
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #ffd700 0%, #ff69b4 50%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8a8d1;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(20, 10, 40, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #ffd700;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            border: none;
+            color: #1a0a2e;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Input Styles */
+        input[type="text"], select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 14px;
+            color: #e0d5ff;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b8a8d1;
+            font-size: 0.95rem;
+        }
+
+        /* Category badges */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .category-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-badge:hover, .category-badge.active {
+            background: rgba(255, 215, 0, 0.25);
+            border-color: #ffd700;
+        }
+
+        .category-badge .icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .category-badge .name {
+            font-size: 0.9rem;
+            color: #ffd700;
+        }
+
+        /* Results */
+        .result-container {
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fortune-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            margin-bottom: 15px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
+
+        .fortune-box::before {
+            content: '🔮';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            background: #1a0a2e;
+            padding: 5px 15px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: rgba(138, 43, 226, 0.3);
+            color: #dda0dd;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        /* Image */
+        .visualization {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Loading */
+        .loading {
+            color: #ffd700;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Error */
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>AI Mystic Fortune Teller</h1>
+        <p class="subtitle">Let the AI oracle reveal what the stars have in store for you</p>
+
+        <!-- Get a Fortune -->
+        <div class="section">
+            <h2><span class="icon">🔮</span> Reveal Your Fortune</h2>
+
+            <div class="category-grid" id="categoryGrid">
+                <div class="category-badge active" data-category="general">
+                    <div class="icon">✨</div>
+                    <div class="name">General</div>
+                </div>
+                <div class="category-badge" data-category="love">
+                    <div class="icon">💕</div>
+                    <div class="name">Love</div>
+                </div>
+                <div class="category-badge" data-category="career">
+                    <div class="icon">💼</div>
+                    <div class="name">Career</div>
+                </div>
+                <div class="category-badge" data-category="health">
+                    <div class="icon">🌿</div>
+                    <div class="name">Health</div>
+                </div>
+                <div class="category-badge" data-category="wealth">
+                    <div class="icon">💰</div>
+                    <div class="name">Wealth</div>
+                </div>
+                <div class="category-badge" data-category="adventure">
+                    <div class="icon">🗺️</div>
+                    <div class="name">Adventure</div>
+                </div>
+            </div>
+
+            <label for="nameInput">Your Name (optional):</label>
+            <input type="text" id="nameInput" placeholder="Enter your name for a personalized reading">
+
+            <label for="questionInput">Ask a Specific Question (optional):</label>
+            <input type="text" id="questionInput" placeholder="e.g., Will I find true love? Should I change jobs?">
+
+            <button class="btn" id="tellFortuneBtn" onclick="tellFortune()">🔮 Reveal My Fortune</button>
+
+            <div id="fortuneResult" class="result-container">
+                <div class="category-tag" id="fortuneCategory"></div>
+                <div class="fortune-box" id="fortuneText"></div>
+            </div>
+        </div>
+
+        <!-- Mystic Visualization -->
+        <div class="section">
+            <h2><span class="icon">🌌</span> Mystic Vision</h2>
+            <p style="margin-bottom: 15px; color: #b8a8d1;">Generate a mystical image related to your fortune. Choose a theme or let the oracle decide.</p>
+
+            <label for="conceptInput">Concept (optional):</label>
+            <input type="text" id="conceptInput" placeholder="e.g., crystal ball, tarot cards, stars, mystical forest">
+
+            <button class="btn btn-secondary" onclick="generateVisualization()">🎨 Generate Vision</button>
+
+            <div id="visualResult" class="result-container">
+                <img id="visualImage" class="visualization" alt="Mystic Vision">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-06';
+        const API_URL = '/api/index';
+
+        let selectedCategory = 'general';
+
+        // Category selection
+        document.querySelectorAll('.category-badge').forEach(badge => {
+            badge.addEventListener('click', () => {
+                document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
+                badge.classList.add('active');
+                selectedCategory = badge.dataset.category;
+            });
+        });
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        async function tellFortune() {
+            const name = document.getElementById('nameInput').value.trim();
+            const question = document.getElementById('questionInput').value.trim();
+            const resultContainer = document.getElementById('fortuneResult');
+            const fortuneText = document.getElementById('fortuneText');
+            const fortuneCategory = document.getElementById('fortuneCategory');
+            const btn = document.getElementById('tellFortuneBtn');
+
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = ' gazing into the stars...';
+            resultContainer.classList.remove('show');
+
+            const result = await apiCall('tell_fortune', {
+                category: selectedCategory,
+                name: name || undefined,
+                question: question || undefined
+            });
+
+            btn.disabled = false;
+            btn.innerHTML = '🔮 Reveal My Fortune';
+
+            if (result.error) {
+                fortuneText.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+            } else {
+                fortuneText.textContent = result.fortune;
+                fortuneCategory.textContent = selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
+                resultContainer.classList.add('show');
+            }
+        }
+
+        async function generateVisualization() {
+            const concept = document.getElementById('conceptInput').value.trim() || 'mystical crystal ball showing the future';
+            const resultContainer = document.getElementById('visualResult');
+            const visualImage = document.getElementById('visualImage');
+            const btn = document.querySelector('.btn-secondary');
+
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = ' casting spell...';
+            resultContainer.classList.remove('show');
+            visualImage.style.opacity = '0.5';
+
+            const result = await apiCall('visualize', { concept });
+
+            btn.disabled = false;
+            btn.innerHTML = '🎨 Generate Vision';
+
+            if (result.error) {
+                resultContainer.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                resultContainer.classList.add('show');
+            } else if (result.image) {
+                visualImage.src = result.image;
+                visualImage.onload = () => {
+                    visualImage.style.opacity = '1';
+                    resultContainer.classList.add('show');
+                };
+            } else {
+                resultContainer.innerHTML = '<p class="error">Failed to generate visualization. Try again.</p>';
+                resultContainer.classList.add('show');
+            }
+        }
+
+        // Allow Enter key to trigger fortune
+        document.getElementById('questionInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') tellFortune();
+        });
+        document.getElementById('nameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') tellFortune();
+        });
+    </script>
+</body>
+</html>
