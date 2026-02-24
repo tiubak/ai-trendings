@@ -106,8 +106,10 @@ def call_gTTS(text: str) -> str:
         
         # Encode as base64
         return base64.b64encode(audio_bytes).decode('utf-8')
+    except ImportError as e:
+        return f"ERROR: gtts library not installed - {str(e)}"
     except Exception as e:
-        return None
+        return f"ERROR: TTS generation failed - {str(e)}"
 
 
 def call_huggingface(prompt: str, model: str) -> str:
