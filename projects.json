@@ -55,6 +55,13 @@
     "category": "Fun",
     "created_at": "2026-02-08"
   },
+  "2026-02-10": {
+    "name": "AI Ice Cream Flavor Generator",
+    "path": "projects/2026-02-10-ai-ice-cream-flavor-generator",
+    "description": "Generate creative and delicious ice cream flavor ideas with AI, including name, description, ingredients, and visual representation",
+    "category": "Fun",
+    "created_at": "2026-02-10"
+  },
   "2026-02-24": {
     "name": "AI Adventure Game Master",
     "path": "projects/2026-02-24-ai-adventure-game-master",
