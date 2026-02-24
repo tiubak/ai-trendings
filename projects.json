@@ -20,12 +20,26 @@
     "category": "AI Education",
     "created_at": "2026-02-03"
   },
+  "2026-02-05": {
+    "name": "Emerging AI Architectures Explorer",
+    "path": "projects/2026-02-05-emerging-ai-architectures-explorer",
+    "description": "Explore AI architectures beyond transformers: state-space models, neuro-symbolic systems, and the future of AI design",
+    "category": "AI Education",
+    "created_at": "2026-02-05"
+  },
   "2026-02-06": {
     "name": "AI Mystic Fortune Teller",
     "path": "projects/2026-02-06-ai-mystic-fortune-teller",
     "description": "Discover what the future holds! Get personalized AI-generated fortunes with mystical visuals and categories like love, career, wealth, and adventure",
     "category": "Fun",
     "created_at": "2026-02-06"
+  },
+  "2026-02-07": {
+    "name": "AI Model Collapse Simulator",
+    "path": "projects/2026-02-07-ai-model-collapse-simulator",
+    "description": "Explore the phenomenon where AI models degrade when trained on their own synthetic outputs through interactive simulations",
+    "category": "AI Education",
+    "created_at": "2026-02-07"
   },
   "2026-02-08": {
     "name": "AI Mystic Oracle",

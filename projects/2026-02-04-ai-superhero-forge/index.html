@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Superhero Forge | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00f260;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .section h2 {
+            color: #00f260;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 96, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #00f260;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .output.active {
+            display: block;
+        }
+        
+        .output .loading {
+            color: #00f260;
+            font-style: italic;
+        }
+        
+        .output .error {
+            color: #ff6b6b;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Superhero card */
+        .hero-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .hero-details {
+            padding: 20px;
+        }
+        
+        .hero-name {
+            font-size: 1.8rem;
+            color: #00f260;
+            margin-bottom: 15px;
+        }
+        
+        .hero-section {
+            margin-bottom: 15px;
+        }
+        
+        .hero-section h4 {
+            color: #0575e6;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .hero-section ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .hero-section li {
+            background: rgba(0, 242, 96, 0.1);
+            border: 1px solid rgba(0, 242, 96, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .hero-section p {
+            line-height: 1.6;
+        }
+        
+        .weakness {
+            color: #ff6b6b;
+            font-style: italic;
+        }
+
+        .btn-random {
+            background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+        }
+        
+        .btn-random:hover {
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+
+        <h1>AI Superhero Forge</h1>
+        <p class="subtitle">Create your own superhero with AI: name, powers, backstory, weakness, and visual appearance</p>
+
+        <!-- Welcome Section -->
+        <div class="section" id="welcome">
+            <h2>Welcome to the Forge! 🦸‍♀️</h2>
+            <div id="intro-output" class="output">Click "Load Introduction" to get started.</div>
+            <button class="btn" onclick="loadIntro()" id="intro-btn">Load Introduction</button>
+        </div>
+
+        <!-- Superhero Creation Section -->
+        <div class="section">
+            <h2>Forge Your Hero</h2>
+            <p>Provide some details or go completely random!</p>
+            
+            <div class="input-group">
+                <label for="name-input">Superhero Name (optional)</label>
+                <input type="text" id="name-input" placeholder="e.g., Captain Lumina, The Quantum Knight">
+            </div>
+            
+            <div class="input-group">
+                <label for="theme-select">Theme / Archetype (optional)</label>
+                <select id="theme-select">
+                    <option value="">-- Random --</option>
+                    <option value="Tech">Tech / Cyberpunk</option>
+                    <option value="Magic">Magic / Mystic</option>
+                    <option value="Cosmic">Cosmic / Space</option>
+                    <option value="Elemental">Elemental (fire, ice, earth, air)</option>
+                    <option value="Animal">Animal / Beast</option>
+                    <option value="Strength">Brute Strength</option>
+                    <option value="Speed">Super Speed</option>
+                    <option value="Stealth">Stealth / Shadow</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="generateHero()">Generate Superhero</button>
+            <button class="btn btn-random" onclick="generateRandom()">Generate Random</button>
+            
+            <div id="output-area" class="output">
+                <div id="loading" class="loading" style="display:none;">Forging your superhero... Please wait.</div>
+                <div id="error-message" class="error" style="display:none;"></div>
+                <div id="hero-card" class="hero-card" style="display:none;">
+                    <img id="hero-image" class="hero-image" src="" alt="Superhero">
+                    <div class="hero-details">
+                        <h3 id="hero-name" class="hero-name"></h3>
+                        <div class="hero-section">
+                            <h4>Powers</h4>
+                            <ul id="hero-powers"></ul>
+                        </div>
+                        <div class="hero-section">
+                            <h4>Backstory</h4>
+                            <p id="hero-backstory"></p>
+                        </div>
+                        <div class="hero-section">
+                            <h4>Weakness</h4>
+                            <p id="hero-weakness" class="weakness"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-04';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        async function loadIntro() {
+            const btn = document.getElementById('intro-btn');
+            const output = document.getElementById('intro-output');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            output.innerHTML = '<span class="loading">Fetching introduction...</span>';
+
+            const result = await apiCall('start');
+
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+            } else {
+                output.innerHTML = `<strong>${result.message}</strong><br><br>${result.description}<br><br>Available actions: ${result.actions ? result.actions.join(', ') : 'generate'}`;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Load Introduction';
+        }
+
+        async function generateHero(name, theme) {
+            const outputArea = document.getElementById('output-area');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const heroCard = document.getElementById('hero-card');
+
+            outputArea.classList.add('active');
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            heroCard.style.display = 'none';
+
+            const result = await apiCall('generate', { name, theme });
+
+            loading.style.display = 'none';
+
+            if (result.error) {
+                errorMessage.textContent = `Error: ${result.error}`;
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Populate hero card
+            if (result.name) {
+                document.getElementById('hero-name').textContent = result.name;
+            }
+            if (result.powers && Array.isArray(result.powers)) {
+                const list = document.getElementById('hero-powers');
+                list.innerHTML = '';
+                result.powers.forEach(power => {
+                    const li = document.createElement('li');
+                    li.textContent = power;
+                    list.appendChild(li);
+                });
+            }
+            if (result.backstory) {
+                document.getElementById('hero-backstory').textContent = result.backstory;
+            }
+            if (result.weakness) {
+                document.getElementById('hero-weakness').textContent = result.weakness;
+            }
+            if (result.image) {
+                document.getElementById('hero-image').src = result.image;
+            } else {
+                document.getElementById('hero-image').style.display = 'none';
+            }
+
+            heroCard.style.display = 'block';
+        }
+
+        async function generateHeroWithForm() {
+            const name = document.getElementById('name-input').value.trim();
+            const theme = document.getElementById('theme-select').value.trim();
+            await generateHero(name, theme);
+        }
+
+        async function generateRandom() {
+            // Random theme: pick one from the list (excluding empty)
+            const themes = ["Tech", "Magic", "Cosmic", "Elemental", "Animal", "Strength", "Speed", "Stealth"];
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            await generateHero('', randomTheme);
+        }
+
+        // Assign the form button to the function
+        document.querySelector('button[onclick="generateHero()"]').onclick = generateHeroWithForm;
+    </script>
+</body>
+</html>

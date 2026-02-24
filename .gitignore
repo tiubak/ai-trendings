@@ -13,8 +13,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-!api/lib/
+# lib/ is part of source code, do not ignore
+# lib/
 lib64/
 parts/
 sdist/
