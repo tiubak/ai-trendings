@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Love Letter Analyst | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Back Button */
+        .back-nav {
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ff6b9d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff6b9d 0%, #c06c84 50%, #ff9a9e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        /* Section Styling */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .section h2 {
+            color: #ff6b9d;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h2 .icon {
+            font-size: 1.6rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(90deg, #ff6b9d 0%, #ff9a9e 100%);
+            border: none;
+            color: #1a1a2e;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ff6b9d;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab.active {
+            background: linear-gradient(90deg, #ff6b9d 0%, #ff9a9e 100%);
+            color: #1a1a2e;
+            border-color: transparent;
+            font-weight: 600;
+        }
+        
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        input[type="text"], select, textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b9d;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Output Area */
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .output.active {
+            display: block;
+        }
+        
+        .output .loading {
+            color: #ff6b9d;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .output .error {
+            color: #ff6b6b;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .letter-output {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b9d;
+            margin-bottom: 15px;
+        }
+        
+        .letter-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .analysis-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .analysis-box h4 {
+            color: #ff6b9d;
+            margin-bottom: 10px;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .analysis-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 6px;
+        }
+        
+        .analysis-item .label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        
+        .analysis-item .value {
+            font-size: 1rem;
+            color: #fff;
+        }
+        
+        .text-display {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #ff6b9d;
+            margin: 15px 0;
+            font-style: italic;
+            white-space: pre-wrap;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comparison-table th {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+        
+        .style-tag {
+            display: inline-block;
+            background: rgba(255, 107, 157, 0.2);
+            color: #ff9a9e;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+        
+        .educational-content {
+            line-height: 1.7;
+        }
+        
+        .educational-content h3 {
+            color: #ff9a9e;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+        
+        .educational-content h4 {
+            color: #ffb8c8;
+            margin: 15px 0 8px 0;
+            font-size: 1.1rem;
+        }
+        
+        .educational-content ul, .educational-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .educational-content li {
+            margin-bottom: 8px;
+        }
+        
+        .educational-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .educational-content strong {
+            color: #ff6b9d;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .section { padding: 15px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <nav class="back-nav">
+            <a href="/" class="back-btn">← Back to Calendar</a>
+        </nav>
+        
+        <h1>AI Love Letter Analyst ❤️</h1>
+        <p class="subtitle">Explore how AI understands romantic language, generate personalized love letters, and learn about sentiment analysis</p>
+        
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <div class="tab active" data-tab="generate">Generate Letter</div>
+            <div class="tab" data-tab="analyze">Analyze Text</div>
+            <div class="tab" data-tab="compare">Compare Styles</div>
+            <div class="tab" data-tab="learn">Learn</div>
+            <div class="tab" data-tab="ethics">Ethics</div>
+        </div>
+        
+        <!-- Generate Letter Section -->
+        <div id="generate" class="tab-content section active">
+            <h2><span class="icon">💌</span> AI Love Letter Generator</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                Create a personalized love letter with AI. Fill in the details below to generate a heartfelt message tailored to your relationship.
+            </p>
+            
+            <form id="generate-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="recipient">Recipient's Name *</label>
+                        <input type="text" id="recipient" name="recipient" placeholder="e.g., Emma" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="sender">Your Name *</label>
+                        <input type="text" id="sender" name="sender" placeholder="e.g., Alex" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="relationship">Relationship</label>
+                        <select id="relationship" name="relationship">
+                            <option value="partner">Partner/Spouse</option>
+                            <option value="crush">Crush</option>
+                            <option value="long-distance">Long Distance</option>
+                            <option value="new-relationship">New Relationship</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="friend">Friend (with romantic feelings)</option>
+                            <option value="spouse">Spouse</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="style">Writing Style</label>
+                        <select id="style" name="style">
+                            <option value="romantic">Romantic</option>
+                            <option value="playful">Playful</option>
+                            <option value="poetic">Poetic</option>
+                            <option value="modern">Modern</option>
+                            <option value="vintage">Vintage</option>
+                            <option value="passionate">Passionate</option>
+                            <option value="sincere">Sincere</option>
+                            <option value="whimsical">Whimsical</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="length">Length</label>
+                        <select id="length" name="length">
+                            <option value="short">Short</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="long">Long</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="memory">Special Memory or Detail (optional)</label>
+                    <textarea id="memory" name="memory" placeholder="e.g., That time we got caught in the rain but danced anyway, or how you always make me coffee in the morning..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Generate Love Letter ❤️</button>
+            </form>
+            
+            <div id="generate-output" class="output">
+                <div class="loading"></div>
+            </div>
+        </div>
+        
+        <!-- Analyze Text Section -->
+        <div id="analyze" class="tab-content section hidden">
+            <h2><span class="icon">🔍</span> Sentiment & Style Analysis</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                Paste any text (love letter, message, or note) to analyze its emotional tone, style, and effectiveness.
+            </p>
+            
+            <form id="analyze-form">
+                <div class="input-group">
+                    <label for="analyze-text">Text to Analyze *</label>
+                    <textarea id="analyze-text" name="text" rows="6" placeholder="Paste your text here..." required></textarea>
+                </div>
+                <button type="submit" class="btn">Analyze Text</button>
+            </form>
+            
+            <div id="analyze-output" class="output">
+                <div class="loading"></div>
+            </div>
+        </div>
+        
+        <!-- Compare Styles Section -->
+        <div id="compare" class="tab-content section hidden">
+            <h2><span class="icon">🎭</span> Compare Writing Styles</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                See how different writing styles would approach the same topic. Great for understanding tone and finding your voice.
+            </p>
+            
+            <form id="compare-form">
+                <div class="input-group">
+                    <label for="topic">Topic *</label>
+                    <input type="text" id="topic" name="topic" placeholder="e.g., love, first date, missing someone" value="love" required>
+                </div>
+                <div class="input-group">
+                    <label>Select Styles to Compare</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                        <label><input type="checkbox" name="styles" value="romantic" checked> Romantic</label>
+                        <label><input type="checkbox" name="styles" value="playful"> Playful</label>
+                        <label><input type="checkbox" name="styles" value="poetic"> Poetic</label>
+                        <label><input type="checkbox" name="styles" value="modern"> Modern</label>
+                        <label><input type="checkbox" name="styles" value="vintage"> Vintage</label>
+                        <label><input type="checkbox" name="styles" value="passionate"> Passionate</label>
+                        <label><input type="checkbox" name="styles" value="sincere"> Sincere</label>
+                        <label><input type="checkbox" name="styles" value="whimsical"> Whimsical</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Compare Styles</button>
+            </form>
+            
+            <div id="compare-output" class="output">
+                <div class="loading"></div>
+            </div>
+        </div>
+        
+        <!-- Learn Section -->
+        <div id="learn" class="tab-content section hidden">
+            <h2><span class="icon">📚</span> Learn About AI & Language</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                Discover how AI understands and generates emotional language. Select a topic to explore:
+            </p>
+            
+            <div class="tabs" style="margin-bottom: 20px;">
+                <div class="tab active" data-learn="sentiment">Sentiment Analysis</div>
+                <div class="tab" data-learn="emotional">Emotional Language</div>
+                <div class="tab" data-learn="prompting">Prompt Engineering</div>
+                <div class="tab" data-learn="overview">AI Overview</div>
+            </div>
+            
+            <div id="learn-output">
+                <div class="educational-content">
+                    <p style="color: #aaa;">Select a topic to learn more about how AI processes emotional language.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ethics Section -->
+        <div id="ethics" class="tab-content section hidden">
+            <h2><span class="icon">⚖️</span> Ethics of AI in Love & Communication</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">
+                Using AI for intimate writing raises important questions. Explore the ethical considerations.
+            </p>
+            
+            <div id="ethics-output">
+                <div class="educational-content">
+                    <h3>Is it okay to use AI for love letters?</h3>
+                    <p>Loading ethical considerations...</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        const DATE = '2026-02-12';
+        const API_URL = '/api/index';
+        
+        async function apiCall(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: DATE, action, ...data })
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+        
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tabs .tab').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.tabs .tab[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Load ethics on ethics tab if not loaded
+            if (tabId === 'ethics') {
+                loadEthics();
+            }
+        }
+        
+        function showLearnTopic(topic) {
+            document.querySelectorAll('#learn-output .educational-content').forEach(el => el.remove());
+            
+            // Show loading
+            const container = document.getElementById('learn-output');
+            container.innerHTML = '<div class="loading">Loading...</div>';
+            
+            apiCall('explain_ai', { topic: topic })
+                .then(result => {
+                    if (result.error) {
+                        container.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                        return;
+                    }
+                    
+                    const explanation = result.explanation || 'No explanation available.';
+                    container.innerHTML = `<div class="educational-content">${formatMarkdown(explanation)}</div>`;
+                });
+        }
+        
+        function formatMarkdown(text) {
+            // Simple markdown formatting
+            let html = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            return `<p>${html}</p>`;
+        }
+        
+        function loadEthics() {
+            const container = document.getElementById('ethics-output');
+            if (container.dataset.loaded) return; // Already loaded
+            
+            container.innerHTML = '<div class="loading">Loading ethical considerations...</div>';
+            
+            apiCall('ethics')
+                .then(result => {
+                    container.dataset.loaded = 'true';
+                    if (result.error) {
+                        container.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                        return;
+                    }
+                    
+                    const explanation = result.explanation || 'No information available.';
+                    container.innerHTML = `<div class="educational-content">${formatMarkdown(explanation)}</div>`;
+                });
+        }
+        
+        // Tab Navigation
+        document.querySelectorAll('.tabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                if (tabId) {
+                    showTab(tabId);
+                }
+            });
+        });
+        
+        // Learn topic navigation
+        document.querySelectorAll('#learn .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const topic = tab.dataset.learn;
+                document.querySelectorAll('#learn .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                showLearnTopic(topic);
+            });
+        });
+        
+        // Generate Letter Form
+        document.getElementById('generate-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const output = document.getElementById('generate-output');
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            output.classList.add('active');
+            output.innerHTML = '<div class="loading">Generating your love letter with AI... 💕</div>';
+            
+            const result = await apiCall('generate', data);
+            
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                return;
+            }
+            
+            let html = '';
+            
+            // Generated letter
+            html += `<div class="letter-output">${result.letter.replace(/\n/g, '<br>')}</div>`;
+            
+            // Image if available
+            if (result.image) {
+                html += `<img src="${result.image}" alt="Romantic illustration" class="letter-image">`;
+            }
+            
+            // Analysis
+            if (result.analysis) {
+                const analysis = typeof result.analysis === 'string' ? { raw: result.analysis } : result.analysis;
+                html += '<div class="analysis-box">';
+                html += '<h4>📊 Letter Analysis</h4>';
+                html += '<div class="analysis-grid">';
+                
+                const items = [
+                    ['Emotional Tone', analysis.emotional_tone || 'N/A'],
+                    ['Sentiment Score', analysis.sentiment_score ? `${Math.round(analysis.sentiment_score * 100)}%` : 'N/A'],
+                    ['Style Consistency', analysis.style_consistency || 'N/A'],
+                    ['Personalization', analysis.personalization_level || 'N/A'],
+                    ['Literary Devices', analysis.literary_devices ? analysis.literary_devices.join(', ') : 'N/A']
+                ];
+                
+                items.forEach(([label, value]) => {
+                    html += `
+                        <div class="analysis-item">
+                            <div class="label">${label}</div>
+                            <div class="value">${value}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                if (analysis.effectiveness_notes) {
+                    html += `<p style="margin-top: 15px; color: #aaa; font-size: 0.9rem;"><strong>Notes:</strong> ${analysis.effectiveness_notes}</p>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            output.innerHTML = html;
+        });
+        
+        // Analyze Text Form
+        document.getElementById('analyze-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const output = document.getElementById('analyze-output');
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            output.classList.add('active');
+            output.innerHTML = '<div class="loading">Analyzing your text...</div>';
+            
+            const result = await apiCall('analyze', data);
+            
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                return;
+            }
+            
+            let html = '';
+            
+            // Show original text
+            html += `<h4 style="color: #ff6b9d; margin-bottom: 10px;">📝 Original Text</h4>`;
+            html += `<div class="text-display">${result.text.replace(/\n/g, '<br>')}</div>`;
+            
+            // Analysis results
+            if (result.analysis) {
+                const a = result.analysis;
+                html += '<h4 style="color: #ff6b9d; margin: 20px 0 10px 0;">📊 Analysis Results</h4>';
+                html += '<div class="analysis-grid">';
+                
+                const fields = [
+                    ['Overall Sentiment', a.overall_sentiment],
+                    ['Confidence', a.sentiment_confidence ? `${Math.round(a.sentiment_confidence * 100)}%` : 'N/A'],
+                    ['Emotional Intensity', a.emotional_intensity ? `${Math.round(a.emotional_intensity * 100)}%` : 'N/A'],
+                    ['Formality', a.formality_level],
+                    ['Personalization', a.personalization],
+                    ['Readability', a.readability],
+                    ['Authenticity', a.authenticity_feeling]
+                ];
+                
+                fields.forEach(([label, value]) => {
+                    html += `
+                        <div class="analysis-item">
+                            <div class="label">${label}</div>
+                            <div class="value">${value || 'N/A'}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                if (a.primary_emotions && a.primary_emotions.length > 0) {
+                    html += `<p style="margin-top: 15px;"><strong>Detected Emotions:</strong> ${a.primary_emotions.map(e => `<span class="style-tag">${e}</span>`).join(' ')}</p>`;
+                }
+                
+                if (a.tone && a.tone.length > 0) {
+                    html += `<p style="margin-top: 10px;"><strong>Tone:</strong> ${a.tone.join(', ')}</p>`;
+                }
+                
+                if (a.literary_devices && a.literary_devices.length > 0) {
+                    html += `<p style="margin-top: 10px;"><strong>Literary Devices:</strong> ${a.literary_devices.join(', ')}</p>`;
+                }
+                
+                if (a.key_words && a.key_words.length > 0) {
+                    html += `<p style="margin-top: 10px;"><strong>Key Words:</strong> ${a.key_words.map(w => `<code>${w}</code>`).join(', ')}</p>`;
+                }
+                
+                if (a.suggestions && a.suggestions.length > 0) {
+                    html += '<h4 style="color: #ff9a9e; margin: 20px 0 10px 0;">💡 Suggestions for Improvement</h4>';
+                    html += '<ul>';
+                    a.suggestions.forEach(s => {
+                        html += `<li>${s}</li>`;
+                    });
+                    html += '</ul>';
+                }
+            }
+            
+            output.innerHTML = html;
+        });
+        
+        // Compare Styles Form
+        document.getElementById('compare-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const output = document.getElementById('compare-output');
+            const formData = new FormData(e.target);
+            const data = {
+                topic: formData.get('topic'),
+                styles: formData.getAll('styles')
+            };
+            
+            if (data.styles.length === 0) {
+                output.classList.add('active');
+                output.innerHTML = '<div class="error">Please select at least one style.</div>';
+                return;
+            }
+            
+            output.classList.add('active');
+            output.innerHTML = '<div class="loading">Comparing writing styles...</div>';
+            
+            const result = await apiCall('compare_styles', data);
+            
+            if (result.error) {
+                output.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                return;
+            }
+            
+            let html = '';
+            
+            if (result.comparison) {
+                html += `<div class="educational-content">${formatMarkdown(result.comparison)}</div>`;
+            } else {
+                html += '<p>No comparison available.</p>';
+            }
+            
+            // Add explanation of why styles differ
+            html += `
+                <div style="margin-top: 20px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #ff6b9d; margin-bottom: 10px;">🧠 AI and Style</h4>
+                    <p style="color: #aaa; line-height: 1.6;">
+                        When you specify a style, the AI adjusts its vocabulary, sentence structure, and emotional register. 
+                        <strong>Romantic</strong> writing uses poetic devices and idealization; 
+                        <strong>playful</strong> is light and teasing; 
+                        <strong>poetic</strong> relies on metaphor and rhythm. 
+                        The AI recognizes these patterns from its training and generates accordingly.
+                    </p>
+                </div>
+            `;
+            
+            output.innerHTML = html;
+        });
+        
+        // Initialize learn tab with sentiment analysis
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load sentiment analysis by default
+            showLearnTopic('sentiment_analysis');
+        });
+        
+    </script>
+</body>
+</html>
