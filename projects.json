@@ -111,13 +111,6 @@
         "category": "Practical",
         "created_at": "2026-02-16"
     },
-    "2026-02-17": {
-        "name": "Post-Training Sandbox",
-        "path": "projects/2026-02-17-post-training-sandbox",
-        "description": "Enter a task or application and get an educational, step-by-step post-training refinement plan for turning a base model into a production-ready specialist.",
-        "category": "AI Education",
-        "created_at": "2026-02-17"
-    },
     "2026-02-18": {
         "name": "MicroGPT Trainer",
         "path": "projects/2026-02-18-microgpt-trainer",
