@@ -1,0 +1,27 @@
+{
+    "_description": "AI model database for projects. Keep updated.",
+    "models": [
+        {"name": "GPT-4o", "company": "OpenAI", "params": "1.8T (est)", "released": "2024-05", "type": "multimodal", "context": 128000, "cost_input": 2.50, "cost_output": 10.00, "open_source": false, "strengths": ["reasoning", "coding", "multimodal"], "mmlu": 88.7},
+        {"name": "GPT-4o mini", "company": "OpenAI", "params": "8B (est)", "released": "2024-07", "type": "text", "context": 128000, "cost_input": 0.15, "cost_output": 0.60, "open_source": false, "strengths": ["speed", "cost"], "mmlu": 82.0},
+        {"name": "Claude 3.5 Sonnet", "company": "Anthropic", "params": "unknown", "released": "2024-06", "type": "text+vision", "context": 200000, "cost_input": 3.00, "cost_output": 15.00, "open_source": false, "strengths": ["coding", "analysis", "long-context"], "mmlu": 88.7},
+        {"name": "Claude 3 Opus", "company": "Anthropic", "params": "unknown", "released": "2024-03", "type": "text+vision", "context": 200000, "cost_input": 15.00, "cost_output": 75.00, "open_source": false, "strengths": ["deep reasoning", "nuance"], "mmlu": 86.8},
+        {"name": "Gemini 1.5 Pro", "company": "Google", "params": "unknown", "released": "2024-02", "type": "multimodal", "context": 2000000, "cost_input": 1.25, "cost_output": 5.00, "open_source": false, "strengths": ["long-context", "multimodal"], "mmlu": 85.9},
+        {"name": "Llama 3.1 405B", "company": "Meta", "params": "405B", "released": "2024-07", "type": "text", "context": 128000, "cost_input": 0.80, "cost_output": 0.80, "open_source": true, "strengths": ["open-source", "multilingual"], "mmlu": 88.6},
+        {"name": "Llama 3.1 70B", "company": "Meta", "params": "70B", "released": "2024-07", "type": "text", "context": 128000, "cost_input": 0.20, "cost_output": 0.20, "open_source": true, "strengths": ["open-source", "balanced"], "mmlu": 86.0},
+        {"name": "Mistral Large 2", "company": "Mistral", "params": "123B", "released": "2024-07", "type": "text", "context": 128000, "cost_input": 2.00, "cost_output": 6.00, "open_source": false, "strengths": ["multilingual", "function calling"], "mmlu": 84.0},
+        {"name": "Mixtral 8x22B", "company": "Mistral", "params": "176B MoE", "released": "2024-04", "type": "text", "context": 65000, "cost_input": 0.60, "cost_output": 0.60, "open_source": true, "strengths": ["MoE efficiency", "multilingual"], "mmlu": 77.8},
+        {"name": "DeepSeek V3", "company": "DeepSeek", "params": "671B MoE", "released": "2024-12", "type": "text", "context": 128000, "cost_input": 0.27, "cost_output": 1.10, "open_source": true, "strengths": ["cost-efficiency", "coding", "math"], "mmlu": 87.1},
+        {"name": "Qwen 2.5 72B", "company": "Alibaba", "params": "72B", "released": "2024-09", "type": "text", "context": 131000, "cost_input": 0.20, "cost_output": 0.20, "open_source": true, "strengths": ["multilingual", "coding"], "mmlu": 85.3},
+        {"name": "Phi-3 Medium", "company": "Microsoft", "params": "14B", "released": "2024-04", "type": "text", "context": 128000, "cost_input": 0.00, "cost_output": 0.00, "open_source": true, "strengths": ["small model", "on-device"], "mmlu": 78.0},
+        {"name": "Gemma 2 27B", "company": "Google", "params": "27B", "released": "2024-06", "type": "text", "context": 8192, "cost_input": 0.00, "cost_output": 0.00, "open_source": true, "strengths": ["small model", "research"], "mmlu": 75.2}
+    ],
+    "benchmarks": {
+        "MMLU": "Massive Multitask Language Understanding — 57 academic subjects",
+        "HumanEval": "Code generation — pass@1 on Python problems",
+        "MATH": "Competition-level math problems",
+        "ARC-Challenge": "Abstract Reasoning Corpus — science questions",
+        "HellaSwag": "Commonsense natural language inference",
+        "GSM8K": "Grade school math word problems",
+        "TruthfulQA": "Measuring truthfulness vs common misconceptions"
+    }
+}

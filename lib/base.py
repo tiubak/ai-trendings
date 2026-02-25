@@ -2,9 +2,46 @@
 
 import os
 import json
+import sqlite3
 import subprocess
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import quote
+
+# ---------------------------------------------------------------------------
+# SQLite helpers — pre-loaded AI data (models, timeline, glossary, GPUs, etc.)
+# ---------------------------------------------------------------------------
+_DB_PATH = os.path.join(os.path.dirname(__file__), "data", "ai_data.db")
+
+def query_db(sql: str, params: tuple = ()) -> list[dict]:
+    """Run a read-only query on the bundled AI database.
+    Returns list of dicts. Safe for use in Vercel (read-only).
+    
+    Tables: models, timeline, glossary, languages, gpus, datasets
+    
+    Example:
+        query_db("SELECT * FROM models WHERE open_source = 1 ORDER BY mmlu_score DESC LIMIT 5")
+        query_db("SELECT * FROM timeline WHERE year >= ? ORDER BY year", (2020,))
+        query_db("SELECT * FROM glossary WHERE category = ?", ("architecture",))
+        query_db("SELECT * FROM gpus ORDER BY fp16_tflops DESC")
+    """
+    try:
+        conn = sqlite3.connect(f"file:{_DB_PATH}?mode=ro", uri=True)
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(sql, params).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]
+    except Exception as e:
+        return [{"error": str(e)}]
+
+def load_json_data(filename: str) -> dict:
+    """Load a JSON file from lib/data/. 
+    Available: ai_models.json, ai_timeline.json, ai_glossary.json"""
+    path = os.path.join(os.path.dirname(__file__), "data", filename)
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception as e:
+        return {"error": str(e)}
 
 # API Keys
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")

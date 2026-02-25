@@ -325,6 +325,229 @@ TOPICS = [
         "ui_type": "input_output",
         "ui_config": {"input_label": "What do you want to learn?", "input_fields": ["skill", "level"]}
     },
+    # --- Database-powered topics (use query_db / load_json_data) ---
+    {
+        "slug": "ai-model-showdown",
+        "name": "AI Model Showdown",
+        "description": "Compare AI models side-by-side with real specs — context windows, cost, benchmarks, and open-source status from our database of 13+ models",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "You have access to this AI model data (JSON). Analyze it and create an interesting comparison. Pick the 3 best value-for-money models and the 3 most powerful models. Explain trade-offs. Data: {db_models}. Format as JSON: {best_value (array of {name, why}), most_powerful (array of {name, why}), surprise_findings (array), advice_for_developers}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM models ORDER BY mmlu_score DESC"
+            },
+            "compare": {
+                "prompt": "Compare these specific AI models in detail: {models_to_compare}. Use this data: {db_models}. Cover: performance, cost, context window, open-source availability, best use cases. Format as JSON: {models (array of {name, verdict}), winner_by_category (object), recommendation}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM models"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Which models to compare? (or leave empty for overview)", "input_fields": ["models_to_compare"]}
+    },
+    {
+        "slug": "ai-history-timeline",
+        "name": "AI History Interactive Timeline",
+        "description": "Explore 70+ years of AI history — from the Turing Test to ChatGPT — with interactive timeline, category filters, and AI-generated context",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "Using this AI timeline data, create an engaging narrative of AI history organized by era. Highlight the most impactful moments and explain how each led to the next. Data: {db_timeline}. Format as JSON: {eras (array of {name, years, key_events (array), narrative, impact_score}), connections (array of {from_event, to_event, how_connected}), prediction_for_next}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM timeline ORDER BY year"
+            },
+            "deep_dive": {
+                "prompt": "Give a deep dive on this AI era/topic: '{topic}'. Use this timeline data for context: {db_timeline}. Include lesser-known facts, key people, and what we can learn. Format as JSON: {topic, era, key_figures (array of {name, contribution}), lesser_known_facts (array), impact_on_today, lessons_learned}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM timeline ORDER BY year"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Explore an era or topic (or leave empty for full overview)", "input_fields": ["topic"]}
+    },
+    {
+        "slug": "ai-glossary-quiz",
+        "name": "AI Glossary Quiz",
+        "description": "Test your AI knowledge — get quizzed on 40+ AI/ML terms with multiple choice, hints, and explanations. Track your score!",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "Create a 5-question multiple choice quiz about AI/ML concepts using these terms: {db_glossary}. Mix difficulty levels. Each question should have 4 options, one correct. Include a hint and detailed explanation. Format as JSON: {questions (array of {question, options (array), correct_index, hint, explanation, difficulty})}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM glossary ORDER BY RANDOM() LIMIT 15"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "", "input_fields": []}
+    },
+    {
+        "slug": "ai-gpu-calculator",
+        "name": "AI GPU & Training Cost Calculator",
+        "description": "Estimate AI training costs with real GPU specs — compare A100 vs H100 vs TPU, calculate power consumption, and optimize your budget",
+        "category": "Practical",
+        "actions": {
+            "start": {
+                "prompt": "Using this GPU database: {db_gpus}, create a training cost analysis for a model with {params} parameters trained on {tokens} tokens. Calculate: GPU hours needed, electricity cost, total cloud cost for each GPU, and CO2 footprint. Include recommendations. Format as JSON: {model_specs, gpu_comparisons (array of {gpu, hours_needed, cloud_cost, electricity_kwh, co2_kg}), cheapest_option, fastest_option, best_value, tips (array)}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM gpus ORDER BY fp16_tflops DESC"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Model specs", "input_fields": ["params", "tokens"]}
+    },
+    {
+        "slug": "ai-dataset-explorer",
+        "name": "AI Dataset Explorer",
+        "description": "Browse famous AI datasets — learn what ImageNet, COCO, The Pile and others contain, how they're used, and why they matter for AI development",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "Using this dataset information: {db_datasets}, create an engaging guide to AI datasets. Group by domain, explain why each matters, and describe how they shaped AI progress. Include fun facts. Format as JSON: {overview, by_domain (object with arrays), most_influential, controversies (array), fun_facts (array), how_to_choose_dataset}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM datasets ORDER BY year"
+            },
+            "explore": {
+                "prompt": "Deep dive into the '{dataset_name}' dataset. Use this data: {db_datasets}. Cover: history, what's inside, famous models trained on it, controversies, alternatives, and how to use it. Format as JSON: {name, deep_dive, history, contents_description, famous_models_trained (array), controversies (array), alternatives (array), getting_started}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM datasets"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Dataset to explore (or leave empty for overview)", "input_fields": ["dataset_name"]}
+    },
+    # --- More fun topics ---
+    {
+        "slug": "ai-debate-arena",
+        "name": "AI Debate Arena",
+        "description": "Watch AI argue both sides of controversial tech topics — from 'Is AI art real art?' to 'Should AI replace teachers?' — then vote!",
+        "category": "Fun",
+        "actions": {
+            "start": {
+                "prompt": "Create a structured debate on this topic: '{topic}'. If no topic given, pick a controversial AI topic. Present both sides with strong arguments. Format as JSON: {topic, side_for (object: {position, arguments (array of {point, evidence}), closing}), side_against (object: {position, arguments (array of {point, evidence}), closing}), moderator_summary, audience_poll_question}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Debate topic (or leave empty for random)", "input_fields": ["topic"]}
+    },
+    {
+        "slug": "ai-job-interview-simulator",
+        "name": "AI Job Interview Simulator",
+        "description": "Practice AI/ML job interview questions — get technical questions, behavioral prompts, and detailed feedback on your answers",
+        "category": "Practical",
+        "actions": {
+            "start": {
+                "prompt": "Generate 3 AI/ML job interview questions for a '{role}' position at '{level}' level. Mix technical and behavioral. For each, provide: the question, what interviewers are looking for, a strong example answer, and common mistakes. Format as JSON: {role, level, questions (array of {question, type, what_they_want, example_answer, common_mistakes (array), follow_up_questions (array)})}.",
+                "parse": "json"
+            },
+            "evaluate": {
+                "prompt": "Evaluate this interview answer. Question: '{question}'. Answer: '{answer}'. Rate it honestly and give specific improvement suggestions. Format as JSON: {score (1-10), strengths (array), weaknesses (array), improved_answer, interviewer_perspective, tips (array)}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Role and level", "input_fields": ["role", "level"]}
+    },
+    {
+        "slug": "ai-paper-summarizer",
+        "name": "AI Research Paper Summarizer",
+        "description": "Enter any AI paper title or topic and get a plain-English summary — key findings, methodology, impact, and 'so what?' explained simply",
+        "category": "Practical",
+        "actions": {
+            "start": {
+                "prompt": "Summarize the AI research paper or topic: '{paper}'. Write for a smart person who isn't an ML expert. Cover: the problem, approach, key findings, why it matters, limitations, and real-world impact. Format as JSON: {title, authors_or_team, year, problem, approach (simple explanation), key_findings (array), why_it_matters, limitations (array), real_world_impact, eli5 (explain like I'm 5), further_reading (array)}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Paper title or AI topic", "input_fields": ["paper"]}
+    },
+    {
+        "slug": "ai-ethics-dilemma",
+        "name": "AI Ethics Dilemma Generator",
+        "description": "Face thought-provoking AI ethics scenarios — trolley problems for the digital age — and explore different ethical frameworks",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "Generate an AI ethics dilemma scenario (like a trolley problem but for AI). If topic given: '{topic}'. Make it realistic and thought-provoking. Analyze it through 3 ethical frameworks (utilitarian, deontological, virtue ethics). Format as JSON: {scenario, stakeholders (array of {who, interests}), ethical_frameworks (array of {framework, analysis, recommendation}), real_world_parallel, discussion_questions (array), there_is_no_right_answer_because}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Ethics topic (or leave empty for random)", "input_fields": ["topic"]}
+    },
+    {
+        "slug": "ai-meme-explainer",
+        "name": "AI Meme Explainer",
+        "description": "Paste any AI/tech meme description and get a serious academic explanation of why it's funny — plus the real CS concept behind it",
+        "category": "Fun",
+        "actions": {
+            "start": {
+                "prompt": "Write a hilariously over-the-top academic analysis of this tech/AI meme: '{meme}'. Include: formal abstract, the CS concept it references, why it resonates with engineers, cultural significance, and a peer review. Format as JSON: {title (academic paper style), abstract, meme_description, cs_concept_explained, why_its_funny (array of {layer, explanation}), cultural_analysis, peer_review (a fake snarky review), related_memes (array)}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Describe a tech/AI meme", "input_fields": ["meme"]}
+    },
+    {
+        "slug": "ai-project-idea-generator",
+        "name": "AI Project Idea Generator",
+        "description": "Get personalized AI/ML project ideas for your portfolio — filtered by skill level, interests, and available time. Includes full project plan!",
+        "category": "Practical",
+        "actions": {
+            "start": {
+                "prompt": "Generate 3 AI/ML project ideas for someone at '{level}' level interested in '{interests}' with '{time_available}' available time. Each project should be portfolio-worthy. Format as JSON: {projects (array of {name, description, difficulty, estimated_hours, tech_stack (array), datasets_needed (array), steps (array), portfolio_value, what_youll_learn (array), stretch_goals (array)})}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Your details", "input_fields": ["level", "interests", "time_available"]}
+    },
+    {
+        "slug": "ai-world-builder",
+        "name": "AI World Builder",
+        "description": "Create detailed fictional worlds with AI — geography, cultures, history, and conflicts. Generate maps descriptions, character archetypes, and plot hooks",
+        "category": "Fun",
+        "actions": {
+            "start": {
+                "prompt": "Create a detailed fictional world based on: '{theme}'. Include: world name, geography, 3 cultures/factions, a central conflict, history, magic/technology system, and 3 character archetypes. Format as JSON: {world_name, tagline, geography, cultures (array of {name, description, values, technology}), central_conflict, history_summary, magic_or_tech_system, character_archetypes (array of {name, description, motivation}), plot_hooks (array), fun_detail}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "World theme (e.g., 'underwater steampunk', 'AI-ruled dystopia')", "input_fields": ["theme"]}
+    },
+    {
+        "slug": "ai-code-review-bot",
+        "name": "AI Code Review Bot",
+        "description": "Paste code and get a thorough code review — security issues, performance problems, style suggestions, and refactoring ideas",
+        "category": "Practical",
+        "actions": {
+            "start": {
+                "prompt": "Do a thorough code review of this code: ```{code}```. Cover: bugs, security issues, performance, readability, naming, error handling, and tests. Be specific with line references. Format as JSON: {language, summary, score (1-10), bugs (array of {issue, severity, fix}), security (array of {issue, severity, fix}), performance (array of {issue, impact, fix}), style (array), refactoring_suggestions (array of {what, why, how}), missing_tests (array), overall_verdict}.",
+                "parse": "json"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "Paste code to review", "input_fields": ["code"]}
+    },
+    {
+        "slug": "ai-language-comparison",
+        "name": "AI Programming Language Showdown",
+        "description": "Compare programming languages for AI/ML — see which language dominates for deep learning, data science, deployment, and edge inference",
+        "category": "AI Education",
+        "actions": {
+            "start": {
+                "prompt": "Using this programming language data for AI/ML: {db_languages}, create a comprehensive comparison. Cover which language is best for each AI task, pros/cons, and future trends. Format as JSON: {overview, by_task (object: {deep_learning, data_science, deployment, edge_inference, research}), language_profiles (array of {name, verdict, best_for, avoid_for}), rising_stars, prediction_2027}.",
+                "parse": "json",
+                "db_query": "SELECT * FROM languages ORDER BY ai_rank"
+            }
+        },
+        "ui_type": "input_output",
+        "ui_config": {"input_label": "", "input_fields": []}
+    },
 ]
 
 # ============================================================================
@@ -333,7 +556,8 @@ TOPICS = [
 
 HANDLER_TEMPLATE = '''"""__NAME__ — __DESCRIPTION__"""
 
-from ..base import call_openrouter, extract_json, fetch_image
+from ..base import call_openrouter, extract_json, fetch_image, query_db, load_json_data
+import json as _json
 
 ACTIONS = __ACTIONS_JSON__
 
@@ -350,6 +574,15 @@ def handle(action: str, data: dict) -> dict:
     prompt = action_config["prompt"]
     for key, value in data.items():
         prompt = prompt.replace("{" + key + "}", str(value))
+    
+    # Inject database data if action has a db_query
+    db_query = action_config.get("db_query")
+    if db_query:
+        db_rows = query_db(db_query)
+        # Replace {db_*} placeholders with JSON data
+        for placeholder in ["db_models", "db_timeline", "db_glossary", "db_gpus", "db_datasets", "db_languages"]:
+            if "{" + placeholder + "}" in prompt:
+                prompt = prompt.replace("{" + placeholder + "}", _json.dumps(db_rows, default=str)[:3000])
     
     # Call AI
     raw = call_openrouter(prompt)
