@@ -118,6 +118,41 @@
         "category": "AI Education",
         "created_at": "2026-02-17"
     },
+    "2026-02-19": {
+        "name": "AI Alien Language Translator",
+        "path": "projects/2026-02-19-ai-alien-translator",
+        "description": "AI invents an alien language and translates your messages \u2014 complete with grammar rules, pronunciation guide, and cultural notes",
+        "category": "Fun",
+        "created_at": "2026-02-19"
+    },
+    "2026-02-20": {
+        "name": "AI Model Showdown",
+        "path": "projects/2026-02-20-ai-model-showdown",
+        "description": "Compare AI models side-by-side with real specs \u2014 context windows, cost, benchmarks, and open-source status from our database of 13+ models",
+        "category": "AI Education",
+        "created_at": "2026-02-20"
+    },
+    "2026-02-21": {
+        "name": "AI World Builder",
+        "path": "projects/2026-02-21-ai-world-builder",
+        "description": "Create detailed fictional worlds with AI \u2014 geography, cultures, history, and conflicts. Generate maps descriptions, character archetypes, and plot hooks",
+        "category": "Fun",
+        "created_at": "2026-02-21"
+    },
+    "2026-02-22": {
+        "name": "AI Meme Explainer",
+        "path": "projects/2026-02-22-ai-meme-explainer",
+        "description": "Paste any AI/tech meme description and get a serious academic explanation of why it's funny \u2014 plus the real CS concept behind it",
+        "category": "Fun",
+        "created_at": "2026-02-22"
+    },
+    "2026-02-23": {
+        "name": "AI Roast Master",
+        "path": "projects/2026-02-23-ai-roast-master",
+        "description": "Get lovingly roasted by AI \u2014 enter your bio or profession and receive clever, witty roasts that are funny but never mean",
+        "category": "Fun",
+        "created_at": "2026-02-23"
+    },
     "2026-02-24": {
         "name": "AI Adventure Game Master",
         "path": "projects/2026-02-24-ai-adventure-game-master",
