@@ -1,85 +1,57 @@
-"""Emerging AI Architectures Explorer - Discover what's beyond transformers"""
+"""AI GPU & Training Cost Calculator — Estimate AI training costs with real GPU specs — compare A100 vs H100 vs TPU, calculate power consumption, and optimize your budget"""
 
-from ..base import call_openrouter, fetch_image
+from ..base import (call_openrouter, call_pollinations, extract_json, fetch_image,
+    query_db, load_json_data, web_search, fetch_url, wikipedia_summary, fetch_rss,
+    generate_qr, generate_wordcloud, tmp_sqlite, call_huggingface, call_gTTS,
+    classify_text, embed_text, text_to_speech, CDN_LIBS, PUBLIC_APIS)
+import json as _json
+
+ACTIONS = {
+    "start": {
+        "prompt": "Using this GPU database: {db_gpus}, create a training cost analysis for a model with {params} parameters trained on {tokens} tokens. Calculate: GPU hours needed, electricity cost, total cloud cost for each GPU, and CO2 footprint. Include recommendations. Format as JSON: {model_specs, gpu_comparisons (array of {gpu, hours_needed, cloud_cost, electricity_kwh, co2_kg}), cheapest_option, fastest_option, best_value, tips (array)}.",
+        "parse": "json",
+        "db_query": "SELECT * FROM gpus ORDER BY fp16_tflops DESC"
+    }
+}
 
 def handle(action: str, data: dict) -> dict:
     """Handle project actions."""
-
-    if action == 'start':
-        prompt = """Provide an engaging introduction to emerging AI architectures beyond the transformer.
-Cover why researchers are looking beyond transformers, what limitations they address (e.g., computational efficiency, long context, interpretability), and mention a few key alternatives like State Space Models (SSMs), neuro-symbolic systems, and others.
-Keep it around 150-200 words for a general audience."""
-        intro = call_openrouter(prompt)
-
-        return {
-            "intro": intro,
-            "date": "2026-02-05",
-            "project": "Emerging AI Architectures Explorer",
-            "actions": ["explain", "compare", "visualize", "example"]
-        }
-
-    elif action == 'explain':
-        architecture = data.get('architecture', 'State Space Models')
-        level = data.get('level', 'intermediate')  # basic, intermediate, advanced
-
-        if level == 'basic':
-            prompt = f"""Explain {architecture} in the simplest possible terms. Use everyday analogies. No technical jargon. 100 words max."""
-        elif level == 'intermediate':
-            prompt = f"""Explain {architecture} with some technical detail but still accessible. Cover the key ideas and how it differs from transformers. About 200 words."""
-        else:  # advanced
-            prompt = f"""Provide a technical explanation of {architecture}, including mathematical foundations if relevant. Discuss its advantages, trade-offs, and current research directions. 300 words."""
-
-        explanation = call_openrouter(prompt)
-
-        return {
-            "explanation": explanation,
-            "architecture": architecture,
-            "level": level,
-            "date": "2026-02-05"
-        }
-
-    elif action == 'compare':
-        prompt = """Compare the following emerging AI architectures: State Space Models (SSMs), neuro-symbolic AI, and any others you think are relevant.
-For each, discuss: key principles, advantages over transformers, current research status, and potential applications.
-Keep it concise, about 200 words. Use a structured format with headings."""
-        comparison = call_openrouter(prompt)
-
-        return {
-            "comparison": comparison,
-            "date": "2026-02-05"
-        }
-
-    elif action == 'visualize':
-        concept = data.get('concept', 'emerging AI architecture')
-        prompt = f"Create a clean, educational diagram showing the architecture of {concept}. Use labeled components, flow arrows, and a modern technical illustration style."
-        image_b64 = fetch_image(prompt)
-
-        if image_b64:
-            return {
-                "image": f"data:image/png;base64,{image_b64}",
-                "date": "2026-02-05"
-            }
-        else:
-            return {"error": "Failed to generate visualization"}
-
-    elif action == 'example':
-        architecture = data.get('architecture', 'State Space Models')
-        prompt = f"""Provide a concrete example of how {architecture} works in practice.
-Describe a specific task or application where this architecture shines, and walk through the steps or mechanisms.
-Keep it clear and educational, about 150 words."""
-        example = call_openrouter(prompt)
-
-        return {
-            "example": example,
-            "architecture": architecture,
-            "date": "2026-02-05"
-        }
-
-    return {"error": f"Unknown action: {action}"}
+    if action == 'info':
+        return {"name": META["name"], "description": META["description"], "actions": list(ACTIONS.keys())}
+    
+    action_config = ACTIONS.get(action)
+    if not action_config:
+        return {"error": f"Unknown action: {action}. Available: {list(ACTIONS.keys())}"}
+    
+    # Build prompt with user data
+    prompt = action_config["prompt"]
+    for key, value in data.items():
+        prompt = prompt.replace("{" + key + "}", str(value))
+    
+    # Inject database data if action has a db_query
+    db_query = action_config.get("db_query")
+    if db_query:
+        db_rows = query_db(db_query)
+        # Replace {db_*} placeholders with JSON data
+        for placeholder in ["db_models", "db_timeline", "db_glossary", "db_gpus", "db_datasets", "db_languages"]:
+            if "{" + placeholder + "}" in prompt:
+                prompt = prompt.replace("{" + placeholder + "}", _json.dumps(db_rows, default=str)[:3000])
+    
+    # Call AI
+    raw = call_openrouter(prompt)
+    
+    # Parse response
+    if action_config.get("parse") == "json":
+        parsed = extract_json(raw)
+        if parsed:
+            return {"result": parsed, "date": META.get("date", "")}
+        return {"result": {"text": raw}, "date": META.get("date", ""), "parse_note": "returned as text"}
+    
+    return {"result": {"text": raw}, "date": META.get("date", "")}
 
 META = {
-    "name": "Emerging AI Architectures Explorer",
-    "description": "Explore AI architectures beyond transformers: state-space models, neuro-symbolic systems, and the future of AI design",
-    "category": "AI Education",
+    "name": "AI GPU & Training Cost Calculator",
+    "description": "Estimate AI training costs with real GPU specs — compare A100 vs H100 vs TPU, calculate power consumption, and optimize your budget",
+    "category": "Practical",
     "date": "2026-02-05"
 }
