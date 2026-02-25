@@ -1,4 +1,4 @@
-"""AI Training Cost Calculator — Estimate how much it costs to train AI models — from GPT-scale to small fine-tunes — covering GPU hours, electricity, and carbon footprint"""
+"""Post-Training Sandbox — Enter a task or application and get an educational, step-by-step post-training refinement plan for turning a base model into a production-ready specialist."""
 
 from ..base import (call_openrouter, call_pollinations, extract_json, fetch_image,
     query_db, load_json_data, web_search, fetch_url, wikipedia_summary, fetch_rss,
@@ -8,11 +8,11 @@ import json as _json
 
 ACTIONS = {
     "start": {
-        "prompt": "Explain AI training costs in simple terms. Include: cost breakdown for training a large model (GPUs, electricity, cooling, engineering), comparison of training costs for GPT-4 (~$100M), Llama 3 (~$30M), and a small fine-tune (~$100). Include carbon footprint data. Format as JSON: {overview, cost_breakdown (array of {component, percentage, description}), model_comparisons (array of {model, estimated_cost, gpu_hours, parameters, year}), carbon_impact, fun_facts (array)}.",
+        "prompt": "You are an expert AI engineer and educator. Given the user-specified application or task {topic}, produce a single JSON object containing the following fields: \n\n- topic: echo the input string.\n- summary: one-sentence plain-language summary of the problem and the specialization goal.\n- why_post_training: 2-3 short bullet points explaining why a post-training specialization approach fits this use case.\n- post_training_strategy: an ordered array of 6\u201310 concise steps (each a short string) describing a viable post-training pipeline (data curation, adapter/LoRA or fine-tuning choice, curriculum, evaluation loop, deployment tweaks).\n- dataset_examples: an array of 3\u20136 dataset types or concrete data sources the practitioner could use, with one-line sourcing or generation tips for each.\n- labeling_guidelines: an array of 4\u20136 concise labeling rules or schema tips that maximize downstream performance and reduce noise.\n- evaluation_metrics: an array of metrics to measure (each item: metric name and one-line reason it's relevant).\n- compute_and_cost_estimate: an object with keys small, medium, large each giving approximate resources (GPU type or vCPU), typical wall-time, and a rough cost range in USD.\n- risks_and_mitigation: an array of 4\u20136 short risk statements paired with one-line mitigation actions.\n- prototype_pipeline: an ordered array of 6\u20138 concrete commands or pseudocode steps (short strings) showing how to run one iteration end-to-end (data -> post-train -> eval -> deploy).\n- milestones: an array of 3\u20135 milestone objects {name:string, target:string, success_criteria:string}.\n- further_reading: an array of 3 concise references (title and URL) for deeper study.\n\nKeep explanations concise and technical enough for an intermediate ML engineer. Use arrays and objects, avoid long paragraphs. Return only valid JSON (no surrounding commentary).",
         "parse": "json"
     },
-    "estimate": {
-        "prompt": "Estimate the training cost for a model with these specs: {parameters} parameters, trained on {tokens} tokens, using {gpu_type} GPUs. Calculate approximate: GPU hours, electricity cost, total cost, and CO2 emissions. Format as JSON: {specs, estimated_gpu_hours, electricity_kwh, cost_usd, co2_kg, comparison (e.g. 'equivalent to X car trips'), tips_to_reduce_cost (array)}.",
+    "explore": {
+        "prompt": "The user provided additional input {user_input} (this could be constraints such as 'edge device only', 'privacy-first', 'limited budget', or 'robotics safety-critical'). Based on that, produce a JSON object with these fields:\n\n- user_input: echo the string.\n- refined_plan: an ordered array of 6\u201310 revised post_training_strategy steps tailored to the constraint.\n- reduced_resource_options: an array of 3 options (each with name, how it reduces compute, and impact on accuracy) for low-cost or edge-friendly deployment.\n- data_collection_plan: a short timeline object {week1:activities, week2:activities, week3:activities} with pragmatic tasks for 3 weeks.\n- evaluation_protocol: an array of 4\u20136 concrete tests (each with test name, how to run it, and pass/fail criteria) addressing performance and safety for this use case.\n- code_snippets: an array of 2\u20134 short code snippets or CLI commands (strings) illustrating critical steps (e.g., adapter training command, quantization command, quick eval loop). Keep them short and high-level.\n- tradeoffs: an array of 3 concise tradeoff statements comparing accuracy, latency, cost, and safety for the options above.\n- next_actions: an ordered array of 5 immediate actionable steps the user should take next.\n\nOutput only valid JSON. Keep entries concise and actionable.",
         "parse": "json"
     }
 }
@@ -53,8 +53,8 @@ def handle(action: str, data: dict) -> dict:
     return {"result": {"text": raw}, "date": META.get("date", "")}
 
 META = {
-    "name": "AI Training Cost Calculator",
-    "description": "Estimate how much it costs to train AI models — from GPT-scale to small fine-tunes — covering GPU hours, electricity, and carbon footprint",
+    "name": "Post-Training Sandbox",
+    "description": "Enter a task or application and get an educational, step-by-step post-training refinement plan for turning a base model into a production-ready specialist.",
     "category": "AI Education",
     "date": "2026-02-17"
 }
