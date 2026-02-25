@@ -865,30 +865,37 @@ def search_and_design_topic(date_str, used_slugs):
     """Search for trending AI/tech news and design a project around it.
     Returns a topic dict or None on failure."""
     
-    # Step 1: Search for trending topics
+    # Step 0: Check for pre-fetched trends (from agent's Brave Search / web_fetch)
     trends = []
-    
-    try:
+    external = os.environ.get("_EXTERNAL_TRENDS", "")
+    if external:
         try:
-            from ddgs import DDGS
-        except ImportError:
-            from duckduckgo_search import DDGS
-        with DDGS() as ddgs:
-            # Search multiple angles for variety
-            queries = [
-                "AI breakthrough news this week 2026",
-                "machine learning new model release",
-                "AI technology trending today",
-                "artificial intelligence research news",
-                "tech AI startup announcement",
-            ]
-            # Pick query based on date for variety
-            day_num = int(date_str.split("-")[2])
-            query = queries[day_num % len(queries)]
-            results = list(ddgs.text(query, max_results=8))
-            trends = [{"title": r.get("title", ""), "body": r.get("body", ""), "url": r.get("href", "")} for r in results]
-    except Exception as e:
-        print(f"  ⚠️  DuckDuckGo search failed: {e}")
+            trends = json.loads(external)
+            print(f"  📰 Using {len(trends)} pre-fetched trend results (from agent)")
+        except:
+            pass
+    
+    # Step 1: Search for trending topics (fallback if no external trends)
+    if not trends:
+        try:
+            try:
+                from ddgs import DDGS
+            except ImportError:
+                from duckduckgo_search import DDGS
+            with DDGS() as ddgs:
+                queries = [
+                    "AI breakthrough news this week 2026",
+                    "machine learning new model release",
+                    "AI technology trending today",
+                    "artificial intelligence research news",
+                    "tech AI startup announcement",
+                ]
+                day_num = int(date_str.split("-")[2])
+                query = queries[day_num % len(queries)]
+                results = list(ddgs.text(query, max_results=8))
+                trends = [{"title": r.get("title", ""), "body": r.get("body", ""), "url": r.get("href", "")} for r in results]
+        except Exception as e:
+            print(f"  ⚠️  DuckDuckGo search failed: {e}")
     
     # Also try RSS feeds
     try:
@@ -1213,6 +1220,28 @@ def commit_and_push(dates_generated):
 def main():
     args = sys.argv[1:]
     
+    # Check for --trends flag (trends passed as a file)
+    trends_file = None
+    filtered_args = []
+    for i, arg in enumerate(args):
+        if arg == "--trends" and i + 1 < len(args):
+            trends_file = args[i + 1]
+        elif i > 0 and args[i - 1] == "--trends":
+            continue  # skip the filename after --trends
+        else:
+            filtered_args.append(arg)
+    args = filtered_args
+    
+    # Load external trends if provided
+    if trends_file and os.path.exists(trends_file):
+        try:
+            with open(trends_file) as f:
+                external_trends = json.load(f)
+            os.environ["_EXTERNAL_TRENDS"] = json.dumps(external_trends)
+            print(f"  📰 Loaded {len(external_trends)} external trend results")
+        except Exception as e:
+            print(f"  ⚠️  Could not load trends file: {e}")
+    
     if not args:
         # Today's date
         today = datetime.now().strftime("%Y-%m-%d")
@@ -1245,6 +1274,7 @@ def main():
         print("  python3 generate_project.py                          # today")
         print("  python3 generate_project.py 2026-02-15               # specific date")
         print("  python3 generate_project.py --backfill 2026-02-13 2026-02-23  # range")
+        print("  python3 generate_project.py --trends trends.json     # with pre-fetched trends")
         sys.exit(1)
 
 
