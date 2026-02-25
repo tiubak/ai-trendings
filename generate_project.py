@@ -787,6 +787,151 @@ FRONTEND_TEMPLATE = r'''<!DOCTYPE html>
 </html>
 '''
 
+README_TEMPLATE = '''# __NAME__
+
+> __DESCRIPTION__
+
+__TRENDING_BADGE__
+
+## 🎯 What This Project Does
+
+__WHAT_IT_DOES__
+
+## 🚀 How to Use
+
+1. Open the project by clicking **▶ Open** or visiting the [live demo](__PROJECT_URL__)
+2. __HOW_TO_USE_STEP2__
+3. __HOW_TO_USE_STEP3__
+4. Explore the AI-generated results!
+
+## 🧠 AI Concepts Covered
+
+__CONCEPTS__
+
+## 🛠️ Technical Details
+
+| Component | Technology |
+|-----------|-----------|
+| Frontend | Vanilla HTML/CSS/JS |
+| Backend | Python (Vercel Serverless) |
+| AI Provider | OpenRouter (free tier) / Pollinations.AI |
+| Data | __DATA_SOURCE__ |
+
+## 📂 Project Structure
+
+```
+__SLUG__/
+├── index.html          ← Interactive frontend
+└── README.md           ← This file
+
+lib/projects/
+└── day___DATE_UNDER__.py  ← Backend handler
+```
+
+## 🔗 Links
+
+- [Live Demo](__PROJECT_URL__)
+- [AI Trendings Calendar](https://ai-trendings.vercel.app)
+- [Source Code](https://github.com/tiubak/ai-trendings)
+
+---
+
+*Part of [AI Trendings](https://ai-trendings.vercel.app) — one AI project, every single day.*
+*Generated on __DATE__*
+'''
+
+
+def build_readme(topic, date_str):
+    """Build a README.md for the project using AI to fill in the details."""
+    slug = topic["slug"]
+    name = topic["name"]
+    desc = topic["description"]
+    category = topic["category"]
+    actions = topic.get("actions", {})
+    trending_source = topic.get("trending_source", "")
+    
+    # Build trending badge
+    trending_badge = ""
+    if trending_source:
+        trending_badge = f"🔥 **Trending:** {trending_source}\n"
+    
+    # Determine what it does from actions
+    action_descriptions = []
+    for action_name, config in actions.items():
+        prompt_text = config.get("prompt", "")[:150]
+        action_descriptions.append(f"- **{action_name}**: {prompt_text}...")
+    what_it_does = "\n".join(action_descriptions) if action_descriptions else f"An interactive {category.lower()} project about {name.lower()}."
+    
+    # Determine input fields for how-to
+    ui_config = topic.get("ui_config", {})
+    fields = ui_config.get("input_fields", [])
+    if fields:
+        step2 = f"Enter your input in the **{fields[0].replace('_', ' ')}** field"
+        step3 = f"Click the action button to generate AI-powered results"
+    else:
+        step2 = "Browse the overview that loads automatically"
+        step3 = "Interact with the different sections and explore"
+    
+    # Determine concepts
+    concept_map = {
+        "AI Education": "- Large Language Models (LLMs)\n- Prompt Engineering\n- AI/ML Fundamentals",
+        "Fun": "- Creative AI Applications\n- Natural Language Generation\n- AI-Powered Content Creation",
+        "Practical": "- Applied AI Tools\n- Developer Productivity\n- Real-World AI Applications",
+    }
+    concepts = concept_map.get(category, "- Artificial Intelligence\n- Machine Learning")
+    
+    # Determine data source
+    has_db = any("db_query" in a for a in actions.values())
+    data_source = "SQLite (bundled AI database)" if has_db else "AI-generated in real-time"
+    
+    date_under = date_str.replace("-", "_")
+    project_url = f"https://ai-trendings.vercel.app/projects/{date_str}-{slug}/"
+    
+    readme = (README_TEMPLATE
+        .replace("__NAME__", name)
+        .replace("__DESCRIPTION__", desc)
+        .replace("__TRENDING_BADGE__", trending_badge)
+        .replace("__WHAT_IT_DOES__", what_it_does)
+        .replace("__HOW_TO_USE_STEP2__", step2)
+        .replace("__HOW_TO_USE_STEP3__", step3)
+        .replace("__CONCEPTS__", concepts)
+        .replace("__DATA_SOURCE__", data_source)
+        .replace("__SLUG__", f"{date_str}-{slug}")
+        .replace("__DATE_UNDER__", date_under)
+        .replace("__DATE__", date_str)
+        .replace("__PROJECT_URL__", project_url)
+    )
+    
+    # Try to enhance with AI if available
+    enhanced = _enhance_readme_with_ai(name, desc, category, trending_source, fields)
+    if enhanced:
+        readme = readme.replace("__WHAT_IT_DOES__", what_it_does)  # already replaced above
+        # Insert AI-enhanced section before Technical Details
+        readme = readme.replace("## 🛠️ Technical Details", f"""## 💡 Why This Matters
+
+{enhanced}
+
+## 🛠️ Technical Details""")
+    
+    return readme
+
+
+def _enhance_readme_with_ai(name, desc, category, trending_source, fields):
+    """Ask AI to write a 'Why This Matters' section for the README."""
+    context = f"trending news: {trending_source}" if trending_source else "AI education"
+    prompt = f"""Write a brief, engaging "Why This Matters" paragraph (3-4 sentences) for an AI project called "{name}".
+Description: {desc}
+Category: {category}
+Context: {context}
+
+Write in a professional but accessible tone. Explain why this topic is important for someone learning about AI.
+Return ONLY the paragraph text, no headers or formatting."""
+    
+    result = _call_ai(prompt)
+    if result and len(result) > 50 and len(result) < 1000:
+        return result.strip()
+    return None
+
 
 def build_input_fields_html(topic):
     """Generate HTML input fields from topic config."""
@@ -1146,6 +1291,11 @@ def generate_project(date_str, topic=None):
     
     (project_dir / "index.html").write_text(frontend_code)
     print(f"  ✅ Frontend: {project_dir.relative_to(ROOT)}/index.html")
+    
+    # 2b. Generate README
+    readme_content = build_readme(topic, date_str)
+    (project_dir / "README.md").write_text(readme_content)
+    print(f"  ✅ README: {project_dir.relative_to(ROOT)}/README.md")
     
     # 3. Update projects.json
     projects[date_str] = {

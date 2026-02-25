@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Trendings — Daily AI Projects</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -28,326 +25,200 @@
             top: 0;
             z-index: 100;
         }
-
         .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+            max-width: 1400px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 20px;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            font-size: 2.5rem;
-        }
-
+        .logo { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-icon { font-size: 2.5rem; }
         .logo-text h1 {
             font-size: 1.8rem;
             background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .logo-text p { font-size: 0.85rem; color: #888; }
+        .stats { display: flex; gap: 30px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #00f260; }
+        .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
 
-        .logo-text p {
-            font-size: 0.85rem;
-            color: #888;
-        }
+        /* Main */
+        main { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
 
-        .stats {
-            display: flex;
-            gap: 30px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #00f260;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-
-        /* Month Navigation */
+        /* Month Nav */
         .month-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding: 20px;
+            background: rgba(255, 255, 255, 0.05); border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         .month-nav button {
-            background: rgba(0, 242, 96, 0.1);
-            border: 1px solid rgba(0, 242, 96, 0.3);
-            color: #00f260;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: rgba(0, 242, 96, 0.1); border: 1px solid rgba(0, 242, 96, 0.3);
+            color: #00f260; padding: 12px 24px; border-radius: 8px;
+            cursor: pointer; font-size: 1rem; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
         }
-
-        .month-nav button:hover:not(:disabled) {
-            background: rgba(0, 242, 96, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .month-nav button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .current-month {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #fff;
-        }
+        .month-nav button:hover:not(:disabled) { background: rgba(0, 242, 96, 0.2); transform: translateY(-2px); }
+        .month-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .current-month { font-size: 1.8rem; font-weight: 600; color: #fff; }
 
         /* Category Filter */
-        .category-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
+        .category-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
         .category-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #aaa;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa; padding: 8px 16px; border-radius: 20px;
+            cursor: pointer; font-size: 0.85rem; transition: all 0.3s;
         }
-
         .category-btn:hover, .category-btn.active {
-            background: rgba(0, 242, 96, 0.1);
-            border-color: #00f260;
-            color: #00f260;
+            background: rgba(0, 242, 96, 0.1); border-color: #00f260; color: #00f260;
         }
 
         /* Calendar Grid */
         .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 10px; margin-bottom: 30px;
         }
-
         .day-header {
-            text-align: center;
-            font-weight: 600;
-            color: #888;
-            padding: 10px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
+            text-align: center; font-weight: 600; color: #888;
+            padding: 10px; font-size: 0.85rem; text-transform: uppercase;
         }
-
         .day-cell {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 12px;
-            min-height: 100px;
-            transition: all 0.3s;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px; padding: 12px; min-height: 100px;
+            transition: all 0.3s; display: flex; flex-direction: column;
         }
-
         .day-cell:hover:not(.empty) {
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05); transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 242, 96, 0.1);
         }
-
-        .day-cell.has-project {
-            border-color: rgba(0, 242, 96, 0.3);
-            background: rgba(0, 242, 96, 0.03);
+        .day-cell.has-project { border-color: rgba(0, 242, 96, 0.3); background: rgba(0, 242, 96, 0.03); cursor: pointer; }
+        .day-cell.today { border-color: #0575e6; background: rgba(5, 117, 230, 0.1); }
+        .day-number { font-size: 1.1rem; font-weight: 600; color: #888; margin-bottom: 8px; }
+        .day-cell.has-project .day-number { color: #00f260; }
+        .project-name { font-size: 0.8rem; color: #fff; line-height: 1.3; flex-grow: 1; }
+        .project-category { font-size: 0.65rem; color: #00f260; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .day-cell.empty { cursor: default; }
+        .day-cell.empty .day-number { color: #444; }
+        .day-actions { display: flex; gap: 6px; margin-top: 6px; }
+        .day-actions .action-btn {
+            font-size: 0.65rem; padding: 3px 8px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
+            color: #aaa; cursor: pointer; transition: all 0.2s; text-decoration: none;
         }
+        .day-actions .action-btn:hover { background: rgba(0,242,96,0.15); color: #00f260; border-color: rgba(0,242,96,0.3); }
+        .day-actions .action-btn.primary { background: rgba(0,242,96,0.1); color: #00f260; border-color: rgba(0,242,96,0.2); }
 
-        .day-cell.today {
-            border-color: #0575e6;
-            background: rgba(5, 117, 230, 0.1);
-        }
-
-        .day-number {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #888;
-            margin-bottom: 8px;
-        }
-
-        .day-cell.has-project .day-number {
-            color: #00f260;
-        }
-
-        .project-name {
-            font-size: 0.8rem;
-            color: #fff;
-            line-height: 1.3;
-            flex-grow: 1;
-        }
-
-        .project-category {
-            font-size: 0.65rem;
-            color: #00f260;
-            margin-top: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .day-cell.empty {
-            cursor: default;
-        }
-
-        .day-cell.empty .day-number {
-            color: #444;
-        }
-
-        /* Featured Projects */
-        .featured-section {
-            margin-top: 40px;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: #fff;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
+        /* Featured */
+        .featured-section { margin-top: 40px; }
+        .section-title { font-size: 1.5rem; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .featured-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .featured-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px; padding: 20px; transition: all 0.3s; cursor: pointer;
         }
-
-        .featured-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 242, 96, 0.1);
+        .featured-card:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 242, 96, 0.1); }
+        .featured-card h3 { font-size: 1.2rem; color: #00f260; margin-bottom: 8px; }
+        .featured-card p { font-size: 0.9rem; color: #aaa; line-height: 1.5; }
+        .featured-card .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+        .featured-card .date { font-size: 0.75rem; color: #666; }
+        .featured-card .readme-link {
+            font-size: 0.75rem; color: #0575e6; cursor: pointer; padding: 4px 10px;
+            border: 1px solid rgba(5,117,230,0.3); border-radius: 4px; background: rgba(5,117,230,0.1);
+            transition: all 0.2s; text-decoration: none;
         }
+        .featured-card .readme-link:hover { background: rgba(5,117,230,0.2); }
 
-        .featured-card h3 {
+        /* README Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+            z-index: 1000; justify-content: center; align-items: flex-start;
+            padding: 40px 20px; overflow-y: auto;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; max-width: 800px; width: 100%;
+            max-height: 85vh; overflow-y: auto; position: relative;
+        }
+        .modal-header {
+            position: sticky; top: 0; background: #1a1a2e;
+            padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            border-radius: 16px 16px 0 0; z-index: 1;
+        }
+        .modal-header h2 {
             font-size: 1.2rem;
-            color: #00f260;
-            margin-bottom: 8px;
+            background: linear-gradient(90deg, #00f260, #0575e6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .modal-header .actions { display: flex; gap: 8px; }
+        .modal-close, .modal-open-btn {
+            background: rgba(255,255,255,0.1); border: none; color: #aaa;
+            width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+            font-size: 1.1rem; transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .modal-open-btn { width: auto; padding: 0 12px; font-size: 0.8rem; gap: 4px; }
+        .modal-close:hover, .modal-open-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .modal-body { padding: 24px; }
 
-        .featured-card p {
-            font-size: 0.9rem;
-            color: #aaa;
-            line-height: 1.5;
+        /* Markdown Styles */
+        .modal-body h1 { font-size: 1.6rem; color: #00f260; margin: 20px 0 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .modal-body h2 { font-size: 1.3rem; color: #0575e6; margin: 18px 0 10px; }
+        .modal-body h3 { font-size: 1.1rem; color: #a855f7; margin: 14px 0 8px; }
+        .modal-body p { line-height: 1.7; margin-bottom: 12px; color: #ccc; }
+        .modal-body ul, .modal-body ol { padding-left: 24px; margin-bottom: 12px; }
+        .modal-body li { line-height: 1.6; margin-bottom: 4px; color: #ccc; }
+        .modal-body code {
+            background: rgba(0,242,96,0.1); color: #00f260; padding: 2px 6px;
+            border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9em;
         }
-
-        .featured-card .date {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: 10px;
+        .modal-body pre {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 16px; overflow-x: auto; margin-bottom: 16px;
         }
+        .modal-body pre code { background: none; padding: 0; color: #e0e0e0; }
+        .modal-body blockquote {
+            border-left: 3px solid #0575e6; padding: 8px 16px; margin: 12px 0;
+            background: rgba(5,117,230,0.05); border-radius: 0 8px 8px 0;
+        }
+        .modal-body blockquote p { color: #aaa; margin: 0; }
+        .modal-body table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        .modal-body th, .modal-body td {
+            border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; text-align: left;
+        }
+        .modal-body th { background: rgba(0,242,96,0.05); color: #00f260; }
+        .modal-body a { color: #0575e6; text-decoration: none; }
+        .modal-body a:hover { text-decoration: underline; }
+        .modal-body img { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+        .modal-body .trending-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.8rem; background: rgba(0,242,96,0.1); color: #00f260;
+            margin-bottom: 12px;
+        }
+        .readme-loading { text-align: center; padding: 40px; color: #888; }
+        .readme-error { text-align: center; padding: 40px; color: #ff6b6b; }
 
         /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 40px;
-        }
+        footer { text-align: center; padding: 40px 20px; color: #666; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; }
+        footer a { color: #00f260; text-decoration: none; }
 
-        footer a {
-            color: #00f260;
-            text-decoration: none;
-        }
-
-        /* Loading/Error */
-        .loading, .error {
-            text-align: center;
-            padding: 60px;
-            color: #888;
-        }
-
-        .error {
-            color: #ff6b6b;
-        }
+        .loading, .error { text-align: center; padding: 60px; color: #888; }
+        .error { color: #ff6b6b; }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .stats {
-                gap: 20px;
-            }
-
-            .month-nav {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .calendar-grid {
-                gap: 5px;
-            }
-
-            .day-cell {
-                min-height: 70px;
-                padding: 8px;
-            }
-
-            .project-name {
-                font-size: 0.7rem;
-            }
-
-            .day-header {
-                font-size: 0.7rem;
-            }
+            .header-content { flex-direction: column; text-align: center; }
+            .stats { gap: 20px; }
+            .month-nav { flex-direction: column; gap: 15px; }
+            .calendar-grid { gap: 5px; }
+            .day-cell { min-height: 70px; padding: 8px; }
+            .project-name { font-size: 0.7rem; }
+            .day-header { font-size: 0.7rem; }
+            .day-actions { display: none; }
+            .modal { margin: 10px; max-height: 90vh; }
         }
     </style>
 </head>
@@ -376,21 +247,16 @@
 
     <main>
         <div class="month-nav">
-            <button id="prev-month" onclick="changeMonth(-1)">
-                ← Previous Month
-            </button>
+            <button id="prev-month" onclick="changeMonth(-1)">← Previous Month</button>
             <h2 class="current-month" id="current-month-label">Loading...</h2>
-            <button id="next-month" onclick="changeMonth(1)">
-                Next Month →
-            </button>
+            <button id="next-month" onclick="changeMonth(1)">Next Month →</button>
         </div>
 
         <div class="category-filter" id="category-filter">
             <button class="category-btn active" onclick="filterCategory('all')">All</button>
             <button class="category-btn" onclick="filterCategory('AI Education')">Education</button>
-            <button class="category-btn" onclick="filterCategory('AI Tools')">Tools</button>
-            <button class="category-btn" onclick="filterCategory('AI Research')">Research</button>
-            <button class="category-btn" onclick="filterCategory('AI Visualizers')">Visualizers</button>
+            <button class="category-btn" onclick="filterCategory('Fun')">Fun</button>
+            <button class="category-btn" onclick="filterCategory('Practical')">Practical</button>
         </div>
 
         <div class="calendar-grid" id="calendar-grid">
@@ -403,6 +269,22 @@
         </div>
     </main>
 
+    <!-- README Modal -->
+    <div class="modal-overlay" id="readme-modal" onclick="if(event.target===this)closeModal()">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">README</h2>
+                <div class="actions">
+                    <button class="modal-open-btn" id="modal-open" onclick="openProject()" title="Open project">▶ Open</button>
+                    <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+                </div>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="readme-loading">Loading README...</div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>Built by <a href="https://github.com/tiubak">tiubak</a> • Automated by <a href="https://openclaw.ai">Atlas</a> 🌍</p>
     </footer>
@@ -411,6 +293,7 @@
         let projects = {};
         let currentDate = new Date();
         let currentCategory = 'all';
+        let currentProjectPath = '';
 
         const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -424,8 +307,7 @@
                 updateStats();
             } catch (error) {
                 document.getElementById('calendar-grid').innerHTML = `
-                    <div class="error">Failed to load projects: ${error.message}</div>
-                `;
+                    <div class="error">Failed to load projects: ${error.message}</div>`;
             }
         }
 
@@ -433,76 +315,67 @@
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
 
-            // Day headers
-            DAYS.forEach(day => {
-                grid.innerHTML += `<div class="day-header">${day}</div>`;
-            });
+            DAYS.forEach(day => { grid.innerHTML += `<div class="day-header">${day}</div>`; });
 
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
 
-            // Update month label
             document.getElementById('current-month-label').textContent = 
                 currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-            // Get first day and total days
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-
             const today = new Date();
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-            // Empty cells for days before 1st
             for (let i = 0; i < firstDay; i++) {
                 grid.innerHTML += `<div class="day-cell empty"></div>`;
             }
 
-            // Day cells
             for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const project = projects[dateStr];
                 
                 let classes = 'day-cell';
                 if (project) classes += ' has-project';
                 if (dateStr === todayStr) classes += ' today';
                 
-                // Filter by category
                 if (project && currentCategory !== 'all' && project.category !== currentCategory) {
                     continue;
                 }
 
-                const projectHtml = project ? `
-                    <div class="project-name">${project.name}</div>
-                    ${project.category ? `<div class="project-category">${project.category}</div>` : ''}
-                ` : '';
+                const actionsHtml = project ? `
+                    <div class="day-actions">
+                        <a class="action-btn primary" href="${project.path}/" title="Open project">▶</a>
+                        <span class="action-btn" onclick="event.stopPropagation(); showReadme('${dateStr}')" title="View README">📖</span>
+                    </div>` : '';
 
                 grid.innerHTML += `
-                    <div class="${classes}" onclick="${project ? `window.location.href='${project.path}/'` : ''}">
+                    <div class="${classes}" onclick="${project ? `showReadme('${dateStr}')` : ''}">
                         <div class="day-number">${day}</div>
-                        ${projectHtml}
-                    </div>
-                `;
+                        ${project ? `<div class="project-name">${project.name}</div>
+                        ${project.category ? `<div class="project-category">${project.category}</div>` : ''}
+                        ${actionsHtml}` : ''}
+                    </div>`;
             }
 
-            // Update navigation buttons
-            const startMonth = new Date(2026, 1, 1); // Feb 2026
-            document.getElementById('prev-month').disabled = 
-                new Date(year, month, 1) <= startMonth;
-            document.getElementById('next-month').disabled = 
-                new Date(year, month, 1) >= new Date(today.getFullYear(), today.getMonth(), 1);
+            const startMonth = new Date(2026, 1, 1);
+            document.getElementById('prev-month').disabled = new Date(year, month, 1) <= startMonth;
+            document.getElementById('next-month').disabled = new Date(year, month, 1) >= new Date(today.getFullYear(), today.getMonth(), 1);
         }
 
         function generateFeatured() {
             const featured = document.getElementById('featured-grid');
-            const sorted = Object.entries(projects)
-                .sort((a, b) => b[0].localeCompare(a[0]))
-                .slice(0, 3);
+            const sorted = Object.entries(projects).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 6);
 
             featured.innerHTML = sorted.map(([date, project]) => `
-                <div class="featured-card" onclick="window.location.href='${project.path}/'">
+                <div class="featured-card" onclick="showReadme('${date}')">
                     <h3>${project.name}</h3>
                     <p>${project.description || 'An AI-powered project'}</p>
-                    <div class="date">${date}</div>
+                    <div class="meta">
+                        <span class="date">${date} · ${project.category || ''}</span>
+                        <span class="readme-link" onclick="event.stopPropagation(); window.location.href='${project.path}/'">▶ Open</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -510,8 +383,79 @@
         function updateStats() {
             const total = Object.keys(projects).length;
             document.getElementById('total-projects').textContent = total;
-            document.getElementById('streak-days').textContent = total;
+            
+            // Calculate streak
+            const dates = Object.keys(projects).sort().reverse();
+            let streak = 0;
+            const today = new Date();
+            let check = new Date(today);
+            for (let i = 0; i < 365; i++) {
+                const ds = `${check.getFullYear()}-${String(check.getMonth()+1).padStart(2,'0')}-${String(check.getDate()).padStart(2,'0')}`;
+                if (projects[ds]) { streak++; } 
+                else if (i > 0) break; // allow today to be missing
+                check.setDate(check.getDate() - 1);
+            }
+            document.getElementById('streak-days').textContent = streak;
         }
+
+        // README Modal
+        async function showReadme(dateStr) {
+            const project = projects[dateStr];
+            if (!project) return;
+
+            currentProjectPath = project.path;
+            const modal = document.getElementById('readme-modal');
+            const body = document.getElementById('modal-body');
+            const title = document.getElementById('modal-title');
+
+            title.textContent = `📖 ${project.name}`;
+            body.innerHTML = '<div class="readme-loading">Loading README...</div>';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const resp = await fetch(`${project.path}/README.md`);
+                if (resp.ok) {
+                    const md = await resp.text();
+                    body.innerHTML = marked.parse(md);
+                } else {
+                    // No README — show auto-generated info
+                    body.innerHTML = `
+                        <h1>${project.name}</h1>
+                        <p class="trending-badge">${project.category || 'AI Project'}</p>
+                        <p>${project.description || ''}</p>
+                        <h2>About</h2>
+                        <p>This is an interactive AI project created on <strong>${dateStr}</strong> as part of the 
+                        <a href="https://ai-trendings.vercel.app">AI Trendings</a> daily project series.</p>
+                        <h2>How to Use</h2>
+                        <p>Click <strong>▶ Open</strong> above to launch the interactive project. 
+                        Enter your inputs and explore what the AI generates!</p>
+                        <h2>Tech Stack</h2>
+                        <ul>
+                            <li>Frontend: Vanilla HTML/CSS/JS</li>
+                            <li>Backend: Python (Vercel Serverless)</li>
+                            <li>AI: OpenRouter (free tier) + Pollinations.AI</li>
+                        </ul>
+                        <p style="color:#666; margin-top:20px; font-size:0.85rem">
+                            <em>📝 A detailed README for this project will be generated soon.</em>
+                        </p>`;
+                }
+            } catch (e) {
+                body.innerHTML = `<div class="readme-error">Failed to load README: ${e.message}</div>`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('readme-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openProject() {
+            if (currentProjectPath) window.location.href = currentProjectPath + '/';
+        }
+
+        // Close modal on Escape
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
         function changeMonth(delta) {
             currentDate.setMonth(currentDate.getMonth() + delta);
@@ -521,8 +465,9 @@
         function filterCategory(category) {
             currentCategory = category;
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(category.toLowerCase()) || 
-                    (category === 'all' && btn.textContent === 'All'));
+                btn.classList.toggle('active', 
+                    (category === 'all' && btn.textContent === 'All') ||
+                    btn.textContent.toLowerCase().includes(category.toLowerCase().replace('ai ', '')));
             });
             generateCalendar();
         }
