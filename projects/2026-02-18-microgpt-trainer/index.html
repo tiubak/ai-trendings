@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroGPT Trainer | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            background: #0a0a1a;
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #00f260; padding: 8px 16px; border-radius: 6px;
+            text-decoration: none; font-size: 0.85rem; transition: all 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.1); }
+        h1 {
+            font-size: 2rem; margin-bottom: 5px;
+            background: linear-gradient(90deg, #00f260, #0575e6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+        .subtitle a { color: #0575e6; text-decoration: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        .card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; padding: 16px;
+        }
+        .card h3 { color: #00f260; font-size: 0.85rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; color: #888; font-size: 0.8rem; margin-bottom: 4px; }
+        select, textarea, input[type="number"], input[type="range"] {
+            width: 100%; padding: 8px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
+            color: #e0e0e0; font-family: inherit; font-size: 0.85rem;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        .controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn {
+            padding: 10px 24px; border-radius: 6px; border: none;
+            font-family: inherit; font-size: 0.9rem; cursor: pointer;
+            font-weight: 600; transition: all 0.2s;
+        }
+        .btn-train { background: linear-gradient(90deg, #00f260, #0575e6); color: #fff; }
+        .btn-train:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,242,96,0.3); }
+        .btn-stop { background: #ef4444; color: #fff; }
+        .btn-generate { background: #a855f7; color: #fff; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .stat-box {
+            background: rgba(0,242,96,0.05); border: 1px solid rgba(0,242,96,0.15);
+            border-radius: 8px; padding: 10px; text-align: center;
+        }
+        .stat-box .value { font-size: 1.4rem; font-weight: bold; color: #00f260; }
+        .stat-box .label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        canvas { width: 100%; border-radius: 8px; background: rgba(0,0,0,0.3); }
+        #loss-chart { height: 200px; }
+        .output-box {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 16px; min-height: 80px;
+            font-size: 1rem; line-height: 1.6; white-space: pre-wrap;
+        }
+        .output-box .generated { color: #00f260; }
+        .output-box .seed { color: #0575e6; }
+        .arch-diagram {
+            font-size: 0.75rem; color: #888; padding: 10px;
+            background: rgba(0,0,0,0.3); border-radius: 6px;
+            line-height: 1.8; margin-top: 10px;
+        }
+        .arch-diagram .layer { color: #00f260; }
+        .arch-diagram .dim { color: #a855f7; }
+        .arch-diagram .op { color: #eab308; }
+        .progress-bar {
+            width: 100%; height: 4px; background: rgba(255,255,255,0.1);
+            border-radius: 2px; overflow: hidden; margin-bottom: 12px;
+        }
+        .progress-bar .fill { height: 100%; background: linear-gradient(90deg, #00f260, #0575e6); transition: width 0.3s; }
+        .info { color: #666; font-size: 0.8rem; margin-top: 8px; }
+        .token-viz { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+        .token { padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="back-nav"><a href="/" class="back-btn">← Back to Calendar</a></nav>
+        <h1>🧠 MicroGPT Trainer</h1>
+        <p class="subtitle">Train a tiny GPT in your browser. Pure JavaScript, zero dependencies. Inspired by <a href="https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95" target="_blank">Karpathy's microGPT</a>.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📝 Training Data</h3>
+                <label>Preset dataset</label>
+                <select id="dataset" onchange="loadDataset()">
+                    <option value="names">Baby Names (32K names)</option>
+                    <option value="shakespeare">Shakespeare (tiny)</option>
+                    <option value="code">Python-ish Code</option>
+                    <option value="custom">Custom text...</option>
+                </select>
+                <div style="margin-top:8px">
+                    <label>Training text (or paste your own)</label>
+                    <textarea id="train-text">loading...</textarea>
+                </div>
+                <div id="token-info" class="info"></div>
+            </div>
+            <div class="card">
+                <h3>⚙️ Architecture</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+                    <div><label>Embedding dim</label><select id="n_embd"><option>8</option><option selected>16</option><option>32</option></select></div>
+                    <div><label>Attention heads</label><select id="n_head"><option>1</option><option>2</option><option selected>4</option></select></div>
+                    <div><label>Layers</label><select id="n_layer"><option selected>1</option><option>2</option><option>3</option></select></div>
+                    <div><label>Context length</label><select id="block_size"><option>8</option><option selected>16</option><option>32</option></select></div>
+                    <div><label>Learning rate</label><input type="number" id="lr" value="0.01" step="0.001" min="0.001" max="0.1"></div>
+                    <div><label>Batch size</label><select id="batch_size"><option>4</option><option selected>8</option><option>16</option></select></div>
+                </div>
+                <div id="arch-info" class="arch-diagram"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-train" id="btn-train" onclick="startTraining()">▶ Train</button>
+            <button class="btn btn-stop" id="btn-stop" onclick="stopTraining()" disabled>⏹ Stop</button>
+            <button class="btn btn-generate" id="btn-generate" onclick="generateText()" disabled>✨ Generate</button>
+            <span style="color:#888; font-size:0.8rem; align-self:center" id="status-text">Ready</span>
+        </div>
+
+        <div class="progress-bar"><div class="fill" id="progress" style="width:0%"></div></div>
+
+        <div class="stats-grid">
+            <div class="stat-box"><div class="value" id="stat-step">0</div><div class="label">Step</div></div>
+            <div class="stat-box"><div class="value" id="stat-loss">—</div><div class="label">Loss</div></div>
+            <div class="stat-box"><div class="value" id="stat-params">—</div><div class="label">Parameters</div></div>
+            <div class="stat-box"><div class="value" id="stat-speed">—</div><div class="label">Steps/sec</div></div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📉 Loss Curve</h3>
+                <canvas id="loss-chart" width="500" height="200"></canvas>
+            </div>
+            <div class="card">
+                <h3>✨ Generated Output</h3>
+                <div class="output-box" id="output">Train the model first, then click Generate...</div>
+                <div style="margin-top:8px">
+                    <label>Seed text (optional)</label>
+                    <input type="text" id="seed-text" placeholder="Start of generated text..." style="padding:6px; font-size:0.85rem">
+                </div>
+                <div style="margin-top:4px">
+                    <label>Temperature: <span id="temp-val">0.8</span></label>
+                    <input type="range" id="temperature" min="0.1" max="2.0" step="0.1" value="0.8" oninput="document.getElementById('temp-val').textContent=this.value">
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ============================================================================
+// MicroGPT — A tiny GPT implementation in pure JavaScript
+// Inspired by Karpathy's microGPT.py
+// "This is the complete algorithm. Everything else is just efficiency."
+// ============================================================================
+
+// --- Autograd Engine (like micrograd) ---
+class Value {
+    constructor(data, children = [], localGrads = []) {
+        this.data = data;
+        this.grad = 0;
+        this._children = children;
+        this._localGrads = localGrads;
+    }
+    add(other) {
+        other = other instanceof Value ? other : new Value(other);
+        return new Value(this.data + other.data, [this, other], [1, 1]);
+    }
+    mul(other) {
+        other = other instanceof Value ? other : new Value(other);
+        return new Value(this.data * other.data, [this, other], [other.data, this.data]);
+    }
+    pow(n) {
+        return new Value(this.data ** n, [this], [n * this.data ** (n - 1)]);
+    }
+    neg() { return this.mul(-1); }
+    sub(other) { other = other instanceof Value ? other : new Value(other); return this.add(other.neg()); }
+    div(other) { other = other instanceof Value ? other : new Value(other); return this.mul(other.pow(-1)); }
+    exp() {
+        const e = Math.exp(Math.min(this.data, 80)); // clamp to prevent overflow
+        return new Value(e, [this], [e]);
+    }
+    log() {
+        const d = Math.max(this.data, 1e-8); // prevent log(0)
+        return new Value(Math.log(d), [this], [1 / d]);
+    }
+    relu() {
+        return new Value(Math.max(0, this.data), [this], [this.data > 0 ? 1 : 0]);
+    }
+    tanh() {
+        const t = Math.tanh(this.data);
+        return new Value(t, [this], [1 - t * t]);
+    }
+    backward() {
+        const topo = [];
+        const visited = new Set();
+        const build = (v) => {
+            if (visited.has(v)) return;
+            visited.add(v);
+            for (const c of v._children) build(c);
+            topo.push(v);
+        };
+        build(this);
+        this.grad = 1;
+        for (const v of topo.reverse()) {
+            for (let i = 0; i < v._children.length; i++) {
+                v._children[i].grad += v._localGrads[i] * v.grad;
+            }
+        }
+    }
+}
+
+// --- Utility functions ---
+function randn(std = 0.08) { 
+    // Box-Muller transform
+    const u1 = Math.random(), u2 = Math.random();
+    return std * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+
+function matrix(rows, cols, std = 0.08) {
+    return Array.from({length: rows}, () => Array.from({length: cols}, () => new Value(randn(std))));
+}
+
+function matmul(A, x) {
+    // A: [rows][cols] of Value, x: [cols] of Value -> [rows] of Value
+    return A.map(row => row.reduce((sum, w, i) => sum.add(w.mul(x[i])), new Value(0)));
+}
+
+function softmax(logits) {
+    const maxVal = Math.max(...logits.map(v => v.data));
+    const exps = logits.map(v => v.sub(maxVal).exp());
+    const sumExp = exps.reduce((a, b) => a.add(b), new Value(0));
+    return exps.map(e => e.div(sumExp));
+}
+
+function layerNorm(x, nEmbd) {
+    // Simplified layer norm (no learnable params for speed)
+    const mean = x.reduce((a, b) => a.add(b), new Value(0)).div(nEmbd);
+    const variance = x.reduce((a, v) => a.add(v.sub(mean).pow(2)), new Value(0)).div(nEmbd);
+    const std = variance.add(1e-5).pow(0.5);
+    return x.map(v => v.sub(mean).div(std));
+}
+
+// --- Model ---
+let model = null;
+let tokenizer = null;
+let training = false;
+let step = 0;
+let losses = [];
+
+class Tokenizer {
+    constructor(text) {
+        const chars = [...new Set(text.split(''))].sort();
+        this.BOS = chars.length;
+        this.vocabSize = chars.length + 1;
+        this.charToId = {};
+        this.idToChar = {};
+        chars.forEach((c, i) => { this.charToId[c] = i; this.idToChar[i] = c; });
+        this.idToChar[this.BOS] = '<BOS>';
+    }
+    encode(text) { return text.split('').map(c => this.charToId[c] ?? 0); }
+    decode(ids) { return ids.map(id => this.idToChar[id] ?? '?').join(''); }
+}
+
+class MicroGPT {
+    constructor(vocabSize, nEmbd, nHead, nLayer, blockSize) {
+        this.vocabSize = vocabSize;
+        this.nEmbd = nEmbd;
+        this.nHead = nHead;
+        this.nLayer = nLayer;
+        this.blockSize = blockSize;
+        this.headDim = Math.floor(nEmbd / nHead);
+        
+        // Embeddings
+        this.wte = matrix(vocabSize, nEmbd);     // token embeddings
+        this.wpe = matrix(blockSize, nEmbd);      // position embeddings
+        this.lmHead = matrix(vocabSize, nEmbd);   // output projection
+        
+        // Transformer layers
+        this.layers = [];
+        for (let i = 0; i < nLayer; i++) {
+            this.layers.push({
+                attnWq: matrix(nEmbd, nEmbd),
+                attnWk: matrix(nEmbd, nEmbd),
+                attnWv: matrix(nEmbd, nEmbd),
+                attnWo: matrix(nEmbd, nEmbd),
+                ffnW1: matrix(nEmbd * 4, nEmbd),
+                ffnW2: matrix(nEmbd, nEmbd * 4),
+            });
+        }
+    }
+    
+    get params() {
+        const params = [];
+        const addMatrix = (m) => m.forEach(row => row.forEach(v => params.push(v)));
+        addMatrix(this.wte); addMatrix(this.wpe); addMatrix(this.lmHead);
+        for (const layer of this.layers) {
+            addMatrix(layer.attnWq); addMatrix(layer.attnWk);
+            addMatrix(layer.attnWv); addMatrix(layer.attnWo);
+            addMatrix(layer.ffnW1); addMatrix(layer.ffnW2);
+        }
+        return params;
+    }
+    
+    forward(tokens) {
+        // tokens: array of token ids, returns logits for next token
+        const T = tokens.length;
+        const C = this.nEmbd;
+        
+        // Token + position embeddings
+        let x = tokens.map((tok, pos) => {
+            const tEmb = this.wte[tok];
+            const pEmb = this.wpe[pos % this.blockSize];
+            return tEmb.map((v, i) => v.add(pEmb[i]));
+        });
+        
+        // Transformer layers
+        for (const layer of this.layers) {
+            // Self-attention (simplified single-position: attend last token to all)
+            const lastPos = T - 1;
+            const query = matmul(layer.attnWq, x[lastPos]);
+            
+            // Compute attention scores for each head
+            let attnOut = new Array(C).fill(null).map(() => new Value(0));
+            
+            for (let h = 0; h < this.nHead; h++) {
+                const hStart = h * this.headDim;
+                const hEnd = hStart + this.headDim;
+                
+                // Scores for this head
+                let scores = [];
+                for (let t = 0; t <= lastPos; t++) {
+                    const key = matmul(layer.attnWk, x[t]);
+                    let score = new Value(0);
+                    for (let d = hStart; d < hEnd; d++) {
+                        score = score.add(query[d].mul(key[d]));
+                    }
+                    score = score.div(Math.sqrt(this.headDim));
+                    scores.push(score);
+                }
+                
+                // Softmax attention weights
+                const weights = softmax(scores);
+                
+                // Weighted sum of values
+                for (let t = 0; t <= lastPos; t++) {
+                    const val = matmul(layer.attnWv, x[t]);
+                    for (let d = hStart; d < hEnd; d++) {
+                        attnOut[d] = attnOut[d].add(weights[t].mul(val[d]));
+                    }
+                }
+            }
+            
+            // Output projection + residual
+            const projected = matmul(layer.attnWo, attnOut);
+            let residual = x[lastPos].map((v, i) => v.add(projected[i]));
+            
+            // FFN: up-project, ReLU, down-project + residual
+            const hidden = matmul(layer.ffnW1, residual).map(v => v.relu());
+            const ffnOut = matmul(layer.ffnW2, hidden);
+            residual = residual.map((v, i) => v.add(ffnOut[i]));
+            
+            // Update last position
+            x[lastPos] = layerNorm(residual, C);
+        }
+        
+        // Project to vocab
+        return matmul(this.lmHead, x[T - 1]);
+    }
+    
+    generate(startTokens, maxLen, temperature = 0.8) {
+        let tokens = [...startTokens];
+        for (let i = 0; i < maxLen; i++) {
+            const ctx = tokens.slice(-this.blockSize);
+            const logits = this.forward(ctx);
+            
+            // Temperature sampling
+            const tempLogits = logits.map(v => v.data / temperature);
+            const maxL = Math.max(...tempLogits);
+            const exps = tempLogits.map(v => Math.exp(v - maxL));
+            const sumE = exps.reduce((a, b) => a + b, 0);
+            const probs = exps.map(v => v / sumE);
+            
+            // Sample
+            let r = Math.random(), cumsum = 0;
+            let nextToken = 0;
+            for (let j = 0; j < probs.length; j++) {
+                cumsum += probs[j];
+                if (r < cumsum) { nextToken = j; break; }
+            }
+            tokens.push(nextToken);
+        }
+        return tokens;
+    }
+}
+
+// --- Training ---
+let trainData = [];
+
+function prepareData(text) {
+    tokenizer = new Tokenizer(text);
+    const docs = text.split(/\s+/).filter(s => s.length > 0);
+    trainData = [];
+    for (const doc of docs) {
+        const tokens = [tokenizer.BOS, ...tokenizer.encode(doc)];
+        for (let i = 1; i < tokens.length; i++) {
+            const ctx = tokens.slice(0, i);
+            const target = tokens[i];
+            trainData.push({ctx, target});
+        }
+    }
+    // Shuffle
+    for (let i = trainData.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [trainData[i], trainData[j]] = [trainData[j], trainData[i]];
+    }
+    return trainData.length;
+}
+
+function trainStep(batchSize, lr) {
+    const batch = [];
+    for (let b = 0; b < batchSize; b++) {
+        batch.push(trainData[Math.floor(Math.random() * trainData.length)]);
+    }
+    
+    // Zero gradients
+    const params = model.params;
+    for (const p of params) p.grad = 0;
+    
+    // Forward + loss
+    let totalLoss = new Value(0);
+    for (const {ctx, target} of batch) {
+        const logits = model.forward(ctx);
+        const probs = softmax(logits);
+        const loss = probs[target].log().neg(); // negative log likelihood
+        totalLoss = totalLoss.add(loss);
+    }
+    totalLoss = totalLoss.div(batchSize);
+    
+    // Backward
+    totalLoss.backward();
+    
+    // SGD update
+    for (const p of params) {
+        p.data -= lr * p.grad;
+    }
+    
+    return totalLoss.data;
+}
+
+// --- UI ---
+const DATASETS = {
+    names: "emma olivia ava sophia isabella mia charlotte amelia harper evelyn abigail emily ella elizabeth avery sofia chloe victoria madison luna grace nora riley zoey hannah lily layla lillian natalie hazel aurora penelope stella violet nova ellie ivy ariana cora genesis emilia gianna quinn kaylee anna serenity adalyn kennedy eliana allison savannah aaliyah alice aubrey brooklyn claire hazel sarah bella samantha skylar paisley ruby eva naomi valentina aurora madelyn adeline hailey ellie stella piper julia sadie delilah aria mila",
+    shakespeare: "to be or not to be that is the question whether tis nobler in the mind to suffer the slings and arrows of outrageous fortune or to take arms against a sea of troubles and by opposing end them to die to sleep no more and by a sleep to say we end the heartache and the thousand natural shocks that flesh is heir to tis a consummation devoutly to be wished to die to sleep to sleep perchance to dream aye theres the rub for in that sleep of death what dreams may come when we have shuffled off this mortal coil",
+    code: "def hello name return print hello name def add a b return a plus b def fib n if n less two return n return fib n minus one plus fib n minus two def sort arr if len arr less two return arr pivot equals arr zero left equals filter arr right equals filter arr return sort left plus pivot plus sort right",
+    music: "do re mi fa sol la ti do re mi fa sol la ti do mi sol do mi sol ti re fa la do mi sol ti re fa la ti sol mi do la fa re ti sol mi do re mi do sol mi re do fa la ti sol mi re do mi re do sol fa mi re do"
+};
+
+function loadDataset() {
+    const sel = document.getElementById('dataset').value;
+    if (sel === 'custom') {
+        document.getElementById('train-text').value = '';
+        document.getElementById('train-text').placeholder = 'Paste your training text here...';
+    } else {
+        document.getElementById('train-text').value = DATASETS[sel] || DATASETS.names;
+    }
+    updateTokenInfo();
+}
+
+function updateTokenInfo() {
+    const text = document.getElementById('train-text').value;
+    const chars = new Set(text.split(''));
+    document.getElementById('token-info').textContent = 
+        `${chars.size} unique chars · ${text.split(/\s+/).length} words · vocab size: ${chars.size + 1}`;
+}
+
+function updateArchInfo() {
+    const nEmbd = +document.getElementById('n_embd').value;
+    const nHead = +document.getElementById('n_head').value;
+    const nLayer = +document.getElementById('n_layer').value;
+    const blockSize = +document.getElementById('block_size').value;
+    const headDim = Math.floor(nEmbd / nHead);
+    
+    // Estimate params
+    const text = document.getElementById('train-text').value;
+    const vocabSize = new Set(text.split('')).size + 1;
+    const embParams = vocabSize * nEmbd + blockSize * nEmbd;
+    const attnParams = nLayer * (4 * nEmbd * nEmbd);
+    const ffnParams = nLayer * (2 * nEmbd * nEmbd * 4);
+    const headParams = vocabSize * nEmbd;
+    const total = embParams + attnParams + ffnParams + headParams;
+    
+    document.getElementById('arch-info').innerHTML = 
+        `<span class="layer">Input</span> → Embed(<span class="dim">${nEmbd}d</span>) + Pos(<span class="dim">${blockSize}</span>)<br>` +
+        `→ ${nLayer}× [<span class="op">Attention</span>(<span class="dim">${nHead}h×${headDim}d</span>) → <span class="op">FFN</span>(<span class="dim">${nEmbd}→${nEmbd*4}→${nEmbd}</span>)]<br>` +
+        `→ <span class="layer">LM Head</span>(<span class="dim">${nEmbd}→${vocabSize}</span>)<br>` +
+        `<br>Total: <span class="dim">${total.toLocaleString()}</span> parameters`;
+    
+    document.getElementById('stat-params').textContent = total.toLocaleString();
+}
+
+function drawLossChart() {
+    const canvas = document.getElementById('loss-chart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(0, 0, W, H);
+    
+    if (losses.length < 2) return;
+    
+    const pad = {top: 20, right: 15, bottom: 25, left: 45};
+    const maxLoss = Math.max(...losses.slice(0, 10)); // scale from initial
+    const minLoss = Math.max(0, Math.min(...losses) * 0.9);
+    const range = maxLoss - minLoss || 1;
+    
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = pad.top + (H - pad.top - pad.bottom) * i / 4;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#666'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+        ctx.fillText((maxLoss - (range * i / 4)).toFixed(2), pad.left - 5, y + 4);
+    }
+    
+    // Loss line
+    ctx.strokeStyle = '#00f260';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const step = (W - pad.left - pad.right) / Math.max(losses.length - 1, 1);
+    losses.forEach((loss, i) => {
+        const x = pad.left + i * step;
+        const y = pad.top + ((maxLoss - Math.min(loss, maxLoss)) / range) * (H - pad.top - pad.bottom);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    
+    // Moving average
+    if (losses.length > 20) {
+        ctx.strokeStyle = 'rgba(5,117,230,0.8)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const window = 10;
+        for (let i = window; i < losses.length; i++) {
+            const avg = losses.slice(i - window, i).reduce((a, b) => a + b, 0) / window;
+            const x = pad.left + i * step;
+            const y = pad.top + ((maxLoss - Math.min(avg, maxLoss)) / range) * (H - pad.top - pad.bottom);
+            i === window ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+    
+    // Labels
+    ctx.fillStyle = '#666'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(`Step ${losses.length}`, W / 2, H - 5);
+}
+
+async function startTraining() {
+    if (training) return;
+    
+    const text = document.getElementById('train-text').value.trim();
+    if (!text) { alert('Enter training text first!'); return; }
+    
+    const nEmbd = +document.getElementById('n_embd').value;
+    const nHead = +document.getElementById('n_head').value;
+    const nLayer = +document.getElementById('n_layer').value;
+    const blockSize = +document.getElementById('block_size').value;
+    const batchSize = +document.getElementById('batch_size').value;
+    const lr = +document.getElementById('lr').value;
+    
+    // Prepare data
+    const numExamples = prepareData(text);
+    document.getElementById('status-text').textContent = `${numExamples} training examples`;
+    
+    // Initialize model
+    model = new MicroGPT(tokenizer.vocabSize, nEmbd, nHead, nLayer, blockSize);
+    updateArchInfo();
+    
+    training = true;
+    step = 0;
+    losses = [];
+    
+    document.getElementById('btn-train').disabled = true;
+    document.getElementById('btn-stop').disabled = false;
+    document.getElementById('btn-generate').disabled = false;
+    
+    const maxSteps = 500;
+    const startTime = performance.now();
+    
+    while (training && step < maxSteps) {
+        const loss = trainStep(batchSize, lr);
+        step++;
+        losses.push(loss);
+        
+        if (step % 5 === 0 || step === 1) {
+            const elapsed = (performance.now() - startTime) / 1000;
+            document.getElementById('stat-step').textContent = step;
+            document.getElementById('stat-loss').textContent = loss.toFixed(3);
+            document.getElementById('stat-speed').textContent = (step / elapsed).toFixed(1);
+            document.getElementById('progress').style.width = (step / maxSteps * 100) + '%';
+            document.getElementById('status-text').textContent = 
+                `Training... step ${step}/${maxSteps} · loss: ${loss.toFixed(3)}`;
+            drawLossChart();
+        }
+        
+        // Auto-generate sample every 100 steps
+        if (step % 100 === 0) generateText();
+        
+        // Yield to UI
+        if (step % 2 === 0) await new Promise(r => setTimeout(r, 0));
+    }
+    
+    stopTraining();
+    document.getElementById('status-text').textContent = 
+        `Done! ${step} steps · final loss: ${losses[losses.length-1]?.toFixed(3)}`;
+}
+
+function stopTraining() {
+    training = false;
+    document.getElementById('btn-train').disabled = false;
+    document.getElementById('btn-stop').disabled = true;
+}
+
+function generateText() {
+    if (!model || !tokenizer) return;
+    
+    const temp = +document.getElementById('temperature').value;
+    const seedText = document.getElementById('seed-text').value;
+    
+    let startTokens = [tokenizer.BOS];
+    if (seedText) {
+        startTokens = [...startTokens, ...tokenizer.encode(seedText)];
+    }
+    
+    const generated = model.generate(startTokens, 30, temp);
+    const fullText = tokenizer.decode(generated.slice(1)); // skip BOS
+    
+    const outputDiv = document.getElementById('output');
+    if (seedText) {
+        outputDiv.innerHTML = `<span class="seed">${seedText}</span><span class="generated">${fullText.slice(seedText.length)}</span>`;
+    } else {
+        outputDiv.innerHTML = `<span class="generated">${fullText}</span>`;
+    }
+}
+
+// Init
+document.getElementById('train-text').value = DATASETS.names;
+updateTokenInfo();
+updateArchInfo();
+document.getElementById('train-text').addEventListener('input', () => { updateTokenInfo(); updateArchInfo(); });
+['n_embd', 'n_head', 'n_layer', 'block_size'].forEach(id => 
+    document.getElementById(id).addEventListener('change', updateArchInfo));
+</script>
+</body>
+</html>

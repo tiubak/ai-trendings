@@ -118,6 +118,13 @@
         "category": "AI Education",
         "created_at": "2026-02-17"
     },
+    "2026-02-18": {
+        "name": "MicroGPT Trainer",
+        "path": "projects/2026-02-18-microgpt-trainer",
+        "description": "Train a tiny GPT neural network right in your browser \u2014 watch weights update, loss decrease, and generate text in real-time. Inspired by Karpathy microGPT.",
+        "category": "AI Education",
+        "created_at": "2026-02-18"
+    },
     "2026-02-19": {
         "name": "AI Alien Language Translator",
         "path": "projects/2026-02-19-ai-alien-translator",
