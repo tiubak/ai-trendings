@@ -83,6 +83,13 @@
         "category": "Practical",
         "created_at": "2026-02-13"
     },
+    "2026-02-14": {
+        "name": "AI Regex Builder",
+        "path": "projects/2026-02-14-ai-regex-builder",
+        "description": "Describe what you want to match in plain English and get a regex pattern with explanation, test cases, and visual breakdown",
+        "category": "Practical",
+        "created_at": "2026-02-14"
+    },
     "2026-02-24": {
         "name": "AI Adventure Game Master",
         "path": "projects/2026-02-24-ai-adventure-game-master",
