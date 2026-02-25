@@ -154,17 +154,10 @@
         "created_at": "2026-02-22"
     },
     "2026-02-23": {
-        "name": "AI Roast Master",
-        "path": "projects/2026-02-23-ai-roast-master",
-        "description": "Get lovingly roasted by AI \u2014 enter your bio or profession and receive clever, witty roasts that are funny but never mean",
-        "category": "Fun",
+        "name": "AI News Credibility Lab",
+        "path": "projects/2026-02-23-ai-news-credibility-lab",
+        "description": "Paste a headline or short article snippet and get an interactive, educational analysis of whether it looks AI-generated, why, and how to verify or improve its trustworthiness.",
+        "category": "AI Education",
         "created_at": "2026-02-23"
-    },
-    "2026-02-24": {
-        "name": "AI Adventure Game Master",
-        "path": "projects/2026-02-24-ai-adventure-game-master",
-        "description": "Embark on an AI-generated interactive journey where your choices shape the story through fantasy, sci-fi, mystery, and more",
-        "category": "Fun",
-        "created_at": "2026-02-24"
     }
 }

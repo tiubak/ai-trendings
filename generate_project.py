@@ -843,12 +843,223 @@ def get_button_text(topic):
 
 
 def pick_topic(date_str, used_slugs):
-    """Pick a topic for the date, avoiding recently used ones."""
-    random.seed(date_str)  # Deterministic per date
+    """Pick a topic: try trending search first, fall back to static pool."""
+    
+    # Try trending-based topic first
+    print(f"  🔍 Searching for trending AI/tech topics...")
+    trending_topic = search_and_design_topic(date_str, used_slugs)
+    if trending_topic:
+        print(f"  🔥 Trending topic found: {trending_topic['name']}")
+        return trending_topic
+    
+    # Fallback to static pool
+    print(f"  📦 Falling back to curated topic pool")
+    random.seed(date_str)
     available = [t for t in TOPICS if t["slug"] not in used_slugs]
     if not available:
-        available = TOPICS  # Reset if all used
+        available = TOPICS
     return random.choice(available)
+
+
+def search_and_design_topic(date_str, used_slugs):
+    """Search for trending AI/tech news and design a project around it.
+    Returns a topic dict or None on failure."""
+    
+    # Step 1: Search for trending topics
+    trends = []
+    
+    try:
+        try:
+            from ddgs import DDGS
+        except ImportError:
+            from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            # Search multiple angles for variety
+            queries = [
+                "AI breakthrough news this week 2026",
+                "machine learning new model release",
+                "AI technology trending today",
+                "artificial intelligence research news",
+                "tech AI startup announcement",
+            ]
+            # Pick query based on date for variety
+            day_num = int(date_str.split("-")[2])
+            query = queries[day_num % len(queries)]
+            results = list(ddgs.text(query, max_results=8))
+            trends = [{"title": r.get("title", ""), "body": r.get("body", ""), "url": r.get("href", "")} for r in results]
+    except Exception as e:
+        print(f"  ⚠️  DuckDuckGo search failed: {e}")
+    
+    # Also try RSS feeds
+    try:
+        import feedparser
+        feeds = [
+            "https://arxiv.org/rss/cs.AI",
+            "https://arxiv.org/rss/cs.LG",
+        ]
+        day_num = int(date_str.split("-")[2])
+        feed = feedparser.parse(feeds[day_num % len(feeds)])
+        for entry in feed.entries[:5]:
+            trends.append({
+                "title": entry.get("title", ""),
+                "body": entry.get("summary", "")[:300],
+                "url": entry.get("link", ""),
+            })
+    except Exception as e:
+        print(f"  ⚠️  RSS feed failed: {e}")
+    
+    if not trends:
+        print(f"  ⚠️  No trending topics found")
+        return None
+    
+    # Step 2: Ask AI to design a project based on trends
+    trends_text = "\n".join([f"- {t['title']}: {t['body'][:150]}" for t in trends[:8]])
+    used_list = ", ".join(list(used_slugs)[:10])
+    
+    design_prompt = f"""You are designing an interactive web project for an AI education portfolio site.
+
+Here are today's trending AI/tech topics:
+{trends_text}
+
+Already used project slugs (avoid similar topics): {used_list}
+
+Design ONE interactive web project inspired by the most interesting trending topic above.
+The project should be educational, engaging, and related to AI/ML/tech.
+
+Return ONLY valid JSON (no markdown, no explanation) with this exact structure:
+{{
+    "slug": "short-url-slug-with-dashes",
+    "name": "Project Display Name",
+    "description": "One sentence description of what users can do",
+    "category": "AI Education",
+    "trending_source": "Brief mention of what trend inspired this",
+    "actions": {{
+        "start": {{
+            "prompt": "A detailed prompt that asks an AI to generate educational content about this topic. The prompt should ask for JSON output with specific fields. Include placeholders like {{topic}} for user input.",
+            "parse": "json"
+        }},
+        "explore": {{
+            "prompt": "A follow-up prompt for deeper exploration. Include {{user_input}} placeholder. Ask for JSON output.",
+            "parse": "json"
+        }}
+    }},
+    "ui_type": "input_output",
+    "ui_config": {{
+        "input_label": "Label for the input field",
+        "input_fields": ["field_name"]
+    }}
+}}
+
+The category MUST be one of: "AI Education", "Fun", "Practical".
+The prompts must ask the AI to return JSON with clear field names.
+Make the project interactive — the user should be able to input something and get a personalized response."""
+    
+    # Call AI to design the project
+    ai_response = _call_ai(design_prompt)
+    if not ai_response:
+        print(f"  ⚠️  AI design call failed")
+        return None
+    
+    # Parse the response
+    topic = _extract_json(ai_response)
+    if not topic:
+        print(f"  ⚠️  Could not parse AI response as JSON")
+        print(f"  Raw response (first 500 chars): {ai_response[:500]}")
+        return None
+    
+    # Validate required fields
+    required = ["slug", "name", "description", "category", "actions", "ui_config"]
+    for field in required:
+        if field not in topic:
+            print(f"  ⚠️  Missing required field: {field}")
+            return None
+    
+    # Validate actions have prompts
+    for action_name, action_config in topic.get("actions", {}).items():
+        if "prompt" not in action_config:
+            print(f"  ⚠️  Action '{action_name}' missing prompt")
+            return None
+        if "parse" not in action_config:
+            action_config["parse"] = "json"
+    
+    # Ensure ui_type exists
+    if "ui_type" not in topic:
+        topic["ui_type"] = "input_output"
+    
+    # Sanitize slug
+    topic["slug"] = topic["slug"].lower().replace(" ", "-")[:50]
+    
+    # Skip if slug already used
+    if topic["slug"] in used_slugs:
+        print(f"  ⚠️  Slug '{topic['slug']}' already used")
+        return None
+    
+    source = topic.get("trending_source", "trending search")
+    print(f"  📰 Inspired by: {source}")
+    return topic
+
+
+def _call_ai(prompt):
+    """Call OpenRouter or Pollinations for text generation (used during project generation)."""
+    
+    # Try OpenRouter first (needs key in env)
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if api_key:
+        try:
+            data = {"model": "openrouter/free", "messages": [{"role": "user", "content": prompt}]}
+            result = subprocess.run([
+                "curl", "-s", "-X", "POST", "https://openrouter.ai/api/v1/chat/completions",
+                "-H", f"Authorization: Bearer {api_key}",
+                "-H", "Content-Type: application/json",
+                "-H", "HTTP-Referer: https://ai-trendings.vercel.app",
+                "-d", json.dumps(data)
+            ], capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                resp = json.loads(result.stdout)
+                content = resp.get("choices", [{}])[0].get("message", {}).get("content", "")
+                if content:
+                    return content
+        except Exception as e:
+            print(f"  ⚠️  OpenRouter failed: {e}")
+    
+    # Fallback to Pollinations (no key needed)
+    try:
+        data = {"model": "openai", "messages": [{"role": "user", "content": prompt}]}
+        cmd = ["curl", "-s", "-X", "POST", "https://gen.pollinations.ai/v1/chat/completions",
+               "-H", "Content-Type: application/json", "-d", json.dumps(data)]
+        api_key_poll = os.environ.get("POLLINATIONS_API_KEY", "")
+        if api_key_poll:
+            cmd.extend(["-H", f"Authorization: Bearer {api_key_poll}"])
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        if result.returncode == 0:
+            resp = json.loads(result.stdout)
+            return resp.get("choices", [{}])[0].get("message", {}).get("content", "")
+    except Exception as e:
+        print(f"  ⚠️  Pollinations failed: {e}")
+    
+    return None
+
+
+def _extract_json(text):
+    """Extract JSON from AI response text."""
+    try:
+        return json.loads(text)
+    except:
+        # Try to find JSON in the text
+        start = text.find('{')
+        if start == -1:
+            return None
+        depth = 0
+        for i, c in enumerate(text[start:], start):
+            if c == '{': depth += 1
+            elif c == '}':
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start:i+1])
+                    except:
+                        continue
+        return None
 
 
 def generate_project(date_str, topic=None):
