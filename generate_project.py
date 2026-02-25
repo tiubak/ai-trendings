@@ -556,7 +556,10 @@ TOPICS = [
 
 HANDLER_TEMPLATE = '''"""__NAME__ — __DESCRIPTION__"""
 
-from ..base import call_openrouter, extract_json, fetch_image, query_db, load_json_data
+from ..base import (call_openrouter, call_pollinations, extract_json, fetch_image,
+    query_db, load_json_data, web_search, fetch_url, wikipedia_summary, fetch_rss,
+    generate_qr, generate_wordcloud, tmp_sqlite, call_huggingface, call_gTTS,
+    classify_text, embed_text, text_to_speech, CDN_LIBS, PUBLIC_APIS)
 import json as _json
 
 ACTIONS = __ACTIONS_JSON__

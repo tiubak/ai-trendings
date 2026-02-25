@@ -205,6 +205,206 @@ def extract_json(text: str) -> dict:
                         continue
         return None
 
+# ---------------------------------------------------------------------------
+# Web & Data tools — free, no API keys needed
+# ---------------------------------------------------------------------------
+
+def web_search(query: str, max_results: int = 5) -> list[dict]:
+    """Search the web via DuckDuckGo (free, no API key).
+    Returns: [{title, url, body}, ...]
+    
+    Example:
+        web_search("latest AI breakthroughs 2026")
+        web_search("transformer architecture explained", max_results=3)
+    """
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+        return [{"title": r.get("title",""), "url": r.get("href",""), "body": r.get("body","")} for r in results]
+    except Exception as e:
+        return [{"error": str(e)}]
+
+def fetch_url(url: str, max_chars: int = 5000) -> str:
+    """Fetch a URL and return text content (HTML stripped).
+    Good for grabbing article text, API responses, etc.
+    
+    Example:
+        fetch_url("https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)")
+    """
+    try:
+        import requests
+        from bs4 import BeautifulSoup
+        resp = requests.get(url, timeout=8, headers={"User-Agent": "AI-Trendings/1.0"})
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for tag in soup(["script", "style", "nav", "footer", "header"]):
+            tag.decompose()
+        text = soup.get_text(separator="\n", strip=True)
+        return text[:max_chars]
+    except Exception as e:
+        return f"Error: {e}"
+
+def wikipedia_summary(topic: str) -> dict:
+    """Get Wikipedia summary for a topic (free, no API key).
+    Returns: {title, summary, url} or {error}.
+    
+    Example:
+        wikipedia_summary("Attention mechanism")
+        wikipedia_summary("GPT-4")
+    """
+    try:
+        import wikipediaapi
+        wiki = wikipediaapi.Wikipedia("AI-Trendings/1.0", "en")
+        page = wiki.page(topic)
+        if page.exists():
+            return {"title": page.title, "summary": page.summary[:3000], "url": page.fullurl}
+        return {"error": f"No Wikipedia page found for '{topic}'"}
+    except Exception as e:
+        return {"error": str(e)}
+
+def fetch_rss(url: str, max_items: int = 10) -> list[dict]:
+    """Parse an RSS/Atom feed (free, no API key).
+    Returns: [{title, link, published, summary}, ...]
+    
+    Example:
+        fetch_rss("https://arxiv.org/rss/cs.AI")            # Latest AI papers
+        fetch_rss("https://news.ycombinator.com/rss")       # Hacker News
+        fetch_rss("https://www.reddit.com/r/MachineLearning/.rss")
+    """
+    try:
+        import feedparser
+        feed = feedparser.parse(url)
+        items = []
+        for entry in feed.entries[:max_items]:
+            items.append({
+                "title": entry.get("title", ""),
+                "link": entry.get("link", ""),
+                "published": entry.get("published", ""),
+                "summary": entry.get("summary", "")[:500],
+            })
+        return items
+    except Exception as e:
+        return [{"error": str(e)}]
+
+def generate_qr(data: str) -> str:
+    """Generate QR code as base64 PNG.
+    Returns base64 string for <img src="data:image/png;base64,{result}">
+    
+    Example:
+        generate_qr("https://ai-trendings.vercel.app")
+    """
+    try:
+        import qrcode
+        import io
+        import base64
+        img = qrcode.make(data)
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return base64.b64encode(buf.getvalue()).decode("utf-8")
+    except Exception as e:
+        return None
+
+def generate_wordcloud(text: str, width: int = 800, height: int = 400) -> str:
+    """Generate word cloud as base64 PNG from text.
+    Returns base64 string for <img src="data:image/png;base64,{result}">
+    
+    Example:
+        generate_wordcloud("machine learning deep neural network transformer attention ...")
+    """
+    try:
+        from wordcloud import WordCloud
+        import io
+        import base64
+        wc = WordCloud(width=width, height=height, background_color="#1a1a2e",
+                       colormap="cool", max_words=100).generate(text)
+        buf = io.BytesIO()
+        wc.to_image().save(buf, format="PNG")
+        return base64.b64encode(buf.getvalue()).decode("utf-8")
+    except Exception as e:
+        return None
+
+def tmp_sqlite(name: str = "project") -> tuple:
+    """Create an ephemeral SQLite database in /tmp for runtime data processing.
+    Returns (connection, cursor). Data lives only during this function invocation.
+    
+    Example:
+        conn, c = tmp_sqlite("quiz")
+        c.execute("CREATE TABLE scores (name TEXT, score INT)")
+        c.execute("INSERT INTO scores VALUES (?, ?)", ("Alice", 95))
+        results = c.execute("SELECT * FROM scores").fetchall()
+        conn.close()
+    """
+    import tempfile
+    db_path = os.path.join(tempfile.gettempdir(), f"ai_trendings_{name}.db")
+    conn = sqlite3.connect(db_path)
+    return conn, conn.cursor()
+
+def classify_text(text: str) -> dict:
+    """Classify text sentiment/topic using HuggingFace (free tier).
+    Returns classification labels and scores.
+    """
+    if not HUGGINGFACE_API_KEY:
+        return {"error": "HUGGINGFACE_API_KEY not set"}
+    result = call_huggingface(text, "distilbert-base-uncased-finetuned-sst-2-english")
+    try:
+        return json.loads(result) if isinstance(result, str) else result
+    except:
+        return {"raw": result}
+
+def embed_text(text: str) -> list:
+    """Get text embeddings from HuggingFace (free tier).
+    Returns vector (list of floats) for similarity calculations.
+    """
+    if not HUGGINGFACE_API_KEY:
+        return []
+    result = call_huggingface(text, "sentence-transformers/all-MiniLM-L6-v2")
+    try:
+        return json.loads(result) if isinstance(result, str) else result
+    except:
+        return []
+
+def text_to_speech(text: str, lang: str = "en") -> str:
+    """Convert text to speech (gTTS — free, no API key).
+    Returns base64 audio. Use: <audio src="data:audio/mp3;base64,{result}" controls>
+    """
+    return call_gTTS(text)
+
+
+# ---------------------------------------------------------------------------
+# Client-side library CDN links — for HTML templates
+# ---------------------------------------------------------------------------
+CDN_LIBS = {
+    "chart.js": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
+    "d3": "https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js",
+    "three.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js",
+    "marked": "https://cdn.jsdelivr.net/npm/marked/marked.min.js",
+    "highlight.js": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js",
+    "highlight.css": "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css",
+    "katex.js": "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js",
+    "katex.css": "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css",
+    "mermaid": "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js",
+    "confetti": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js",
+    "anime.js": "https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js",
+    "tone.js": "https://cdn.jsdelivr.net/npm/tone@14/build/Tone.js",
+    "prism.js": "https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js",
+    "prism.css": "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css",
+}
+
+# ---------------------------------------------------------------------------
+# Public APIs — free, no keys needed
+# ---------------------------------------------------------------------------
+PUBLIC_APIS = {
+    "arxiv": "http://export.arxiv.org/api/query?search_query={query}&max_results=5",
+    "open_trivia": "https://opentdb.com/api.php?amount={amount}&category={category}&type=multiple",
+    "github_trending": "https://api.github.com/search/repositories?q={query}&sort=stars&order=desc",
+    "random_quote": "https://api.quotable.io/random",
+    "dad_joke": "https://icanhazdadjoke.com/",
+    "news_hn": "https://hacker-news.firebaseio.com/v0/topstories.json",
+    "country_info": "https://restcountries.com/v3.1/name/{name}",
+    "weather": "https://wttr.in/{city}?format=j1",
+}
+
+
 class Handler(BaseHTTPRequestHandler):
     """Base handler with common methods."""
     
