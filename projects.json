@@ -104,6 +104,13 @@
         "category": "Fun",
         "created_at": "2026-02-15"
     },
+    "2026-02-16": {
+        "name": "AI Learning Path Generator",
+        "path": "projects/2026-02-16-ai-learning-path-generator",
+        "description": "Enter any skill you want to learn and get a personalized study plan with resources, milestones, and estimated time to competency",
+        "category": "Practical",
+        "created_at": "2026-02-16"
+    },
     "2026-02-24": {
         "name": "AI Adventure Game Master",
         "path": "projects/2026-02-24-ai-adventure-game-master",

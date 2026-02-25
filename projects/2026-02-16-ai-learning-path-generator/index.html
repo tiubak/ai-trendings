@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Path Generator | AI Trendings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .back-nav { margin-bottom: 30px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #00f260; padding: 10px 20px; border-radius: 8px;
+            text-decoration: none; font-size: 0.9rem; transition: all 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        h1 {
+            font-size: 2.2rem; margin-bottom: 10px;
+            background: linear-gradient(90deg, #00f260 0%, #0575e6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #888; margin-bottom: 30px; font-size: 1.1rem; }
+        .card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 24px; margin-bottom: 20px;
+        }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; margin-bottom: 6px; color: #00f260; font-size: 0.9rem; }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);
+            color: #e0e0e0; font-size: 1rem; font-family: inherit;
+        }
+        .input-group textarea { min-height: 100px; resize: vertical; }
+        .btn {
+            background: linear-gradient(90deg, #00f260, #0575e6); color: #fff;
+            border: none; padding: 12px 32px; border-radius: 8px; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; font-weight: 600;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,242,96,0.3); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .result { margin-top: 24px; }
+        .result-section { margin-bottom: 16px; }
+        .result-section h3 { color: #00f260; margin-bottom: 8px; font-size: 1rem; }
+        .result-section p, .result-section li { line-height: 1.6; }
+        .result-section ul { padding-left: 20px; }
+        .result-section li { margin-bottom: 6px; }
+        .loading { text-align: center; padding: 40px; }
+        .loading .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #00f260; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { color: #ff6b6b; padding: 16px; background: rgba(255,0,0,0.1); border-radius: 8px; }
+        .tag {
+            display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
+            background: rgba(0,242,96,0.15); color: #00f260; margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="back-nav">
+            <a href="/" class="back-btn">&larr; Back to Calendar</a>
+        </nav>
+        <h1>AI Learning Path Generator</h1>
+        <p class="subtitle">Enter any skill you want to learn and get a personalized study plan with resources, milestones, and estimated time to competency</p>
+
+        <div class="card" id="input-card">
+            <div class="input-group"><label>Skill</label><input type="text" data-field="skill" placeholder="Enter skill..."></div>
+            <div class="input-group"><label>Level</label><select data-field="level"><option value="complete beginner">complete beginner</option><option value="beginner">beginner</option><option value="intermediate">intermediate</option><option value="advanced">advanced</option></select></div>
+            <button class="btn" id="go-btn" onclick="run()">
+                🚀 Explore
+            </button>
+        </div>
+
+        <div id="loading" class="loading" style="display:none">
+            <div class="spinner"></div>
+            <p>Thinking...</p>
+        </div>
+
+        <div id="result" class="result" style="display:none"></div>
+        <div id="error" class="error" style="display:none"></div>
+    </div>
+
+    <script>
+        const DATE = '2026-02-16';
+        const API_URL = '/api/index';
+
+        async function apiCall(action, data = {}) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: DATE, action, ...data })
+            });
+            if (!response.ok) throw new Error('API error: ' + response.status);
+            return response.json();
+        }
+
+        async function run() {
+            const btn = document.getElementById('go-btn');
+            const loading = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+
+            const data = {};
+            document.querySelectorAll('[data-field]').forEach(el => {
+                data[el.dataset.field] = el.value;
+            });
+
+            btn.disabled = true;
+            loading.style.display = 'block';
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+
+            try {
+                const resp = await apiCall('start', data);
+                if (resp.error) throw new Error(resp.error);
+                resultDiv.innerHTML = renderResult(resp.result || resp);
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                errorDiv.textContent = e.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        function renderResult(data) {
+            if (typeof data === 'string') return `<div class="card"><p>${data}</p></div>`;
+            if (data.text) return `<div class="card"><p>${data.text}</p></div>`;
+
+            let html = '';
+            for (const [key, value] of Object.entries(data)) {
+                if (key === 'date' || key === 'parse_note') continue;
+                html += `<div class="card result-section">`;
+                html += `<h3>${key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h3>`;
+
+                if (Array.isArray(value)) {
+                    html += '<ul>';
+                    value.forEach(item => {
+                        if (typeof item === 'object') {
+                            html += '<li>' + Object.entries(item)
+                                .map(([k,v]) => `<strong>${k.replace(/_/g,' ')}:</strong> ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+                                .join(' &middot; ') + '</li>';
+                        } else {
+                            html += `<li>${item}</li>`;
+                        }
+                    });
+                    html += '</ul>';
+                } else if (typeof value === 'object' && value !== null) {
+                    html += '<ul>';
+                    Object.entries(value).forEach(([k, v]) => {
+                        html += `<li><strong>${k.replace(/_/g,' ')}:</strong> ${v}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += `<p>${value}</p>`;
+                }
+                html += '</div>';
+            }
+            return html || '<div class="card"><p>No results</p></div>';
+        }
+
+        // Auto-run start action on load
+        
+    </script>
+</body>
+</html>
