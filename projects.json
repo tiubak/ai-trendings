@@ -166,5 +166,12 @@
         "description": "Explore and experiment with token-adaptive quantization strategies for elastic LLMs\u2014get tailored explanations, code snippets, trade-off analysis, and a hands-on tuning plan.",
         "category": "AI Education",
         "created_at": "2026-02-25"
+    },
+    "2026-02-26": {
+        "name": "One-Night Sleep Lab",
+        "path": "projects/2026-02-26-one-night-sleep-lab",
+        "description": "Interactively explore how AI research can infer future disease risk from a single night of sleep through lessons, mini-projects, and a model-design assistant.",
+        "category": "AI Education",
+        "created_at": "2026-02-26"
     }
 }
