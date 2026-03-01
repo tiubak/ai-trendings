@@ -187,5 +187,12 @@
         "description": "Enter a location and date to get a generated, educational probabilistic medium-range weather forecast with visual guidance and model explainers.",
         "category": "AI Education",
         "created_at": "2026-02-28"
+    },
+    "2026-03-01": {
+        "name": "Visual Asset Localizer Lab",
+        "path": "projects/2026-03-01-visual-asset-localizer",
+        "description": "Generate an AI-driven, step-by-step plan to adapt a visual asset for a specific platform and regional market, including models, prompts, workflow and checks.",
+        "category": "AI Education",
+        "created_at": "2026-03-01"
     }
 }
