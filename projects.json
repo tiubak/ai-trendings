@@ -201,5 +201,12 @@
         "description": "Enter an industry or topic to get a concise, hands-on analysis of current AI trends, practical applications, a learning path, and a mini-project idea.",
         "category": "AI Education",
         "created_at": "2026-03-02"
+    },
+    "2026-03-03": {
+        "name": "BrainScan AI Lab",
+        "path": "projects/2026-03-03-brain-scan-ai-lab",
+        "description": "Interactively explore how AI models infer biological sex from brain scans\u2014learn methods, spot dataset confounds, run interpretability exercises, and design ethical experiments.",
+        "category": "AI Education",
+        "created_at": "2026-03-03"
     }
 }
