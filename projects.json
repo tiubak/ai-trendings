@@ -208,5 +208,12 @@
         "description": "Interactively explore how AI models infer biological sex from brain scans\u2014learn methods, spot dataset confounds, run interpretability exercises, and design ethical experiments.",
         "category": "AI Education",
         "created_at": "2026-03-03"
+    },
+    "2026-03-04": {
+        "name": "Parallel Research Engine Designer",
+        "path": "projects/2026-03-04-parallel-research-engine-designer",
+        "description": "Design and compare specialized AI research engines for a chosen domain and get tailored architectures, training plans, cost estimates, and safety guidance.",
+        "category": "AI Education",
+        "created_at": "2026-03-04"
     }
 }
