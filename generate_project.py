@@ -799,18 +799,21 @@ __TRENDING_ANALYSIS__
 
 ## 🎯 What This Project Does
 
-__WHAT_IT_DOES__
+This project explores __SLUG__ through an interactive AI-powered experience. Enter your input and watch AI generate unique, personalized content in real-time.
 
 ## 🚀 How to Use
 
-1. Open the project by clicking **▶ Open** or visiting the [live demo](__PROJECT_URL__)
-2. __HOW_TO_USE_STEP2__
-3. __HOW_TO_USE_STEP3__
-4. Explore the AI-generated results!
+1. Open the project by clicking "Open" or visiting the [live demo](__PROJECT_URL__)
+2. Enter your input in the provided field
+3. Click the action button to generate AI-powered results
+4. Explore the creative outputs and discover something new!
 
 ## 🧠 AI Concepts Covered
 
-__CONCEPTS__
+This project demonstrates how AI can:
+- Generate context-aware, personalized content
+- Respond dynamically to user input
+- Apply creative frameworks to structured information
 
 ## 🛠️ Technical Details
 
