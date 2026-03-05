@@ -1,0 +1,61 @@
+# Changes to generate_project.py (2026-03-04)
+
+## Summary of Changes
+
+### 1. ✅ Force Category Rotation
+Added `get_category_for_date(date_str)` function that rotates through categories based on the day of month:
+- Day 1, 4, 7... = "AI Education"
+- Day 2, 5, 8... = "Fun"
+- Day 3, 6, 9... = "Practical"
+- Then repeats
+
+Updated `pick_topic()` to use category rotation when falling back to the curated topic pool.
+
+### 2. ✅ Let AI Decide Category from Trending Search
+Modified `search_and_design_topic()` design prompt:
+- Changed from hardcoded `"category": "AI Education"`
+- Now instructs AI to choose category dynamically: "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose"
+
+### 3. ✅ More Creative Prompts
+Updated the design prompt to instruct AI to be more creative:
+- Prompts now say: "The prompts should be CREATIVE and ORIGINAL - avoid generic explanations. Use humor, metaphors, surprising angles, or unique frameworks to make the content memorable."
+- "Be original - don't use standard explanations. Use analogies, humor, surprising examples, or creative frameworks."
+
+### 4. ✅ Added "trending_analysis" Field to Topic Structure
+- AI now generates a `trending_analysis` field: "A 2-3 sentence summary explaining what the trending search revealed and why this project responds to it"
+
+### 5. ✅ README Template Updated
+Simplified and added new sections:
+- **📊 Trending Analysis** section (new) - Displays the AI-generated analysis of trending search
+- **🎯 What This Project Does** - More flexible, generic description
+- **🚀 How to Use** - Simplified to 4 generic steps
+- **🧠 AI Concepts Covered** - General AI concepts (no category-specific lists)
+
+### 6. ✅ Simplified build_readme() Function
+- Removed the complex category-specific concept mapping
+- Removed the AI enhancement step (_enhance_readme_with_ai)
+- Now uses the AI-generated `trending_analysis` field directly
+- Falls back to default text if no analysis provided
+
+### 7. ✅ Removed _enhance_readme_with_ai()
+No longer needed since trending_analysis is provided by the design prompt.
+
+## Testing
+
+```bash
+# Check syntax
+python3 -m py_compile generate_project.py
+
+# Run for a specific date (test)
+python3 generate_project.py 2026-03-05
+
+# Run for today
+python3 generate_project.py
+```
+
+## Expected Behavior
+
+1. **Category Rotation**: Days will now cycle through Education → Fun → Practical → repeat
+2. **Trending Projects**: AI will decide the appropriate category based on the trend
+3. **More Creative**: AI-generated prompts will be more original and engaging
+4. **Better READMEs**: Each README will include a "Trending Analysis" section explaining why this project was created

@@ -196,10 +196,10 @@
         "created_at": "2026-03-01"
     },
     "2026-03-02": {
-        "name": "AI Trends Impact Simulator",
-        "path": "projects/2026-03-02-ai-trends-impact-simulator",
-        "description": "Enter an industry or topic to get a concise, hands-on analysis of current AI trends, practical applications, a learning path, and a mini-project idea.",
-        "category": "AI Education",
+        "name": "AI Code Explainer",
+        "path": "projects/2026-03-02-ai-code-explainer",
+        "description": "Paste any code snippet and get a clear, visual explanation of what it does \u2014 line by line, with complexity analysis and improvement suggestions",
+        "category": "Practical",
         "created_at": "2026-03-02"
     },
     "2026-03-03": {

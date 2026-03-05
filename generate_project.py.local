@@ -39,7 +39,7 @@ TOPICS = [
         "slug": "ai-embedding-explorer",
         "name": "AI Embedding Explorer",
         "description": "Discover how AI converts words into numbers — explore word embeddings, see which words are similar, and understand the math behind semantic search",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain word embeddings in AI in simple terms. Cover: what they are, why they matter, how words become vectors, and give 3 surprising examples of word relationships (like king - man + woman = queen). Format as JSON with keys: explanation, examples (array of {words, relationship}), analogy.",
@@ -57,7 +57,7 @@ TOPICS = [
         "slug": "ai-hallucination-detector",
         "name": "AI Hallucination Detector",
         "description": "Learn about AI hallucinations — why models make things up, how to spot them, and techniques researchers use to reduce confabulation",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain AI hallucinations in simple terms. Cover: what they are, why they happen (training data gaps, pattern completion, confidence calibration), 3 famous real-world examples, and 3 techniques to detect/prevent them. Format as JSON: {explanation, why_it_happens (array), famous_examples (array of {description, impact}), prevention_techniques (array of {name, how_it_works})}.",
@@ -75,7 +75,7 @@ TOPICS = [
         "slug": "ai-prompt-engineering-lab",
         "name": "AI Prompt Engineering Lab",
         "description": "Master the art of prompt engineering — learn techniques like chain-of-thought, few-shot, and role prompting with interactive examples",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain prompt engineering in simple terms. Cover the top 5 techniques: 1) Zero-shot, 2) Few-shot, 3) Chain-of-thought, 4) Role prompting, 5) Self-consistency. For each give a concrete example. Format as JSON: {overview, techniques (array of {name, description, example_prompt, example_output, when_to_use})}.",
@@ -93,7 +93,7 @@ TOPICS = [
         "slug": "ai-temperature-playground",
         "name": "AI Temperature Playground",
         "description": "Understand how temperature and sampling parameters affect AI output — see the same prompt at different temperatures side by side",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain AI temperature/sampling parameters in simple terms. Cover: temperature (0.0-2.0), top-p (nucleus sampling), top-k, and frequency penalty. For each, explain what it does and when to use low vs high values. Format as JSON: {overview, parameters (array of {name, range, description, low_value_effect, high_value_effect, best_for})}.",
@@ -111,7 +111,7 @@ TOPICS = [
         "slug": "ai-bias-explorer",
         "name": "AI Bias Explorer",
         "description": "Explore how bias enters AI systems — from training data to model outputs — and learn about fairness techniques researchers are developing",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain AI bias in simple terms. Cover: 5 types of bias (selection, confirmation, measurement, automation, historical), 3 real-world examples where AI bias caused harm, and 3 techniques to mitigate bias. Format as JSON: {overview, bias_types (array of {name, description, example}), real_world_cases (array of {case, impact, lesson}), mitigation (array of {technique, how_it_works})}.",
@@ -129,7 +129,7 @@ TOPICS = [
         "slug": "ai-training-cost-calculator",
         "name": "AI Training Cost Calculator",
         "description": "Estimate how much it costs to train AI models — from GPT-scale to small fine-tunes — covering GPU hours, electricity, and carbon footprint",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain AI training costs in simple terms. Include: cost breakdown for training a large model (GPUs, electricity, cooling, engineering), comparison of training costs for GPT-4 (~$100M), Llama 3 (~$30M), and a small fine-tune (~$100). Include carbon footprint data. Format as JSON: {overview, cost_breakdown (array of {component, percentage, description}), model_comparisons (array of {model, estimated_cost, gpu_hours, parameters, year}), carbon_impact, fun_facts (array)}.",
@@ -147,7 +147,7 @@ TOPICS = [
         "slug": "ai-rag-explained",
         "name": "RAG Architecture Explained",
         "description": "Understand Retrieval-Augmented Generation — how AI combines search with generation to give accurate, sourced answers",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Explain RAG (Retrieval-Augmented Generation) in simple terms. Cover: what it is, the 3-step process (retrieve, augment, generate), why it reduces hallucinations, comparison with fine-tuning, and 4 real-world use cases. Format as JSON: {overview, steps (array of {step_number, name, description, analogy}), vs_fine_tuning (array of {aspect, rag, fine_tuning}), use_cases (array of {name, description}), limitations (array)}.",
@@ -165,7 +165,7 @@ TOPICS = [
         "slug": "ai-benchmark-arena",
         "name": "AI Benchmark Arena",
         "description": "Compare AI models head-to-head on different tasks — see how GPT, Claude, Gemini, and open-source models stack up on reasoning, coding, and creativity",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Create a comprehensive comparison of top AI models as of early 2026. Include: GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, Llama 3.1 405B, Mistral Large, and DeepSeek V3. Compare on: reasoning, coding, creative writing, math, multilingual, speed, cost. Format as JSON: {overview, models (array of {name, company, parameters, release_date, strengths, weaknesses}), benchmarks (array of {category, rankings (array of {model, score, notes})}), verdict}.",
@@ -330,7 +330,7 @@ TOPICS = [
         "slug": "ai-model-showdown",
         "name": "AI Model Showdown",
         "description": "Compare AI models side-by-side with real specs — context windows, cost, benchmarks, and open-source status from our database of 13+ models",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "You have access to this AI model data (JSON). Analyze it and create an interesting comparison. Pick the 3 best value-for-money models and the 3 most powerful models. Explain trade-offs. Data: {db_models}. Format as JSON: {best_value (array of {name, why}), most_powerful (array of {name, why}), surprise_findings (array), advice_for_developers}.",
@@ -350,7 +350,7 @@ TOPICS = [
         "slug": "ai-history-timeline",
         "name": "AI History Interactive Timeline",
         "description": "Explore 70+ years of AI history — from the Turing Test to ChatGPT — with interactive timeline, category filters, and AI-generated context",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Using this AI timeline data, create an engaging narrative of AI history organized by era. Highlight the most impactful moments and explain how each led to the next. Data: {db_timeline}. Format as JSON: {eras (array of {name, years, key_events (array), narrative, impact_score}), connections (array of {from_event, to_event, how_connected}), prediction_for_next}.",
@@ -370,7 +370,7 @@ TOPICS = [
         "slug": "ai-glossary-quiz",
         "name": "AI Glossary Quiz",
         "description": "Test your AI knowledge — get quizzed on 40+ AI/ML terms with multiple choice, hints, and explanations. Track your score!",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Create a 5-question multiple choice quiz about AI/ML concepts using these terms: {db_glossary}. Mix difficulty levels. Each question should have 4 options, one correct. Include a hint and detailed explanation. Format as JSON: {questions (array of {question, options (array), correct_index, hint, explanation, difficulty})}.",
@@ -400,7 +400,7 @@ TOPICS = [
         "slug": "ai-dataset-explorer",
         "name": "AI Dataset Explorer",
         "description": "Browse famous AI datasets — learn what ImageNet, COCO, The Pile and others contain, how they're used, and why they matter for AI development",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Using this dataset information: {db_datasets}, create an engaging guide to AI datasets. Group by domain, explain why each matters, and describe how they shaped AI progress. Include fun facts. Format as JSON: {overview, by_domain (object with arrays), most_influential, controversies (array), fun_facts (array), how_to_choose_dataset}.",
@@ -467,7 +467,7 @@ TOPICS = [
         "slug": "ai-ethics-dilemma",
         "name": "AI Ethics Dilemma Generator",
         "description": "Face thought-provoking AI ethics scenarios — trolley problems for the digital age — and explore different ethical frameworks",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Generate an AI ethics dilemma scenario (like a trolley problem but for AI). If topic given: '{topic}'. Make it realistic and thought-provoking. Analyze it through 3 ethical frameworks (utilitarian, deontological, virtue ethics). Format as JSON: {scenario, stakeholders (array of {who, interests}), ethical_frameworks (array of {framework, analysis, recommendation}), real_world_parallel, discussion_questions (array), there_is_no_right_answer_because}.",
@@ -537,7 +537,7 @@ TOPICS = [
         "slug": "ai-language-comparison",
         "name": "AI Programming Language Showdown",
         "description": "Compare programming languages for AI/ML — see which language dominates for deep learning, data science, deployment, and edge inference",
-        "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
+        "category": "AI Education",
         "actions": {
             "start": {
                 "prompt": "Using this programming language data for AI/ML: {db_languages}, create a comprehensive comparison. Cover which language is best for each AI task, pros/cons, and future trends. Format as JSON: {overview, by_task (object: {deep_learning, data_science, deployment, edge_inference, research}), language_profiles (array of {name, verdict, best_for, avoid_for}), rising_stars, prediction_2027}.",
@@ -799,18 +799,21 @@ __TRENDING_ANALYSIS__
 
 ## 🎯 What This Project Does
 
-__WHAT_IT_DOES__
+This project explores __SLUG__ through an interactive AI-powered experience. Enter your input and watch AI generate unique, personalized content in real-time.
 
 ## 🚀 How to Use
 
 1. Open the project by clicking **▶ Open** or visiting the [live demo](__PROJECT_URL__)
-2. __HOW_TO_USE_STEP2__
-3. __HOW_TO_USE_STEP3__
-4. Explore the AI-generated results!
+2. Enter your input in the provided field
+3. Click the action button to generate AI-powered results
+4. Explore the creative outputs and discover something new!
 
 ## 🧠 AI Concepts Covered
 
-__CONCEPTS__
+This project demonstrates how AI can:
+- Generate context-aware, personalized content
+- Respond dynamically to user input
+- Apply creative frameworks to structured information
 
 ## 🛠️ Technical Details
 
@@ -886,23 +889,6 @@ def build_readme(topic, date_str):
     return readme
 
 
-def _enhance_readme_with_ai(name, desc, category, trending_source, fields):
-    """Ask AI to write a 'Why This Matters' section for the README."""
-    context = f"trending news: {trending_source}" if trending_source else "AI education"
-    prompt = f"""Write a brief, engaging "Why This Matters" paragraph (3-4 sentences) for an AI project called "{name}".
-Description: {desc}
-Category: {category}
-Context: {context}
-
-Write in a professional but accessible tone. Explain why this topic is important for someone learning about AI.
-Return ONLY the paragraph text, no headers or formatting."""
-    
-    result = _call_ai(prompt)
-    if result and len(result) > 50 and len(result) < 1000:
-        return result.strip()
-    return None
-
-
 def build_input_fields_html(topic):
     """Generate HTML input fields from topic config."""
     config = topic.get("ui_config", {})
@@ -936,16 +922,6 @@ def get_select_options(field):
     return options.get(field, ["option1", "option2", "option3"])
 
 
-def get_default_action(topic):
-    """Get the best action to run by default."""
-    actions = topic.get("actions", {})
-    # Prefer interactive actions over 'start'
-    for a in actions:
-        if a != "start":
-            return a
-    return "start"
-
-
 def get_category_for_date(date_str):
     """Get the category for a given date - forces rotation (Education → Fun → Practical → repeat)."""
     # Parse date to get day number for rotation
@@ -956,6 +932,16 @@ def get_category_for_date(date_str):
         categories = ["AI Education", "Fun", "Practical"]
         return categories[day_num % 3]
     return "AI Education"  # fallback
+
+
+def get_default_action(topic):
+    """Get the best action to run by default."""
+    actions = topic.get("actions", {})
+    # Prefer interactive actions over 'start'
+    for a in actions:
+        if a != "start":
+            return a
+    return "start"
 
 
 def get_button_text(topic):
@@ -1076,14 +1062,14 @@ Return ONLY valid JSON (no markdown, no explanation) with this exact structure:
     "description": "One sentence description of what users can do",
     "category": "Choose one of: AI Education, Fun, Practical - pick the category that best fits this project's primary purpose",
     "trending_source": "Brief mention of what trend inspired this",
-        "trending_analysis": "A 2-3 sentence summary explaining what the trending search revealed and why this project responds to it (will be added to README)",
+    "trending_analysis": "A 2-3 sentence summary explaining what the trending search revealed and why this project responds to it (will be added to README)",
     "actions": {{
         "start": {{
             "prompt": "A detailed, creative prompt that asks an AI to generate engaging, unique content about this topic. Be original - don't use standard explanations. Use analogies, humor, surprising examples, or creative frameworks. Include placeholders like {{topic}} for user input. Ask the AI to think outside the box.",
             "parse": "json"
         }},
         "explore": {{
-            "prompt": "A follow-up prompt for deeper exploration. Include {{user_input}} placeholder. Ask for JSON output.",
+            "prompt": "A follow-up prompt for deeper exploration. Include {{user_input}} placeholder. Be creative with the interaction design. Ask for JSON output.",
             "parse": "json"
         }}
     }},

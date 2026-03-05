@@ -1,4 +1,4 @@
-"""AI Trends Impact Simulator — Enter an industry or topic to get a concise, hands-on analysis of current AI trends, practical applications, a learning path, and a mini-project idea."""
+"""AI Code Explainer — Paste any code snippet and get a clear, visual explanation of what it does — line by line, with complexity analysis and improvement suggestions"""
 
 from ..base import (call_openrouter, call_pollinations, extract_json, fetch_image,
     query_db, load_json_data, web_search, fetch_url, wikipedia_summary, fetch_rss,
@@ -8,11 +8,7 @@ import json as _json
 
 ACTIONS = {
     "start": {
-        "prompt": "You are an expert AI educator. Given a user-specified industry or topic {topic}, generate a single JSON object (no extra text) that teaches a learner about current AI trends affecting that topic and gives actionable next steps. Include the exact fields below and follow types and short formats. Keep entries concise and practical.\n\nRequired JSON fields and formats:\n- topic: string (echo the input)\n- trend_summary: string (2-3 sentences describing how current AI trends relate to the topic)\n- top_applications: array of objects [{\"name\":string, \"description\":string, \"impact_level\":\"Low\"|\"Medium\"|\"High\"}]\n- maturity_level: string (one of 'Research', 'Early adoption', 'Scaling', 'Mainstream')\n- impact_score: number (1-10)\n- required_skills: array of strings (key skills to work on)\n- beginner_learning_path: array of objects [{\"step_number\":int, \"title\":string, \"duration_weeks\":int, \"resources\": [{\"title\":string, \"url\":string}]}]\n- prototype_idea: object {\"title\":string, \"description\":string, \"tech_stack\": [strings], \"estimated_time_days\":int}\n- datasets_and_tools: array of objects [{\"name\":string, \"type\":\"dataset\"|\"tool\"|\"api\", \"url\":string}]\n- ethical_and_regulatory_notes: array of short strings (major concerns or regs)\n- quick_exercise: object {\"exercise_description\":string, \"expected_outcome\":string, \"difficulty\":\"Easy\"|\"Medium\"|\"Hard\"}\n- confidence: string ('low'|'medium'|'high') indicating how confident you are in the recommendations\n\nConstraints: return only valid JSON matching these keys and types. Do not include commentary, examples, or extra keys. Use the user's {topic} to tailor all sections.",
-        "parse": "json"
-    },
-    "explore": {
-        "prompt": "The user will supply {user_input} as a focus area or follow-up directive (examples: 'technical deep dive', 'business case', 'prototype plan', 'ethics and policy', 'curriculum for beginners'). Based on the original topic context, produce a JSON object (only JSON) for deeper exploration with these exact fields:\n\n- focus: string (echo {user_input})\n- detailed_plan: array of steps [{\"step_number\":int, \"title\":string, \"description\":string, \"time_estimate_hours\":int}]\n- deliverables: array of objects [{\"name\":string, \"description\":string}]\n- sample_code_snippet: string (short, include language tag like \"python:\" then code; if not applicable, supply empty string)\n- evaluation_metrics: array [{\"metric\":string, \"how_to_measure\":string, \"target_value\":string}] (if not applicable, return empty array)\n- further_reading: array [{\"title\":string, \"url\":string}]\n- confidence: string ('low'|'medium'|'high')\n\nRules: tailor the plan to {user_input} and the original topic context, be practical, list measurable steps and deliverables, and return only the JSON object. Do not add commentary.",
+        "prompt": "Explain this code in simple terms: ```{code}```. Cover: what language it is, what it does overall, line-by-line explanation, time/space complexity, potential bugs, and one improvement suggestion. Format as JSON: {language, summary, line_by_line (array of {line_number, code, explanation}), complexity (time and space), potential_bugs (array), improvement}.",
         "parse": "json"
     }
 }
@@ -53,8 +49,8 @@ def handle(action: str, data: dict) -> dict:
     return {"result": {"text": raw}, "date": META.get("date", "")}
 
 META = {
-    "name": "AI Trends Impact Simulator",
-    "description": "Enter an industry or topic to get a concise, hands-on analysis of current AI trends, practical applications, a learning path, and a mini-project idea.",
-    "category": "AI Education",
+    "name": "AI Code Explainer",
+    "description": "Paste any code snippet and get a clear, visual explanation of what it does — line by line, with complexity analysis and improvement suggestions",
+    "category": "Practical",
     "date": "2026-03-02"
 }
