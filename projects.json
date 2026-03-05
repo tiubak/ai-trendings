@@ -215,5 +215,12 @@
         "description": "Design and compare specialized AI research engines for a chosen domain and get tailored architectures, training plans, cost estimates, and safety guidance.",
         "category": "AI Education",
         "created_at": "2026-03-04"
+    },
+    "2026-03-05": {
+        "name": "AI Job Interview Simulator",
+        "path": "projects/2026-03-05-ai-job-interview-simulator",
+        "description": "Practice AI/ML job interview questions \u2014 get technical questions, behavioral prompts, and detailed feedback on your answers",
+        "category": "Practical",
+        "created_at": "2026-03-05"
     }
 }
