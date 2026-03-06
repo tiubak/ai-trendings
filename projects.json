@@ -222,5 +222,12 @@
         "description": "Practice AI/ML job interview questions \u2014 get technical questions, behavioral prompts, and detailed feedback on your answers",
         "category": "Practical",
         "created_at": "2026-03-05"
+    },
+    "2026-03-06": {
+        "name": "Agentic Sandbox",
+        "path": "projects/2026-03-06-agentic-sandbox",
+        "description": "Design, probe, and perturb a tiny agentic LLM: pick a scenario, choose reward signals, and watch a simulated episode with risk annotations and alignment suggestions.",
+        "category": "AI Education",
+        "created_at": "2026-03-06"
     }
 }
