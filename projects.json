@@ -229,5 +229,12 @@
         "description": "Design, probe, and perturb a tiny agentic LLM: pick a scenario, choose reward signals, and watch a simulated episode with risk annotations and alignment suggestions.",
         "category": "AI Education",
         "created_at": "2026-03-06"
+    },
+    "2026-03-07": {
+        "name": "AI Hires: Human Rental Simulator",
+        "path": "projects/2026-03-07-ai-human-rental-simulator",
+        "description": "Design and simulate how an agentic AI would recruit, instruct, pay, and monitor humans to perform a microtask of your choice.",
+        "category": "AI Education",
+        "created_at": "2026-03-07"
     }
 }
