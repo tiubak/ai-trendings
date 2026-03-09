@@ -243,5 +243,12 @@
         "description": "Design playful, neuroscience\u2011inspired benchmark microtasks for probing LLM behavior and get creative test prompts, adversarial twists, and scoring rubrics.",
         "category": "AI Education",
         "created_at": "2026-03-08"
+    },
+    "2026-03-09": {
+        "name": "AI Compute Marketplace Sandbox",
+        "path": "projects/2026-03-09-compute-marketplace-sandbox",
+        "description": "Describe an AI workload and get a playful, education-first analysis that compares compute backends, trade-offs, cost estimates, and implementable next steps.",
+        "category": "AI Education",
+        "created_at": "2026-03-09"
     }
 }
