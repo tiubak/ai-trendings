@@ -250,5 +250,12 @@
         "description": "Describe an AI workload and get a playful, education-first analysis that compares compute backends, trade-offs, cost estimates, and implementable next steps.",
         "category": "AI Education",
         "created_at": "2026-03-09"
+    },
+    "2026-03-10": {
+        "name": "AI Race Scenario Studio",
+        "path": "projects/2026-03-10-ai-race-scenario-studio",
+        "description": "Enter a company, sector, or policy and get a vivid near-term scenario of how a major AI breakthrough (e.g., GPT-5.4) could reshape it, plus a tactical playbook and risk score.",
+        "category": "AI Education",
+        "created_at": "2026-03-10"
     }
 }
