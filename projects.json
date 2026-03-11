@@ -257,5 +257,12 @@
         "description": "Enter a company, sector, or policy and get a vivid near-term scenario of how a major AI breakthrough (e.g., GPT-5.4) could reshape it, plus a tactical playbook and risk score.",
         "category": "AI Education",
         "created_at": "2026-03-10"
+    },
+    "2026-03-11": {
+        "name": "Model Release Lab",
+        "path": "projects/2026-03-11-model-release-lab",
+        "description": "Interactively generate playful, practical debriefs and bespoke evaluation plans for any newly released AI model.",
+        "category": "AI Education",
+        "created_at": "2026-03-11"
     }
 }
