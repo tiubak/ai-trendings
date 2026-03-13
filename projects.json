@@ -271,5 +271,12 @@
         "description": "Type a technology, industry, or project and get a playful, data-informed mini-brief predicting how near-term AI trends will affect it, with concrete opportunities, risks, and a one-week experiment.",
         "category": "AI Education",
         "created_at": "2026-03-12"
+    },
+    "2026-03-13": {
+        "name": "OctoSkin Studio",
+        "path": "projects/2026-03-13-octoskin-studio",
+        "description": "Give a mood or use-case and receive a playful, teachable design package for an octopus-inspired adaptive 'skin' \u2014 colors, patterns, and AI-driven actuation choreography.",
+        "category": "AI Education",
+        "created_at": "2026-03-13"
     }
 }
