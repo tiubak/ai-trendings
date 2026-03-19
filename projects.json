@@ -313,5 +313,12 @@
         "description": "Paste a news claim or AI-generated answer and get an investigative, source-backed verdict that diagnoses hallucinations, cites evidence, and teaches you how to verify and re-prompt safely.",
         "category": "AI Education",
         "created_at": "2026-03-18"
+    },
+    "2026-03-19": {
+        "name": "AI Red-Team Playground",
+        "path": "projects/2026-03-19-ai-red-team-playground",
+        "description": "Describe an AI product and get a playful, high-level threat model, attacker personas, prioritized mitigations, and a safe red-team scenario \u2014 all in structured JSON.",
+        "category": "AI Education",
+        "created_at": "2026-03-19"
     }
 }
