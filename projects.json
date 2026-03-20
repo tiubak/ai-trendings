@@ -320,5 +320,12 @@
         "description": "Describe an AI product and get a playful, high-level threat model, attacker personas, prioritized mitigations, and a safe red-team scenario \u2014 all in structured JSON.",
         "category": "AI Education",
         "created_at": "2026-03-19"
+    },
+    "2026-03-20": {
+        "name": "Subagent Sandbox: Build Your Mini AI Team",
+        "path": "projects/2026-03-20-subagent-sandbox",
+        "description": "Design a tiny team of specialized AI subagents for any task, see their orchestration plan, failure modes, and a pseudocode conductor \u2014 all customized to your prompt.",
+        "category": "AI Education",
+        "created_at": "2026-03-20"
     }
 }
