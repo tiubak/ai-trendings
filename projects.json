@@ -355,5 +355,12 @@
         "description": "Turn a nascent AI idea into a playful, actionable startup blueprint \u2014 pitch, research roadmap, safety plan, compute & hiring estimates, and investor-ready bullets.",
         "category": "AI Education",
         "created_at": "2026-03-24"
+    },
+    "2026-03-25": {
+        "name": "Self-Verifier Lab",
+        "path": "projects/2026-03-25-self-verifier-lab",
+        "description": "Design and iterate a playful, implementation-ready self-verification blueprint for an AI agent that performs any user-specified task.",
+        "category": "AI Education",
+        "created_at": "2026-03-25"
     }
 }
