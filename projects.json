@@ -362,5 +362,12 @@
         "description": "Design and iterate a playful, implementation-ready self-verification blueprint for an AI agent that performs any user-specified task.",
         "category": "AI Education",
         "created_at": "2026-03-25"
+    },
+    "2026-03-26": {
+        "name": "On-Device vs Cloud AI Playground",
+        "path": "projects/2026-03-26-ondevice-ai-playground",
+        "description": "Describe an app or dataset and get a playful, personalized analysis and deployment plan recommending on-device, cloud, or hybrid execution with privacy, latency, and energy tradeoffs.",
+        "category": "AI Education",
+        "created_at": "2026-03-26"
     }
 }
