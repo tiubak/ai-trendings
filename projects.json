@@ -404,5 +404,12 @@
         "description": "Type a model, vendor, or release trend and get a playful, teachable 'release briefing' plus a deeper comparative analysis you can use in lessons or demos.",
         "category": "AI Education",
         "created_at": "2026-03-31"
+    },
+    "2026-04-01": {
+        "name": "LLM Release Time Machine",
+        "path": "projects/2026-04-01-llm-release-time-machine",
+        "description": "Enter a project or task and get a playful, educational timeline of recent model releases plus tailored model recommendations and a bite-sized action plan.",
+        "category": "AI Education",
+        "created_at": "2026-04-01"
     }
 }
