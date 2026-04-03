@@ -411,5 +411,12 @@
         "description": "Enter a project or task and get a playful, educational timeline of recent model releases plus tailored model recommendations and a bite-sized action plan.",
         "category": "AI Education",
         "created_at": "2026-04-01"
+    },
+    "2026-04-03": {
+        "name": "Chromatic Cue Lab",
+        "path": "projects/2026-04-03-chromatic-cue-lab",
+        "description": "An interactive lab where users design, simulate, and visualize 'selective color' strategies to learn why video AI often works in grayscale and only needs color at key moments.",
+        "category": "AI Education",
+        "created_at": "2026-04-03"
     }
 }
