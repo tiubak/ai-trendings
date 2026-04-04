@@ -418,5 +418,12 @@
         "description": "An interactive lab where users design, simulate, and visualize 'selective color' strategies to learn why video AI often works in grayscale and only needs color at key moments.",
         "category": "AI Education",
         "created_at": "2026-04-03"
+    },
+    "2026-04-04": {
+        "name": "AI Hub Playbook Lab",
+        "path": "projects/2026-04-04-ai-hub-playbook-lab",
+        "description": "Design and simulate a bespoke roadmap for turning any city or region into a thriving AI hub.",
+        "category": "AI Education",
+        "created_at": "2026-04-04"
     }
 }
