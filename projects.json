@@ -432,5 +432,12 @@
         "description": "Tell the system about your organization or scenario and get a compact, creative AI readiness battleplan and drill generator tailored to your needs.",
         "category": "Practical",
         "created_at": "2026-04-05"
+    },
+    "2026-04-06": {
+        "name": "Diffusion Detective Lab",
+        "path": "projects/2026-04-06-diffusion-detective-lab",
+        "description": "Type a concept and step through a playful, interactive reverse-diffusion walkthrough that produces analogies, a toy noise schedule, a ready-to-run prompt, and creative learning tasks.",
+        "category": "AI Education",
+        "created_at": "2026-04-06"
     }
 }
