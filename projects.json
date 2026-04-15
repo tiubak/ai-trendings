@@ -453,5 +453,12 @@
         "description": "Users input a hypothetical prompt-attack scenario and the project generates a \u201cthreat sketch\u201d plus a safe, resilient rewrite strategy to prevent harmful outcomes.",
         "category": "AI Education",
         "created_at": "2026-04-14"
+    },
+    "2026-04-15": {
+        "name": "This Week in AI: TimeCapsule Brief Generator",
+        "path": "projects/2026-04-15-this-week-in-ai-timecapsule",
+        "description": "Turn your chosen AI story into a playful, future-proof \u201cnews capsule\u201d with key takeaways, risks, and a tiny experiment you can try.",
+        "category": "AI Education",
+        "created_at": "2026-04-15"
     }
 }
