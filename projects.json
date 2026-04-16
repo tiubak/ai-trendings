@@ -460,5 +460,12 @@
         "description": "Turn your chosen AI story into a playful, future-proof \u201cnews capsule\u201d with key takeaways, risks, and a tiny experiment you can try.",
         "category": "AI Education",
         "created_at": "2026-04-15"
+    },
+    "2026-04-16": {
+        "name": "HTTP Model Deployment Playground",
+        "path": "projects/2026-04-16-model-deployment-playground-http",
+        "description": "Turn your ML idea into a mock HTTP endpoint flow where you test requests, latency, and \u201chot swap\u201d updates safely.",
+        "category": "Practical",
+        "created_at": "2026-04-16"
     }
 }
