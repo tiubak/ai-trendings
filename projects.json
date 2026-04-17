@@ -467,5 +467,12 @@
         "description": "Turn your ML idea into a mock HTTP endpoint flow where you test requests, latency, and \u201chot swap\u201d updates safely.",
         "category": "Practical",
         "created_at": "2026-04-16"
+    },
+    "2026-04-17": {
+        "name": "Human\u2013Machine Collaboration Maze (2026)",
+        "path": "projects/2026-04-17-human-machine-collab-maze-2026",
+        "description": "Guide a simulated team of humans and AI through a decision labyrinth to see how different collaboration strategies affect outcomes.",
+        "category": "AI Education",
+        "created_at": "2026-04-17"
     }
 }
