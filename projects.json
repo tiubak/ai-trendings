@@ -481,5 +481,12 @@
         "description": "Paste a headline about AI research or tech news and generate multiple personalized rewrites with different \u201creader lenses\u201d (skeptic, engineer, policymaker, and curious teen) plus a quick source-confidence checklist.",
         "category": "AI Education",
         "created_at": "2026-04-18"
+    },
+    "2026-04-19": {
+        "name": "Hiro Finance AI StoryLab",
+        "path": "projects/2026-04-19-hiro-finance-ai-storylab",
+        "description": "Enter a personal finance moment and generate a short, portfolio-ready AI product story that turns it into a safe, believable AI use-case\u2014complete with risks and an evaluation plan.",
+        "category": "AI Education",
+        "created_at": "2026-04-19"
     }
 }
