@@ -495,5 +495,12 @@
         "description": "Turn your own protein or enzyme idea into a mini '3-day dataset plan' that maps what to measure, how to augment, and how to train an AI surrogate for rapid iteration.",
         "category": "AI Education",
         "created_at": "2026-04-20"
+    },
+    "2026-04-21": {
+        "name": "Make It HTTP: Model Deployment Field Lab",
+        "path": "projects/2026-04-21-model-deployment-make-it-http",
+        "description": "Turn any ML idea into a testable HTTP endpoint plan by generating a deployment blueprint you can adapt to your stack.",
+        "category": "Practical",
+        "created_at": "2026-04-21"
     }
 }
