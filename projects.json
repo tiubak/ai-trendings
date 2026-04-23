@@ -509,5 +509,12 @@
         "description": "Watch AI argue both sides of controversial tech topics \u2014 from 'Is AI art real art?' to 'Should AI replace teachers?' \u2014 then vote!",
         "category": "Fun",
         "created_at": "2026-04-22"
+    },
+    "2026-04-23": {
+        "name": "Underwater AI Sworn Navigators",
+        "path": "projects/2026-04-23-underwater-ai-sworn-navigators",
+        "description": "Train a tiny \u201cmission brief\u201d generator that pairs an autonomous underwater vehicle (AUV) with a diver using AI coordination principles and produces a personalized checklist and strategy.",
+        "category": "AI Education",
+        "created_at": "2026-04-23"
     }
 }
