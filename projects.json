@@ -516,5 +516,12 @@
         "description": "Train a tiny \u201cmission brief\u201d generator that pairs an autonomous underwater vehicle (AUV) with a diver using AI coordination principles and produces a personalized checklist and strategy.",
         "category": "AI Education",
         "created_at": "2026-04-23"
+    },
+    "2026-04-24": {
+        "name": "Cursor Coding Quest: The Option-Deal Lab",
+        "path": "projects/2026-04-24-cursor-coding-quest-option-deal-lab",
+        "description": "Users enter a coding goal and a \u201cdeal constraint,\u201d and the project generates an AI-assisted plan that mirrors real startup investment-option reasoning (what to buy, what to test, and what to measure).",
+        "category": "AI Education",
+        "created_at": "2026-04-24"
     }
 }
