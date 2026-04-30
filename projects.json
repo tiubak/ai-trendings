@@ -551,5 +551,12 @@
         "description": "Enter your ML budget constraints and get a personalized \u201cresource plan\u201d that balances software efficiency, model choices, and deployment strategy\u2014powered by an optimizer game inspired by DeepSeek\u2019s software-first approach.",
         "category": "AI Education",
         "created_at": "2026-04-29"
+    },
+    "2026-04-30": {
+        "name": "AI Deployment Economics Brief Builder",
+        "path": "projects/2026-04-30-economics-of-ai-deployment-brief-builder",
+        "description": "Generate a personalized weekly \u201cAI news digest\u201d that translates breakthrough headlines into practical cost, latency, and reliability tradeoffs you can actually plan for.",
+        "category": "AI Education",
+        "created_at": "2026-04-30"
     }
 }
