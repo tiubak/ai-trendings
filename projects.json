@@ -565,5 +565,12 @@
         "description": "Train a tiny \u201cpreference model\u201d on your own pairwise choices and see how DPO-style updates differ from reward-matching instincts.",
         "category": "AI Education",
         "created_at": "2026-05-01"
+    },
+    "2026-05-02": {
+        "name": "AI Water Usage Dial: Make the Invisible Metric Visible",
+        "path": "projects/2026-05-02-ai-water-usage-dial",
+        "description": "Users enter an AI workflow and see a playful, explainable estimate of potential water impact\u2014then iterate with \u201cgreen\u201d alternatives to minimize it.",
+        "category": "AI Education",
+        "created_at": "2026-05-02"
     }
 }
