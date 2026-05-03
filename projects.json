@@ -572,5 +572,12 @@
         "description": "Users enter an AI workflow and see a playful, explainable estimate of potential water impact\u2014then iterate with \u201cgreen\u201d alternatives to minimize it.",
         "category": "AI Education",
         "created_at": "2026-05-02"
+    },
+    "2026-05-03": {
+        "name": "AI Risk Mirror Simulator",
+        "path": "projects/2026-05-03-ai-risk-mirror-simulator",
+        "description": "Users enter an AI scenario and receive a personalized \u201crisk reflection\u201d report that highlights failure modes, missing safeguards, and safer redesign options.",
+        "category": "AI Education",
+        "created_at": "2026-05-03"
     }
 }
